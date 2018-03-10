@@ -1,0 +1,12 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+<h2>Surveys</h2>
+ 
+{% for result in surveys %}
+  <td>{{result}}</td><br>
+{% endfor %}
+
+{% endblock %}
