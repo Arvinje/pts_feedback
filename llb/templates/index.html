@@ -1,0 +1,21 @@
+<doctype html>
+
+{% extends "header.html" %}
+ 
+{% block bodyOfPage %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h2>Welcome to LLB!</h2>
+ 
+<p>This is the index page.</p>
+
+{% endblock %}
