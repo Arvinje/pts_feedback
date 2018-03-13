@@ -1,6 +1,7 @@
 from flask import render_template, request
 
 import models.survey
+import controllers.surveys
 
 from app import app, db
 
