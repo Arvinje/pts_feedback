@@ -16,7 +16,6 @@ class Answer(Base):
     created_at = Column(Date, nullable=False)
     feedback_id = Column(Integer, ForeignKey('feedback.id_')) # UPDATE!
     feedback_ = relationship("Feedback")
-    # feedback_ = relationship("Feedback", back_populates="feedback")
     # question = relationship(Question)
     # question_id = Column(Integer, ForeignKey('question.id_')) # UPDATE!
 

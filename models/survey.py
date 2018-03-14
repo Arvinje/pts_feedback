@@ -10,11 +10,11 @@ class Survey(Base):
     # Mappers
     id_ = Column(Integer, primary_key=True)
     description = Column(String, nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
+    start_date = Column(Date)
+    end_date = Column(Date)
 
     def __init__(self, id_, description_):
-        self.id = id_
+        self.id_ = id_
         self.description = description_
 
     def __repr__(self):
