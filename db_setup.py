@@ -23,4 +23,4 @@ if __name__ == '__main__':
             engine = create_engine(postgres_url)
             Base.metadata.create_all(engine)
         except:
-            'Cannot bind to database'
+            print('Cannot bind to database')
