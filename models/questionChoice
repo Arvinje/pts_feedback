@@ -1,0 +1,15 @@
+
+class questionChoice:
+    __tablename__ = "questionChoice"
+    
+    id_ = int()
+    title = str()
+    question_id = int()
+    
+    def __init__(self, id_, title, question_id):
+        self.id_ = id_
+        self.title = title
+        self.question_id = question_id
+        
+    def __repr__(self):
+        return "<Id: {}, Title {}, Question_id {}>".format(self.id_, self.title, self.question_id)
