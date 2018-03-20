@@ -8,7 +8,6 @@
 
 import os, inspect
 from flask import render_template, url_for, request, redirect, flash, jsonify
-from sqlalchemy import desc
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -38,6 +37,8 @@ def surveys():
   if request.method == 'GET':
 
     # Do stuff
+    latest_survey = session.query(Survey).order_by(Survey.id_.desc()).first()
+    print(latest_survey)
 
     return 'Displaying all available surveys'
 
