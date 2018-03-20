@@ -9,7 +9,7 @@ This is a web app for feedback gathering on [Living Lab Bus](http://livinglabbus
 • Flask, SQLAlchemy
 • PostgreSQL running.
 
-#### Running the app
+#### Run the app
 
 1) Install postgresql
 
@@ -32,22 +32,57 @@ export LLB_POSTGRES_URL="postgresql+psycopg2://<insert_user_name>:somepasswd@loc
 
 5)  From the command line run `python app.py`
 
-#### Check that it works
-
-Navigate to `http://localhost:5000/`in a browser and you should see the text 'App home'. Do the same for these:
+6) Check that the app works: navigate to `http://localhost:5000/`in a browser and you should see the text *App home*. Check these as well:
 
 ```
-http://localhost:5000/surveys/
+http://localhost:5000/surveys
 http://localhost:5000/surveys/new
-http://localhost:5000//surveys/<int:survey_id>/questions
-http://localhost:5000//surveys/<int:survey_id>/questions/new
+http://localhost:5000/surveys/1/questions
+http://localhost:5000/surveys/1/questions/new
 ```
 
 
 
-
-
-#### Add functionalities
+#### Manipulate database
 
 When adding functionality to controller files, the database can be manipulated using the SQLAlchemy `session` object.
+
+SQLAlchemy examples:
+
+```python
+# Create entries
+s = Survey(1, 'Magnificent survey')
+f = Feedback(1)
+a = Answer(2, 'bla', 2)
+
+# Add to db
+session.add(s)
+session.commit() # Persisted in db only after commit
+
+# Get list of all surveys
+session.query(Survey).all()
+
+# Get first survey
+first_survey = session.query(Survey).first()
+
+# Get survey with greatest id_:
+from sqlalchemy import desc
+latest_survey = session.query(Survey).order_by(Survey.id_.desc()).first()
+
+# Filter surveys by id
+survey_1 = session.query(Survey).filter_by(id_=1).one()  # .one() ensures only one entry is returned
+
+# Update survey_1
+survey_1 = session.query(Survey).filter_by(id_=1).one()
+survey_1.description = 'Even more magnificent survey'
+session.add(survey_1) # This effectively updates
+session.commit()
+
+# Delete
+survey_1 = session.query(Survey).filter_by(id_=1).one()
+session.delete(survey_1)
+session.commit()
+```
+
+
 
