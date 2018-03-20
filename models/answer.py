@@ -1,9 +1,14 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
-# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 import datetime
 
-from config.helper import Base
+# Backtrack to parent dir to prevent import problems
+import os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+os.sys.path.insert(0,parentdir)
+
+from models.base import Base
 from models.feedback import Feedback
 # from models.question import Question # UPDATE!
 
@@ -13,7 +18,7 @@ class Answer(Base):
     # Mappers
     id_ = Column(Integer, primary_key=True)
     value = Column(String)
-    created_at = Column(Date, nullable=False)
+    created_at = Column(DateTime, nullable=False)
     feedback_id = Column(Integer, ForeignKey('feedback.id_')) # UPDATE!
     feedback_ = relationship("Feedback")
     # question = relationship(Question)

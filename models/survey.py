@@ -1,8 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
-# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 import datetime
 
-from config.helper import Base
+# Backtrack to parent dir to prevent import problems
+import os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+os.sys.path.insert(0,parentdir)
+
+from models.base import Base
 
 class Survey(Base):
     __tablename__ = "surveys"
@@ -10,15 +15,15 @@ class Survey(Base):
     # Mappers
     id_ = Column(Integer, primary_key=True)
     description = Column(String, nullable=False)
-    start_date = Column(Date)
-    end_date = Column(Date)
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
 
     def __init__(self, id_, description_):
         self.id_ = id_
         self.description = description_
 
     def __repr__(self):
-        return "<Question: {}>".format(self.description)
+        return "<Id_: {}, Question: {}>".format(self.id_, self.description)
 
     @property
     def serialize(self):
