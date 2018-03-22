@@ -5,11 +5,6 @@ app = Flask(__name__)
 app.secret_key = "flask rocks!"
 app.debug = True
 
-# # Home route
-# @app.route('/')
-# def home():
-#     return 'App home'
-
 from controllers import mod
 app.register_blueprint(mod, url_prefix='')
 
