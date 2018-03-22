@@ -23,7 +23,7 @@ class Survey(Base):
         self.description = description_
 
     def __repr__(self):
-        return "<Id_: {}, Question: {}>".format(self.id_, self.description)
+        return "<Id_: {}, Survey: {}>".format(self.id_, self.description)
 
     @property
     def serialize(self):
