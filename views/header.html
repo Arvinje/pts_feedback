@@ -6,8 +6,8 @@
     <body>
         <div>
           <a href="/">Home</a>
-          <a href="{{ url_for('.addNewSurvey') }}">Add new survey</a>
-          <a href="{{ url_for('.printSurveys') }}">Print surveys</a>
+          <a href="/surveys/new">Add new survey</a>
+          <a href="/surveys">Print added surveys</a>
         </div>
         <hr color=black>
         {% block bodyOfPage %}{% endblock %}
