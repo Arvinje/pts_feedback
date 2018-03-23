@@ -90,7 +90,7 @@ routes.append(dict(
 
 # Function for inserting
 # new survey-records:
-def new_survey():
+def newSurvey():
     # form is used to send and retrieve values from views:
     form = surveyForm(request.form)
 
@@ -99,14 +99,13 @@ def new_survey():
       surveyToBeAdded = Survey(request.form['id_'], request.form['description'],request.form['start_date'], request.form['end_date'])
       session.add(surveyToBeAdded) #adding record to database
       session.commit() #commiting addition
-      return ("Added survey with id " + 
-              str(surveyToBeAdded.id_) + " " + 
-              surveyToBeAdded.description + ".")
+
+      return redirect('/surveys')
 
     # GET-method:
     return render_template('new_survey.html', form=form)
 
 routes.append(dict(
     rule='/surveys/new',
-    view_func=new_survey,
+    view_func=newSurvey,
     options=dict(methods=['GET','POST'])))
