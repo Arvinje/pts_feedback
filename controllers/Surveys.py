@@ -31,7 +31,7 @@ def surveys():
 
 routes.append(dict(
   rule='/surveys',
-  view_func=surveys,))
+  view_func=surveys))
 
 # Running this function edits
 # Survey with id given as a parameter.
