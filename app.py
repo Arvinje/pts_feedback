@@ -1,7 +1,8 @@
 from flask import Flask
 
 # Flask
-app = Flask(__name__)
+
+app = Flask(__name__, template_folder="<WORKINGDIRECTORYPATH>/views")
 app.secret_key = "flask rocks!"
 app.debug = True
 
