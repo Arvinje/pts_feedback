@@ -22,12 +22,14 @@ class Survey(Base):
     start_date = Column(DateTime)
     end_date = Column(DateTime)
 
-    def __init__(self, id_, description_):
+    def __init__(self, id_, description_, start_date_, end_date_):
         self.id_ = id_
         self.description = description_
+        self.start_date = start_date_
+        self.end_date = end_date_
 
     def __repr__(self):
-        return "<Id_: {}, Question: {}>".format(self.id_, self.description)
+        return "<Id_: {}, Survey: {}>".format(self.id_, self.description)
 
     @property
     def serialize(self):

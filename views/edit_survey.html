@@ -1,0 +1,31 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+<h2>Edit survey</h2>
+
+<form method=post>
+    <dl>
+	    ID:
+	    <br>
+	    <input type="text" name="id_" id="id_" value="{{ survey.id_ }}">
+	    <br>
+	    Description
+	    <br>
+	    <input type="text" name="description" value="{{ survey.description }}">
+	    <br>
+	    Start date (YYYY-MM-DD)
+	    <br>
+	    <input type="text" name="start_date" value="{{ survey.start_date }}">
+	    <br>
+	    End date (YYYY-MM-DD)
+	    <br>
+	    <input type="text" name="end_date" value="{{ survey.end_date }}">
+	    <br>
+    </dl>
+    <p>
+    <input type=submit value=Submit>
+</form>
+
+{% endblock %}
