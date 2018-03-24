@@ -8,6 +8,10 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
+from config.setup import engine
+
+
+tablename = "surveys"
 
 class Survey(Base):
     __tablename__ = "surveys"
@@ -35,3 +39,6 @@ class Survey(Base):
         'start_date' : start_date,
         'end_date' : end_date,
         }
+
+if not engine.has_table(tablename):
+    Base.metadata.create_all(engine)

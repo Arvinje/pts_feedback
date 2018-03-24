@@ -9,6 +9,10 @@ os.sys.path.insert(0,parentdir)
 
 from models.base import Base
 from models.question import Question
+from config.setup import engine
+
+
+tablename = "question_choice"
 
 class QuestionChoice(Base):
 	__tablename__ = "questionChoice"
@@ -34,3 +38,6 @@ class QuestionChoice(Base):
 			'title' : self.title,
 			'question_id' : self.question_id
 		}
+
+if not engine.has_table(tablename):
+    Base.metadata.create_all(engine)

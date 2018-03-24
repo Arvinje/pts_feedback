@@ -8,9 +8,13 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
+from config.setup import engine
+
+
+tablename = "feedback"
 
 class Feedback(Base):
-    __tablename__ = "feedback"
+    __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
@@ -28,3 +32,6 @@ class Feedback(Base):
         return {
             'id_' : self.id_
         }
+
+if not engine.has_table(tablename):
+    Base.metadata.create_all(engine)

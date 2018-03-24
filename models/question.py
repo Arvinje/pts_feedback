@@ -10,6 +10,9 @@ os.sys.path.insert(0,parentdir)
 
 from models.base import Base
 from models.feedback import Feedback
+from config.setup import engine
+
+tablename = "questions"
 
 class Question(Base):
     __tablename__ = "answers"
@@ -31,3 +34,6 @@ class Question(Base):
             'id_' : self.id_,
             # Et cetera
         }
+
+if not engine.has_table(tablename):
+    Base.metadata.create_all(engine)
