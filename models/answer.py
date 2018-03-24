@@ -11,9 +11,13 @@ os.sys.path.insert(0,parentdir)
 from models.base import Base
 from models.feedback import Feedback
 # from models.question import Question # UPDATE!
+from config.setup import engine
+
+
+tablename = "answers"
 
 class Answer(Base):
-    __tablename__ = "answers"
+    __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
@@ -45,3 +49,8 @@ class Answer(Base):
             # 'question_id' : self.question_id,
             'feedback_id' : self.feedback_id
         }
+
+if not engine.has_table(tablename):
+    Base.metadata.create_all(engine)
+
+
