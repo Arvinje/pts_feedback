@@ -5,11 +5,13 @@ app = Flask(__name__)
 app.secret_key = "flask rocks!"
 app.debug = True
 
-# # Home route
-# @app.route('/')
-# def home():
-#     return 'App home'
+# Initialize db
+from models.feedback import Feedback
+from models.survey import Survey
+from models.question import Question
+from models.answer import Answer
 
+# Import routes
 from controllers import mod
 app.register_blueprint(mod, url_prefix='')
 
@@ -41,6 +43,7 @@ def exception_handler(error):
 
 
 if __name__ == '__main__':
+
     try:
         app.run()
 
