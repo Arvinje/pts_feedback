@@ -21,6 +21,8 @@ class Survey(Base):
     description = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
+    questions = relationship("Question", back_populates="surveys")
+
 
     def __init__(self, id_, description_):
         self.id_ = id_
