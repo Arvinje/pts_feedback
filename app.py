@@ -6,8 +6,6 @@ app = Flask(__name__, template_folder="views")
 app.secret_key = "flask rocks!"
 app.debug = True
 
-<<<<<<< HEAD
-=======
 # Initialize db
 from models.feedback import Feedback
 from models.survey import Survey
@@ -17,7 +15,6 @@ from models.answer import Answer
 #testi
 
 # Import routes
->>>>>>> master
 from controllers import mod
 app.register_blueprint(mod, url_prefix='')
 
