@@ -12,16 +12,16 @@ from models.question import Question
 from config.setup import engine
 
 
-tablename = "question_choices"
+tablename = "questionChoices"
 
 class QuestionChoice(Base):
-	__tablename__ = "questionChoices"
+	__tablename__ = tablename
 
 	#Mappers
 	id_ = Column(Integer, primary_key=True)
 	title = Column(String)
 	question_id = Column(Integer, ForeignKey('question.id_'))
-    question = relationship("Question")
+    question = relationship("Question", back_populates="questionchoices")
 
 	def __init__(self, id_, title, question_id):
 		self.id_ = id_
