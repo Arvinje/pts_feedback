@@ -20,8 +20,8 @@ class QuestionChoice(Base):
 	#Mappers
 	id_ = Column(Integer, primary_key=True)
 	title = Column(String)
-	question_id = Column(Integer, ForeignKey('question.id_'))
-    question = relationship("Question", back_populates="questionchoices")
+	question_id = Column(Integer, ForeignKey('questions.id_'))
+	question = relationship("Question", back_populates="question_choices")
 
 	def __init__(self, id_, title, question_id):
 		self.id_ = id_

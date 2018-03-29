@@ -11,6 +11,7 @@ from models.feedback import Feedback
 from models.survey import Survey
 from models.question import Question
 from models.answer import Answer
+from models.questionChoice import QuestionChoice
 
 #testi
 
@@ -51,5 +52,3 @@ if __name__ == '__main__':
 
     except Exception as e:
         print(e)
-
-
