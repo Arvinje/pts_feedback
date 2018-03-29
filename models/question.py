@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 import datetime
 
 # Backtrack to parent dir to prevent import problems
+# made by Saija, not sure if working properly 29.3.2018
 import os, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -15,24 +16,31 @@ from config.setup import engine
 tablename = "questions"
 
 class Question(Base):
-    __tablename__ = "answers"
+    __tablename__ = "questions"
 
-    # Mappers
+
     id_ = Column(Integer, primary_key=True)
-    # Et cetera
+    type = Column(String)
+    title = Column(String)
+    survey_id = Column(Integer, ForeignKey('survey.id_'))
+    survey = relationship("Survey", back_populates="questions")
 
-    def __init__(self, id_):
+    def __init__(self, id_, type, title, survey_id):
         self.id_ = id_
-        # Et cetera
+        self.type = type
+        self.title = title
+        self.survey_id = survey_id
 
     def __repr__(self):
-        return "<Id: {}>".format(self.id_)
+        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type, self.title, self.survey_id)
 
     @property
     def serialize(self):
         return {
             'id_' : self.id_,
-            # Et cetera
+            'type' : self.type,
+            'title' : self.title,
+            'survey' : self.survey
         }
 
 if not engine.has_table(tablename):
