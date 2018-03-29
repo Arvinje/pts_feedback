@@ -1,59 +1,55 @@
-# Create a controller named Surveys under controllers folder. It has to include following features:
-# - A GET /surveys/new route with respective view which shows a form for creating a survey to the user
-# - A POST /surveys route which runs validations on the passed data. On valid data it should create a survey and render /surveys/{id}/questions view. On failure, it renders a new survey form pre-filled with the invalid data.
-# - A GET /surveys to display all available surveys.
-# - A GET /surveys/{id}/edit which renders a form for updating the attributes of the selected survey.
-# - A PUT /surveys/{id} which handles the updating the attributes of the selected survey, similar to CREATE route.
-# - No need for DELETE during this phase.
-
 import os, inspect
-from flask import render_template, url_for, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for
+from config.setup import session # for SQL-connection
+from models.survey import Survey # importing the class
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
-# Imports
-from config.setup import Base, session, postgres_url  # Required by SQLAlchemy
-from models.survey import Survey
-
-
 routes = []
 
-def new_survey():
-    print('Enter process, method {}'.format(request.method))
+# Function for inserting new survey-records:
+def newSurvey():
+    return render_template('new_survey.html')
 
-    # Do stuff
+routes.append(dict(rule='/surveys/new',view_func=newSurvey,
+                   options=dict(methods=['GET'])))
 
-    return 'Form for creating a survey'
-
-routes.append(dict(
-    rule='/surveys/new',
-    view_func=new_survey))
-
-
+# Function for retrieving all the added surveys:
 def surveys():
-  if request.method == 'GET':
+    if request.method == 'GET':
+      # the query returns list of all surveys and sends
+      # the list to the view:
+      return render_template('surveys.html', surveys=session.query(Survey).all())
+    elif request.method == 'POST':
+      surveyToBeAdded = Survey(request.form['id_'], request.form['description'],
+                               request.form['start_date'], request.form['end_date'])
+      session.add(surveyToBeAdded) #adding record to database
+      session.commit() #commiting addition
 
-    # Do stuff
-    latest_survey = session.query(Survey).order_by(Survey.id_.desc()).first()
-    print(latest_survey)
+      return redirect('/surveys')
 
-    return 'Displaying all available surveys'
+routes.append(dict(rule='/surveys',view_func=surveys,
+                   options=dict(methods=['GET','POST'])))
 
-  elif request.method == 'POST':
+# Running this function edits
+# Survey with id given as a parameter.
+def editSurvey(id):
+    if request.method == 'GET':
+      # the query returns the survey and sends it to the view:
+      return render_template('edit_survey.html', survey=session.query(Survey).filter_by(id_=id).one())
+    elif request.method == 'POST':
+      surveyToBeEdited = session.query(Survey).filter_by(id_=id).one()
+      surveyToBeEdited.id_ = request.form['id_']
+      surveyToBeEdited.description = request.form['description']
+      surveyToBeEdited.start_date = request.form['start_date']
+      surveyToBeEdited.end_date = request.form['end_date']
+      session.add(surveyToBeEdited) # this updates the database
+      session.commit()
 
-    # Do stuff, interact with db using session object
+      return redirect('/surveys')
 
-    return 'Validate: if valid, create and add survey to db & render view, else if invalid, render new survey form pre-filled with invalid data'
-
-  else:
-    return 'Not GET or POST'
-
-routes.append(dict(
-  rule='/surveys',
-  view_func=surveys,
-  options=dict(methods=['GET', 'POST',])))
-
-
+routes.append(dict(rule='/surveys/<int:id>/edit',view_func=editSurvey,
+                   options=dict(methods=['GET','POST'])))

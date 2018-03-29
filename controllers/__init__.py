@@ -1,11 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 
 mod = Blueprint('controllers', __name__)
 
 @mod.route('/')
 def home():
-    return 'App home'
+    return render_template('index.html')
 
 
 from .Questions import routes as question_routes
