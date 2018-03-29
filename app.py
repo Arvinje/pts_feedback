@@ -10,7 +10,6 @@ app.debug = True
 =======
 # Initialize db
 from models.feedback import Feedback
-from models.survey import Survey
 from models.question import Question
 from models.answer import Answer
 
@@ -19,6 +18,7 @@ from models.answer import Answer
 from controllers import mod
 app.register_blueprint(mod, url_prefix='')
 
+#turha kommenti
 
 # Error routes (either here or imported)
 @app.errorhandler(404)
