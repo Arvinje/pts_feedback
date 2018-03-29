@@ -21,7 +21,7 @@ class QuestionChoice(Base):
 	id_ = Column(Integer, primary_key=True)
 	title = Column(String)
 	question_id = Column(Integer, ForeignKey('question.id_'))
-    questions = relationship("Question", back_populates="questionchoices")
+    question = relationship("Question", back_populates="questionchoices")
 
 	def __init__(self, id_, title, question_id):
 		self.id_ = id_
