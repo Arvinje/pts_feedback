@@ -6,7 +6,7 @@ This is a web app for feedback gathering on [Living Lab Bus](http://livinglabbus
 #### Requirements
 
 • Python 3
-• Flask, SQLAlchemy
+• Flask, SQLAlchemy, python-dotenv
 • PostgreSQL running.
 
 #### Run the app
