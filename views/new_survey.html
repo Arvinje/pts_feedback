@@ -5,24 +5,12 @@
 
 <h2>New Survey</h2>
  
+{% from "_formhelpers.html" import render_field %}
 <form action="/surveys" method=post>
     <dl>
-        ID:
-        <br>
-        <input type="text" name="id_">
-        <br>
-        Description
-        <br>
-        <input type="text" id="description" name="description">
-        <br>
-        Start date (YYYY-MM-DD)
-        <br>
-        <input type="text" name="start_date">
-        <br>
-        End date (YYYY-MM-DD)
-        <br>
-        <input type="text" name="end_date">
-        <br>
+        {{ render_field(form.description) }} {{ form.errors['description'] }}
+        {{ render_field(form.start_date) }}
+        {{ render_field(form.end_date) }}
     </dl>
     <p><input type=submit value=Submit>
 </form>

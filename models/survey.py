@@ -11,21 +11,19 @@ os.sys.path.insert(0,parentdir)
 from models.base import Base
 from config.setup import engine
 
-
 tablename = "surveys"
 
 class Survey(Base):
     __tablename__ = "surveys"
 
     # Mappers
-    id_ = Column(Integer, primary_key=True)
+    id_ = Column(Integer, primary_key=True,autoincrement=True)
     description = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    questions = relationship("Question", back_populates="survey")
+    questions = relationship("Question", back_populates="surveys")
 
-    def __init__(self, id_, description_, start_date_, end_date_):
-        self.id_ = id_
+    def __init__(self, description_, start_date_, end_date_):
         self.description = description_
         self.start_date = start_date_
         self.end_date = end_date_
