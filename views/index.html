@@ -1,7 +1,14 @@
-<doctype html>
+<html>
 
 {% extends "header.html" %}
- 
+{% block html_attribs %} lang="en"{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='css/bootstrap.css')}}">
+{% endblock %}
+
 {% block bodyOfPage %}
 
 {% with messages = get_flashed_messages() %}
@@ -14,8 +21,8 @@
   {% endif %}
 {% endwith %}
 
-<h2>Welcome to LLB!</h2>
- 
-<p>This is the index page.</p>
+<h2>Welcome to create surveys!</h2>
+
+<p>You can add, edit and delete surveys.</p>
 
 {% endblock %}

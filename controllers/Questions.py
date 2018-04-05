@@ -55,4 +55,3 @@ routes.append(dict(
 	rule='/surveys/<int:survey_id>/questions',
 	view_func=questions,
 	options=dict(methods=['GET', 'POST',])))
-
