@@ -21,7 +21,7 @@ class Survey(Base):
     description = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    questions = relationship("Question", back_populates="surveys")
+    questions = relationship("Question", back_populates="survey")
 
     def __init__(self, description_, start_date_, end_date_):
         self.description = description_

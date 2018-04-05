@@ -23,7 +23,7 @@ class Question(Base):
     type = Column(String)
     title = Column(String)
     survey_id = Column(Integer, ForeignKey('surveys.id_'))
-    surveys = relationship("Survey", back_populates="questions")
+    survey = relationship("Survey", back_populates="questions")
     question_choices = relationship("QuestionChoice", back_populates="question")
 
     def __init__(self, id_, type, title, survey_id):
