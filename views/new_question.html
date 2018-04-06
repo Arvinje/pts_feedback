@@ -3,14 +3,14 @@
 
 {% block bodyOfPage %}
 
-<h2>New Survey</h2>
+<h2>New question</h2>
  
 {% from "_formhelpers.html" import render_field %}
-<form action="/surveys" method=post>
+<form action="/surveys/{{survey_id}}/questions" method=post>
     <dl>
-        {{ render_field(form.description) }}
-        {{ render_field(form.start_date) }}
-        {{ render_field(form.end_date) }}
+        Survey ID: {{ survey_id }}
+        {{ render_field(form.type_) }}
+        {{ render_field(form.title) }}
     </dl>
     <p><input type=submit value=Submit>
 </form>

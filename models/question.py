@@ -18,28 +18,26 @@ tablename = "questions"
 class Question(Base):
     __tablename__ = "questions"
 
-
-    id_ = Column(Integer, primary_key=True)
-    type = Column(String)
+    id_ = Column(Integer, primary_key=True,autoincrement=True)
+    type_ = Column(String)
     title = Column(String)
     survey_id = Column(Integer, ForeignKey('surveys.id_'))
     survey = relationship("Survey", back_populates="questions")
     question_choices = relationship("QuestionChoice", back_populates="question")
 
-    def __init__(self, id_, type, title, survey_id):
-        self.id_ = id_
-        self.type = type
+    def __init__(self, type_, title, survey_id):
+        self.type_ = type_
         self.title = title
         self.survey_id = survey_id
 
     def __repr__(self):
-        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type, self.title, self.survey_id)
+        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type_, self.title, self.survey_id)
 
     @property
     def serialize(self):
         return {
             'id_' : self.id_,
-            'type' : self.type,
+            'type_' : self.type_,
             'title' : self.title,
             'survey' : self.survey
         }

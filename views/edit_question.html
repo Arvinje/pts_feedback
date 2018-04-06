@@ -1,0 +1,18 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+<h2>Edit question</h2>
+
+{% from "_formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.type_) }}
+        {{ render_field(form.title) }}
+    </dl>
+    <p>
+    <input type=submit value=Submit>
+</form>
+
+{% endblock %}
