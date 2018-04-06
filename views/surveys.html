@@ -5,19 +5,20 @@
 
 <h2>Added surveys:</h2>
  
-<table>
+<table border=solid>
 	<th>id_</th>
 	<th>description</th>
 	<th>start_date</th>
-	<th>end_date<th>
+	<th>end_date</th>
 	{% for result in surveys %}
 	  <tr>
 		  <td>{{result.id_}}</td>
 		  <td>{{result.description}}</td>
 		  <td>{{result.start_date}}</td>
-		  <td>{{result.end_date}}<td>
-		  <a href="\surveys\{{result.id_}}\edit" method="GET">edit survey</a>
-		  <a href="\surveys\{{result.id_}}\questions" method="GET">show questions</a>
+		  <td>{{result.end_date}}</td>
+		  <td><a href="\surveys\{{result.id_}}\questions" method="GET">show questions</a></td>
+		  <td><a href="\surveys\{{result.id_}}\edit" method="GET">edit survey</a></td>
+		  <td><a href="\surveys\{{result.id_}}\delete" method="GET">delete survey</a></td>
 	  </tr>
 	{% endfor %}
 </table>

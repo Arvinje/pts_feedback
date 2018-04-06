@@ -68,3 +68,21 @@ def editSurvey(id):
       return str(form.errors)
 routes.append(dict(rule='/surveys/<int:id>/edit',view_func=editSurvey,
                    options=dict(methods=['GET','POST'])))
+
+# Running this function deletes
+# Survey with id given as a parameter.
+def deleteSurvey(id):
+    form = SurveyForm(request.form)
+    surveyToBeDeleted = session.query(Survey).filter_by(id_=id).one()
+
+    if request.method == 'GET':
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
+    elif (request.method == 'POST'):
+      session.delete(surveyToBeDeleted) # this updates the database
+      session.commit()
+
+      return redirect('/surveys')
+    else:
+      return str(form.errors)
+routes.append(dict(rule='/surveys/<int:id>/delete',view_func=deleteSurvey,
+                   options=dict(methods=['GET','POST'])))

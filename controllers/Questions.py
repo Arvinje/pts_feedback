@@ -79,3 +79,23 @@ def editQuestion(survey_id,question_id):
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/edit',
 					view_func=editQuestion,
 					options=dict(methods=['GET','POST'])))
+
+# Function for removing a single question:
+def deleteQuestion(survey_id,question_id):
+	form = QuestionForm(request.form)
+	questionToBeDeleted = session.query(Question).filter(Question.id_==question_id,Question.survey_id==survey_id).one()
+
+	if request.method == 'GET':
+		return render_template('delete_question.html',
+			type_ = questionToBeDeleted.type_,
+			title = questionToBeDeleted.title)
+	elif (request.method == 'POST'):
+		session.delete(questionToBeDeleted)
+		session.commit()
+		return redirect("/surveys/" + str(survey_id) + "/questions")
+	else:
+		return str(form.errors)
+
+routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/delete',
+					view_func=deleteQuestion,
+					options=dict(methods=['GET','POST'])))
