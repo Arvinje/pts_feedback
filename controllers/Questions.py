@@ -10,6 +10,8 @@ os.sys.path.insert(0,parentdir)
 from config.setup import Base, session, postgres_url
 from models.question import Question
 
+from controllers.Functions import startDateIsBeforeToday
+
 class QuestionForm(Form):
 	type_ = StringField("Type", [validators.Length(min=1, max=20)])
 	title = StringField("Title", [validators.Length(min=1, max=20)])
@@ -46,7 +48,7 @@ def questions(survey_id):
 		newQuestion = Question(form.type_.data,form.title.data, survey_id)
 		session.add(newQuestion)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(newQuestion.id_))
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
 		return str(form.errors)
 
@@ -75,7 +77,7 @@ def editQuestion(survey_id,question_id):
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id))
 	else:
-		return str(form.errors)
+		return render_template('edit_question.html', form=form)
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/edit',
 					view_func=editQuestion,
 					options=dict(methods=['GET','POST'])))
@@ -90,9 +92,15 @@ def deleteQuestion(survey_id,question_id):
 			type_ = questionToBeDeleted.type_,
 			title = questionToBeDeleted.title)
 	elif (request.method == 'POST'):
-		session.delete(questionToBeDeleted)
-		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions")
+		if (startDateIsBeforeToday(questionToBeDeleted.survey.start_date)):
+			session.delete(questionToBeDeleted)
+			session.commit()
+			return redirect("/surveys/" + str(survey_id) + "/questions")
+		else:
+			flash("Question deletion error: survey start_date is not in the future.")
+			return render_template('delete_question.html',
+				type_ = questionToBeDeleted.type_,
+				title = questionToBeDeleted.title)
 	else:
 		return str(form.errors)
 

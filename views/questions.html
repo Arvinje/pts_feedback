@@ -14,12 +14,19 @@
 	<th># title #</th>
 	{% for result in questions %}
 	  <tr>
-		  <td>{{result.id_}}</td>
-		  <td>{{result.survey_id}}</td>
-		  <td>{{result.type_}}</td>
-		  <td>{{result.title}}</td>
-		  <td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/edit" method="GET">edit</a></td>
-		  <td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/delete" method="POST" action="POST">delete</a></td>
+		<td>{{result.id_}}</td>
+		<td>{{result.survey_id}}</td>
+		<td>{{result.type_}}</td>
+		<td>{{result.title}}</td>
+		<td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/edit" method="GET">edit</a></td>
+		<td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/delete" method="POST" action="POST">delete</a></td>
+		<td>
+		<form>
+			{% for x in range(1) %}
+				<input type="radio" name="option" value="male" checked>Option test<br>
+			{% endfor %}
+		</form>
+		</td> 
 	  </tr>
 	{% endfor %}
 </table>
