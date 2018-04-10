@@ -45,7 +45,7 @@ def surveys():
         flash("Survey creation error: start_date is after end_date.")
         return render_template('new_survey.html', form=form)
     else:
-      return str(form.errors)
+      return render_template('new_survey.html', form=form)
 routes.append(dict(rule='/surveys',view_func=surveys,
                    options=dict(methods=['GET','POST'])))
 
@@ -101,7 +101,7 @@ def deleteSurvey(id):
         flash("Survey deletion error: start_date is not in the future.")
         return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
     else:
-      return str(form.errors)
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
 routes.append(dict(rule='/surveys/<int:id>/delete',view_func=deleteSurvey,
                    options=dict(methods=['GET','POST'])))
 
