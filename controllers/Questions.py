@@ -50,7 +50,7 @@ def questions(survey_id):
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return str(form.errors)
+		return render_template('edit_question.html', form=form)
 
 routes.append(dict(
 	rule='/surveys/<int:survey_id>/questions',
@@ -102,7 +102,7 @@ def deleteQuestion(survey_id,question_id):
 				type_ = questionToBeDeleted.type_,
 				title = questionToBeDeleted.title)
 	else:
-		return str(form.errors)
+		return render_template('delete_question.html', form=form)
 
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/delete',
 					view_func=deleteQuestion,
