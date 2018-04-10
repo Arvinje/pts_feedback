@@ -3,6 +3,7 @@ from flask import Flask
 # Flask
 
 app = Flask(__name__, template_folder="views")
+
 app.secret_key = "flask rocks!"
 app.debug = True
 

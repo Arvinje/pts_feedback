@@ -3,12 +3,22 @@
 
 {% block bodyOfPage %}
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <h2>Edit survey</h2>
 
 {% from "_formhelpers.html" import render_field %}
 <form method=post>
     <dl>
-        {{ render_field(form.description) }} {{ form.errors['description'] }}
+        {{ render_field(form.description) }}
         {{ render_field(form.start_date) }}
         {{ render_field(form.end_date) }}
     </dl>
