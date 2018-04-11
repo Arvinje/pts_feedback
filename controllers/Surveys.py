@@ -1,12 +1,13 @@
 import os, inspect, time
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, flash
 from config.setup import session # for SQL-connection
-from wtforms import Form, IntegerField, StringField, DateField, validators 
+from wtforms import Form, StringField, DateField, validators 
 
 from models.survey import Survey
 from models.question import Question
 
 from controllers.Functions import startDateIsBeforeToday
+from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -16,7 +17,8 @@ os.sys.path.insert(0,parentdir)
 # Form-class helps data processing
 # with html-files and it has useful validation-methods:
 class SurveyForm(Form):
-    description = StringField('Description', [validators.Length(min=4, max=25)])
+    description = StringField('Description', [validators.Length(min=4, max=25), 
+                                            checkThatFieldIsNotOnlyWhiteSpace])
     start_date = DateField('Start date (YYYY-MM-DD)', [validators.DataRequired()])
     end_date = DateField('End date (YYYY-MM-DD)', [validators.DataRequired()])
 
@@ -37,10 +39,11 @@ def surveys():
       return render_template('surveys.html', surveys=session.query(Survey).all())
     if (request.method == 'POST') and (form.validate()):
       if form.start_date.data < form.end_date.data:
-        session.add(Survey(form.description.data,form.start_date.data, form.end_date.data)) #adding record to database
+        surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data)
+        session.add(surveyToBeAdded) #adding record to database
         session.commit() #commiting addition
 
-        return redirect('/surveys')
+        return redirect("/surveys/" + str(surveyToBeAdded.id_) + "/questions")
       else:
         flash("Survey creation error: start_date is after end_date.")
         return render_template('new_survey.html', form=form)
