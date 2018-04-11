@@ -1,6 +1,6 @@
 import os, inspect
-from flask import render_template, url_for, request, redirect, flash, jsonify
-from wtforms import Form, IntegerField, StringField, validators 
+from flask import render_template, request, redirect, flash, jsonify
+from wtforms import Form, StringField, SelectField, validators
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -11,10 +11,12 @@ from config.setup import Base, session, postgres_url
 from models.question import Question
 
 from controllers.Functions import startDateIsBeforeToday
+from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionForm(Form):
-	type_ = StringField("Type", [validators.Length(min=1, max=20)])
-	title = StringField("Title", [validators.Length(min=1, max=20)])
+	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture")])
+	title = StringField("Title", [validators.Length(min=1, max=20), 
+								checkThatFieldIsNotOnlyWhiteSpace])
 
 routes = []
 
