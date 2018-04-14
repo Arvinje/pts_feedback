@@ -12,31 +12,33 @@ from models.question import Question
 from config.setup import engine
 
 
-tablename = "questionChoices"
+tablename = "questionchoices"
 
 class QuestionChoice(Base):
 	__tablename__ = tablename
 
-	#Mappers
+	# Mappers
 	id_ = Column(Integer, primary_key=True)
-	title = Column(String)
-	question_id = Column(Integer, ForeignKey('questions.id_'))
-	question = relationship("Question", back_populates="question_choices")
+	title_ = Column(String)
 
-	def __init__(self, id_, title, question_id):
+  # Question choice is child of question
+	question_id_ = Column(Integer, ForeignKey('questions.id_'))
+	question = relationship("Question", back_populates="questionchoices")
+
+	def __init__(self, id_, title_, question_id_):
 		self.id_ = id_
-		self.title = title
-		self.question_id = question_id
+		self.title_ = title_
+		self.question_id_ = question_id_
 
 	def __repr__(self):
-		return "<Id: {}, Title: {}, Question_id: {}>".format(self.id_, self.title, self.question_id)
+		return "<Id: {}, Title: {}, Question_id: {}>".format(self.id_, self.title_, self.question_id_)
 
 	@property
 	def serialize(self):
 		return {
 			'id_' : self.id_,
-			'title' : self.title,
-			'question_id' : self.question_id
+			'title' : self.title_,
+			'question_id' : self.question_id_
 		}
 
 if not engine.has_table(tablename):

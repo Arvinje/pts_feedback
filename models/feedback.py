@@ -11,15 +11,16 @@ from models.base import Base
 from config.setup import engine
 
 
-tablename = "feedback"
+tablename = "feedbacks"
 
 class Feedback(Base):
     __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
-    # answers_ = relationship("Answer")
-    # answers = relationship("Answer", back_populates="answers")
+
+    # Feedback is parent to answers
+    answers = relationship("Answer", back_populates="feedbacks")
 
     def __init__(self, id_):
         self.id_ = id_
@@ -30,7 +31,7 @@ class Feedback(Base):
     @property
     def serialize(self):
         return {
-            'id_' : self.id_
+            'id' : self.id_
         }
 
 if not engine.has_table(tablename):

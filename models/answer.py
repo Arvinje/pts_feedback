@@ -10,7 +10,7 @@ os.sys.path.insert(0,parentdir)
 
 from models.base import Base
 from models.feedback import Feedback
-# from models.question import Question # UPDATE!
+from models.question import Question
 from config.setup import engine
 
 
@@ -21,33 +21,36 @@ class Answer(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
-    value = Column(String)
-    created_at = Column(DateTime, nullable=False)
-    feedback_id = Column(Integer, ForeignKey('feedback.id_')) # UPDATE!
-    feedback_ = relationship("Feedback")
-    # question = relationship(Question)
-    # question_id = Column(Integer, ForeignKey('question.id_')) # UPDATE!
+    value_ = Column(String)
+    created_at_ = Column(DateTime, nullable=False)
+
+    # Answer is child of feedback
+    feedback_id_ = Column(Integer, ForeignKey('feedbacks.id_'))
+    feedback = relationship("Feedback", back_populates='answers')
+
+    # Answer is child of question
+    question_id_ = Column(Integer, ForeignKey('questions.id_'))
+    question = relationship("Question", back_populates='answers')
 
     # def __init__(self, id_, value_, question_id_, feedback_id_): # UPDATE!
     def __init__(self, id_, value_, feedback_id_):
         self.id_ = id_
-        self.value =  value_
-        self.created_at = datetime.datetime.now()
-        self.feedback_id = feedback_id_
-        # self.question_id = question_id_
+        self.value_ =  value_
+        self.feedback_id_ = feedback_id_
+        self.question_id_= question_id_
+        self.created_at_ = datetime.datetime.now()
 
     def __repr__(self):
-        # return "<Id: {}, Created_at: '{}', Question_id: {}, Feedback_id {}, Value: '{}'>".format(self.id_, self.created_at, self.question_id, self.feedback_id, self.value)
-        return "<Id: {}, Created_at: '{}', Feedback_id: {}, Value: '{}'>".format(self.id_, self.created_at, self.feedback_id, self.value) # UPDATE!
+        return "<Id: {}, Created_at: '{}', Feedback_id: {}, Value: '{}'>".format(self.id_, self.created_at_, self.feedback_id_, self.value_)
 
     @property
     def serialize(self):
         return {
-            'id_' : self.id_,
-            'value' : self.value,
-            'created_at' : self.created_at.isoformat(),
-            # 'question_id' : self.question_id,
-            'feedback_id' : self.feedback_id
+            'id' : self.id_,
+            'value' : self.value_,
+            'created_at' : self.created_at_.isoformat(),
+            'question_id' : self.question_id_,
+            'feedback_id' : self.feedback_id_
         }
 
 if not engine.has_table(tablename):

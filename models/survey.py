@@ -21,7 +21,9 @@ class Survey(Base):
     description = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    questions = relationship("Question", back_populates="survey")
+
+    # Survey is parent to questions
+    questions = relationship("Question", back_populates="surveys")
 
     def __init__(self, description_, start_date_, end_date_):
         self.description = description_
@@ -36,7 +38,7 @@ class Survey(Base):
         start_date = self.start_date if self.start_date != None else ''
         end_date = self.end_date if self.end_date != None else ''
         return {
-        'id_' : self.id_,
+        'id' : self.id_,
         'description' : self.description,
         'start_date' : start_date,
         'end_date' : end_date,

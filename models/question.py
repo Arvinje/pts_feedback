@@ -18,28 +18,39 @@ tablename = "questions"
 class Question(Base):
     __tablename__ = "questions"
 
+    # Mappers
     id_ = Column(Integer, primary_key=True,autoincrement=True)
     type_ = Column(String)
-    title = Column(String)
-    survey_id = Column(Integer, ForeignKey('surveys.id_'))
-    survey = relationship("Survey", back_populates="questions")
-    question_choices = relationship("QuestionChoice", back_populates="question")
+    title_ = Column(String)
 
-    def __init__(self, type_, title, survey_id):
+    # Question is child of survey
+    survey_id_ = Column(Integer, ForeignKey('surveys.id_'))
+    survey = relationship("Survey", back_populates="questions")
+
+    # Question is parent to answers
+    answers = relationship("Answer", back_populates="questions")
+
+    # Question is parent to question choices
+    question_choices = relationship("QuestionChoice", back_populates="questions")
+
+
+    def __init__(self, id_, type_, title_, survey_id_):
+        self.id_ = id_
         self.type_ = type_
-        self.title = title
-        self.survey_id = survey_id
+        self.title_ = title_
+        self.survey_id_ = survey_id_
+
 
     def __repr__(self):
-        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type_, self.title, self.survey_id)
+        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
 
     @property
     def serialize(self):
         return {
-            'id_' : self.id_,
-            'type_' : self.type_,
-            'title' : self.title,
-            'survey' : self.survey
+            'id' : self.id_,
+            'type' : self.type_,
+            'title' : self.title_,
+            'survey' : self.survey_id_
         }
 
 if not engine.has_table(tablename):
