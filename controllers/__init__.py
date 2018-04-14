@@ -10,11 +10,10 @@ def home():
 
 from .Questions import routes as question_routes
 from .Surveys import routes as survey_routes
+from .Feedbacks import routes as feedback_routes
 
 
-routes = (
-    question_routes +
-    survey_routes)
+routes = (question_routes + survey_routes + feedback_routes)
 
 for r in routes:
     mod.add_url_rule(
