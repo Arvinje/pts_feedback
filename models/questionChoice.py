@@ -23,7 +23,7 @@ class QuestionChoice(Base):
 
   # Question choice is child of question
 	question_id_ = Column(Integer, ForeignKey('questions.id_'))
-	question = relationship("Question", back_populates="questionchoices")
+	questions = relationship("Question", back_populates="questionchoices")
 
 	def __init__(self, id_, title_, question_id_):
 		self.id_ = id_

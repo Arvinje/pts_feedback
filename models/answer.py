@@ -26,14 +26,13 @@ class Answer(Base):
 
     # Answer is child of feedback
     feedback_id_ = Column(Integer, ForeignKey('feedbacks.id_'))
-    feedback = relationship("Feedback", back_populates='answers')
+    feedbacks = relationship("Feedback", back_populates='answers')
 
     # Answer is child of question
     question_id_ = Column(Integer, ForeignKey('questions.id_'))
-    question = relationship("Question", back_populates='answers')
+    questions = relationship("Question", back_populates='answers')
 
-    # def __init__(self, id_, value_, question_id_, feedback_id_): # UPDATE!
-    def __init__(self, id_, value_, feedback_id_):
+    def __init__(self, id_, value_, feedback_id_, question_id_):
         self.id_ = id_
         self.value_ =  value_
         self.feedback_id_ = feedback_id_
@@ -41,7 +40,7 @@ class Answer(Base):
         self.created_at_ = datetime.datetime.now()
 
     def __repr__(self):
-        return "<Id: {}, Created_at: '{}', Feedback_id: {}, Value: '{}'>".format(self.id_, self.created_at_, self.feedback_id_, self.value_)
+        return "<Id: {}, Value: '{}', Created_at: '{}', Question_id: {}, Feedback_id: {}>".format(self.id_, self.value_, self.created_at_, self.question_id_, self.feedback_id_)
 
     @property
     def serialize(self):

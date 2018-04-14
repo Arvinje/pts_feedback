@@ -25,13 +25,13 @@ class Question(Base):
 
     # Question is child of survey
     survey_id_ = Column(Integer, ForeignKey('surveys.id_'))
-    survey = relationship("Survey", back_populates="questions")
+    surveys = relationship("Survey", back_populates="questions")
 
     # Question is parent to answers
     answers = relationship("Answer", back_populates="questions")
 
     # Question is parent to question choices
-    question_choices = relationship("QuestionChoice", back_populates="questions")
+    questionchoices = relationship("QuestionChoice", back_populates="questions")
 
 
     def __init__(self, id_, type_, title_, survey_id_):
@@ -42,7 +42,7 @@ class Question(Base):
 
 
     def __repr__(self):
-        return "<Id: {},Type: '{}', Title: '{}', Survey_id {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
+        return "<Id: {}, Type: '{}', Title: '{}', Survey_id: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
 
     @property
     def serialize(self):
