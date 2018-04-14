@@ -8,6 +8,7 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
+from models.admin import Admin
 from config.setup import engine
 
 
@@ -18,6 +19,10 @@ class Feedback(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
+
+    # Feedback is child of admin
+    admin_id_ = Column(Integer, ForeignKey('admins.id_'))
+    admin = relationship("Admin", back_populates='feedbacks')
 
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
