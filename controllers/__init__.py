@@ -9,11 +9,13 @@ def home():
 
 
 from .Questions import routes as question_routes
+from .QuestionChoices import routes as questionChoice_routes
 from .Surveys import routes as survey_routes
 
 
 routes = (
     question_routes +
+    questionChoice_routes +
     survey_routes)
 
 for r in routes:

@@ -9,12 +9,13 @@ os.sys.path.insert(0,parentdir)
 
 from config.setup import Base, session, postgres_url
 from models.question import Question
+from models.questionChoice import QuestionChoice
 
 from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionForm(Form):
-	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture")])
+	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture"),("Choice","Choice")])
 	title = StringField("Title", [validators.Length(min=1, max=20), 
 								checkThatFieldIsNotOnlyWhiteSpace])
 
@@ -52,7 +53,7 @@ def questions(survey_id):
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return render_template('edit_question.html', form=form)
+		return render_template('new_question.html', form=form)
 
 routes.append(dict(
 	rule='/surveys/<int:survey_id>/questions',
@@ -69,7 +70,8 @@ def editQuestion(survey_id,question_id):
 		form.type_.data = questionToBeEdited.type_
 		form.title.data = questionToBeEdited.title
 
-		return render_template('edit_question.html', form=form)
+		return render_template('edit_question.html', form=form, survey_id=survey_id, question_id=question_id,\
+			questionChoices=questionToBeEdited.questionChoices)
 	elif (request.method == 'POST') and (form.validate()):
 		# editing the question:
 		questionToBeEdited.type_ = form.type_.data
@@ -77,9 +79,9 @@ def editQuestion(survey_id,question_id):
 
 		session.add(questionToBeEdited)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id))
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return render_template('edit_question.html', form=form)
+		return render_template('edit_question.html', form=form, survey_id=survey_id, question_id=question_id)
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/edit',
 					view_func=editQuestion,
 					options=dict(methods=['GET','POST'])))

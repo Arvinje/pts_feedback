@@ -5,6 +5,7 @@ from wtforms import Form, StringField, DateField, validators
 
 from models.survey import Survey
 from models.question import Question
+from models.questionChoice import QuestionChoice
 
 from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
@@ -36,7 +37,7 @@ def surveys():
     form = SurveyForm(request.form)
     if request.method == 'GET':
       # the query returns list of all surveys and sends the list to the view:
-      return render_template('surveys.html', surveys=session.query(Survey).all())
+      return render_template('surveys.html', surveys=session.query(Survey).order_by(Survey.id_).all())
     if (request.method == 'POST') and (form.validate()):
       if form.start_date.data < form.end_date.data:
         surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data)
@@ -53,9 +54,9 @@ routes.append(dict(rule='/surveys',view_func=surveys,
                    options=dict(methods=['GET','POST'])))
 
 # Running this function edits Survey with id given as a parameter.
-def editSurvey(id):
+def editSurvey(id_):
     form = SurveyForm(request.form)
-    surveyToBeEdited = session.query(Survey).filter_by(id_=id).one()
+    surveyToBeEdited = session.query(Survey).filter_by(id_=id_).one()
 
     if request.method == 'GET':
       # the query returns the survey:
@@ -64,7 +65,7 @@ def editSurvey(id):
       form.start_date.data = surveyToBeEdited.start_date
       form.end_date.data = surveyToBeEdited.end_date
 
-      return render_template('edit_survey.html', form=form)
+      return render_template('edit_survey.html', form=form, questions=surveyToBeEdited.questions, survey_id=id_)
     if (request.method == 'POST'):
       if (form.validate()):
         if form.start_date.data < form.end_date.data:
@@ -80,7 +81,7 @@ def editSurvey(id):
       else:
         return render_template('edit_survey.html', form=form)
 
-routes.append(dict(rule='/surveys/<int:id>/edit',view_func=editSurvey,
+routes.append(dict(rule='/surveys/<int:id_>/edit',view_func=editSurvey,
                    options=dict(methods=['GET','POST'])))
 
 # Running this function deletes Survey with id given as a parameter.
@@ -95,6 +96,10 @@ def deleteSurvey(id):
         # deleting all the questions of survey:
         for questionToBeDeleted in session.query(Question).filter_by(survey_id=id).all():
           session.delete(questionToBeDeleted)
+          # deleting all the questionChoices of question:
+          for questionChoiceToBeDeleted in \
+              session.query(QuestionChoice).filter_by(survey_id=id,question_id=questionToBeDeleted.id_).all():
+            session.delete(questionChoiceToBeDeleted)
 
         session.delete(surveyToBeDeleted)
         session.commit()

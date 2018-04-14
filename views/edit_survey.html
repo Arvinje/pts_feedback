@@ -26,4 +26,22 @@
     <input type=submit value=Submit>
 </form>
 
+Questions:
+
+<br><br>
+<a href="/surveys/{{survey_id}}/questions/new" method="GET">New question</a>
+
+<table border=solid>
+{% for question in questions %}
+  <tr>
+  <td>{{question.type_}}</td>
+  <td>{{question.title}}</td>
+  <td><a href="/surveys/{{question.survey_id}}/questions/{{question.id_}}/edit" method="GET">edit</a></td>
+  <td><a href="/surveys/{{question.survey_id}}/questions/{{question.id_}}/delete" method="POST" action="POST">delete</a></td>
+  <td>
+  </td> 
+  </tr>
+{% endfor %}
+</table>
+
 {% endblock %}

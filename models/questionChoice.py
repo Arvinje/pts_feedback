@@ -9,6 +9,7 @@ os.sys.path.insert(0,parentdir)
 
 from models.base import Base
 from models.question import Question
+from models.survey import Survey
 from config.setup import engine
 
 
@@ -18,14 +19,16 @@ class QuestionChoice(Base):
 	__tablename__ = tablename
 
 	#Mappers
-	id_ = Column(Integer, primary_key=True)
+	id_ = Column(Integer, primary_key=True,autoincrement=True)
 	title = Column(String)
+	survey_id = Column(Integer, ForeignKey('surveys.id_'))
+	survey = relationship("Survey", back_populates="questionChoices")
 	question_id = Column(Integer, ForeignKey('questions.id_'))
-	question = relationship("Question", back_populates="question_choices")
+	question = relationship("Question", back_populates="questionChoices")
 
-	def __init__(self, id_, title, question_id):
-		self.id_ = id_
+	def __init__(self, title, survey_id, question_id):
 		self.title = title
+		self.survey_id = survey_id
 		self.question_id = question_id
 
 	def __repr__(self):
@@ -36,6 +39,7 @@ class QuestionChoice(Base):
 		return {
 			'id_' : self.id_,
 			'title' : self.title,
+			'survey_id' : self.question_id,
 			'question_id' : self.question_id
 		}
 
