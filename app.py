@@ -8,6 +8,7 @@ app.secret_key = "flask rocks!"
 app.debug = True
 
 # Initialize db
+from models.admin import Admin
 from models.feedback import Feedback
 from models.survey import Survey
 from models.question import Question
