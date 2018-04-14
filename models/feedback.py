@@ -20,10 +20,6 @@ class Feedback(Base):
     # Mappers
     id_ = Column(Integer, primary_key=True)
 
-    # Feedback is child of admin
-    admin_id_ = Column(Integer, ForeignKey('admins.id_'))
-    admin = relationship("Admin", back_populates='feedbacks')
-
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
 
