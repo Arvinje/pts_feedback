@@ -19,7 +19,7 @@ class Admin(Base):
     # Mappers
     id_ = Column(Integer, primary_key=True)
     email_ = Column(String, nullable=False)
-    password = Column(String, nullable=False)
+    password_ = Column(String, nullable=False)
 
     # Admin is parent to surveys
     surveys = relationship("Survey", back_populates="admins")
