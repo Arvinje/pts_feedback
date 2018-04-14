@@ -28,19 +28,21 @@ routes = []
 
 #---------------------------------------------------------------------------------------------------
 
+
 def newFeedback():
   # with respective view
   # shows the latest active survey
   # creates a feedback record
   # stores the id to that record in a cookie
-
   pass
 
 routes.append(dict(rule='/feedback', view_func=newFeedback, options=dict(methods['GET'])))
 
+
 #---------------------------------------------------------------------------------------------------
 
-def answerQuestion():
+
+def showQuestion():
   # Shows the respective question related to the current survey (latest active one).
   #   If there already is a feedback id stored in cookie, the controller's action would retrieve it and
   #   fills the form/question if there was already an answer to that question.
@@ -53,9 +55,24 @@ def answerQuestion():
   #   If there's an error (validations), it'll retrieve the current question.
   pass
 
-routes.append(dict(rule='/feedback/questions/<int:question_id>', view_fun=answerQuestion, options=dict(methods['GET', 'POST'])))
+routes.append(dict(rule='/feedback/questions/<int:question_id>', view_func=showQuestion, options=dict(methods['GET'])))
+
 
 #---------------------------------------------------------------------------------------------------
+
+
+def answerQuestion():
+  # Create an answer for the question.
+  # The query indicates if the user wants to retrieve the previous or next question.
+  # If the user taps next on the last question, it'll redirect to next route.
+  # If there's an error (validations), it'll retrieve the current question.
+  pass
+
+routes.append(dict(rule='/feedback/questions/<int:question_id>/?q=<direction>', view_func=answerQuestion, options=dict(methods['POST'])))
+
+
+#---------------------------------------------------------------------------------------------------
+
 
 def thankYou():
   # Shows an award and thank you message ONLY IF the survey is completed.
@@ -63,5 +80,6 @@ def thankYou():
   # The cookie should also be deleted.
   pass
 
-routes.append(dict(rule='/feedback/thankyou', view_fun=thankYou, options=dict(methods['GET'])))
+routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods['GET'])))
+
 
