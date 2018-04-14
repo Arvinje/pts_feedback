@@ -14,7 +14,7 @@ from config.setup import engine
 tablename = "surveys"
 
 class Survey(Base):
-    __tablename__ = "surveys"
+    __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True,autoincrement=True)

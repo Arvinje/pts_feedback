@@ -16,7 +16,7 @@ from config.setup import engine
 tablename = "questions"
 
 class Question(Base):
-    __tablename__ = "questions"
+    __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True,autoincrement=True)
