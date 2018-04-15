@@ -4,6 +4,8 @@ import datetime
 
 # Backtrack to parent dir to prevent import problems
 # made by Saija, not sure if working properly 29.3.2018
+# Modified by Inka 14.4.2018
+
 import os, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
