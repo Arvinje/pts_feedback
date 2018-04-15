@@ -22,19 +22,18 @@ class Survey(Base):
     start_date_ = Column(DateTime)
     end_date_ = Column(DateTime)
 
-    # Survey is child of admin
-    admin_id_ = Column(Integer, ForeignKey('admins.id_'))
-    admins = relationship("Admin", back_populates='surveys')
+    # # Survey is child of admin
+    # admin_id_ = Column(Integer, ForeignKey('admins.id_'))  # WAITING
+    # admins = relationship("Admin", back_populates='surveys') # WAITING
 
     # Survey is parent to questions
     questions = relationship("Question", back_populates="surveys")
 
-    def __init__(self, id_, description_, start_date_, end_date_, admin_id_):
-        self.id_ = id_
+    def __init__(self, description_, start_date_, end_date_):
         self.description_ = description_
         self.start_date_ = start_date_
         self.end_date_ = end_date_
-        self.admin_id_ = admin_id_
+        # self.admin_id_ = admin_id_  # WAITING
 
     def __repr__(self):
         return "<Id_: {}, Survey: {}, Start date: {}, End date: {}>".format(self.id_, self.description_, self.start_date_, self.end_date_)

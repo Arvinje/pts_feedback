@@ -32,8 +32,7 @@ class Answer(Base):
     question_id_ = Column(Integer, ForeignKey('questions.id_'))
     questions = relationship("Question", back_populates='answers')
 
-    def __init__(self, id_, value_, feedback_id_, question_id_):
-        self.id_ = id_
+    def __init__(self, value_, feedback_id_, question_id_):
         self.value_ =  value_
         self.feedback_id_ = feedback_id_
         self.question_id_= question_id_

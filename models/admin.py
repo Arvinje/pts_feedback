@@ -24,8 +24,7 @@ class Admin(Base):
     # Admin is parent to surveys
     surveys = relationship("Survey", back_populates="admins")
 
-    def __init__(self, id_, email_, password_):
-        self.id_ = id_
+    def __init__(self, email_, password_):
         self.email_ = email_
         self.password_ = password_
 

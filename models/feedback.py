@@ -8,7 +8,7 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
-from models.admin import Admin
+# from models.admin import Admin  # WAITING
 from config.setup import engine
 
 
@@ -23,8 +23,8 @@ class Feedback(Base):
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
 
-    def __init__(self, id_):
-        self.id_ = id_
+    # def __init__(self, id_):
+    #     self.id_ = id_
 
     def __repr__(self):
         return "<Id: {}>".format(self.id_)

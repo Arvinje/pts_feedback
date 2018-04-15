@@ -34,8 +34,7 @@ class Question(Base):
     questionchoices = relationship("QuestionChoice", back_populates="questions")
 
 
-    def __init__(self, id_, type_, title_, survey_id_):
-        self.id_ = id_
+    def __init__(self, type_, title_, survey_id_):
         self.type_ = type_
         self.title_ = title_
         self.survey_id_ = survey_id_
