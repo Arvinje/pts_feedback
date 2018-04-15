@@ -43,10 +43,10 @@ class Survey(Base):
         start_date_ = self.start_date_ if self.start_date_ != None else ''
         end_date_ = self.end_date_ if self.end_date_ != None else ''
         return {
-        'id' : self.id_,
-        'description' : self.description_,
-        'start_date' : self.start_date_,
-        'end_date' : self.end_date_
+        'id_' : self.id_,
+        'description_' : self.description_,
+        'start_date_' : self.start_date_,
+        'end_date_' : self.end_date_
         }
 
 if not engine.has_table(tablename):

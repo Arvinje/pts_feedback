@@ -36,8 +36,8 @@ class QuestionChoice(Base):
 	def serialize(self):
 		return {
 			'id_' : self.id_,
-			'title' : self.title_,
-			'question_id' : self.question_id_
+			'title_' : self.title_,
+			'question_id_' : self.question_id_
 		}
 
 if not engine.has_table(tablename):

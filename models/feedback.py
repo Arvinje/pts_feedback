@@ -23,16 +23,13 @@ class Feedback(Base):
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
 
-    # def __init__(self, id_):
-    #     self.id_ = id_
-
     def __repr__(self):
         return "<Id: {}>".format(self.id_)
 
     @property
     def serialize(self):
         return {
-            'id' : self.id_
+            'id_' : self.id_
         }
 
 if not engine.has_table(tablename):

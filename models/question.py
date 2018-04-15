@@ -46,10 +46,10 @@ class Question(Base):
     @property
     def serialize(self):
         return {
-            'id' : self.id_,
-            'type' : self.type_,
-            'title' : self.title_,
-            'survey' : self.survey_id_
+            'id_' : self.id_,
+            'type_' : self.type_,
+            'title_' : self.title_,
+            'survey_' : self.survey_id_
         }
 
 if not engine.has_table(tablename):

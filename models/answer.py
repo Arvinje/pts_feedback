@@ -44,11 +44,11 @@ class Answer(Base):
     @property
     def serialize(self):
         return {
-            'id' : self.id_,
-            'value' : self.value_,
-            'created_at' : self.created_at_.isoformat(),
-            'question_id' : self.question_id_,
-            'feedback_id' : self.feedback_id_
+            'id_' : self.id_,
+            'value_' : self.value_,
+            'created_at_' : self.created_at_.isoformat(),
+            'question_id_' : self.question_id_,
+            'feedback_id_' : self.feedback_id_
         }
 
 if not engine.has_table(tablename):
