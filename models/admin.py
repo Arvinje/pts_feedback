@@ -8,31 +8,35 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
-# from models.admin import Admin  # WAITING
 from config.setup import engine
 
 
-tablename = "feedbacks"
+tablename = "admins"
 
-class Feedback(Base):
+class Admin(Base):
     __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
+    email_ = Column(String, nullable=False)
+    password_ = Column(String, nullable=False)
 
-    # Feedback is parent to answers
-    answers = relationship("Answer", back_populates="feedbacks")
+    # Admin is parent to surveys
+    surveys = relationship("Survey", back_populates="admins")
 
-    # def __init__(self, id_):
-    #     self.id_ = id_
+    def __init__(self, email_, password_):
+        self.email_ = email_
+        self.password_ = password_
 
     def __repr__(self):
-        return "<Id: {}>".format(self.id_)
+        return "<Id: {}, Email: {}, Password: {}>".format(self.id_, self.email_, self.password_)
 
     @property
     def serialize(self):
         return {
-            'id' : self.id_
+            'id' : self.id_,
+            'email' : self.email_,
+            'password' : self.password_
         }
 
 if not engine.has_table(tablename):
