@@ -4,6 +4,8 @@ import datetime
 
 # Backtrack to parent dir to prevent import problems
 # made by Saija, not sure if working properly 29.3.2018
+# Modified by Inka 14.4.2018
+
 import os, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -46,10 +48,10 @@ class Question(Base):
     @property
     def serialize(self):
         return {
-            'id' : self.id_,
-            'type' : self.type_,
-            'title' : self.title_,
-            'survey' : self.survey_id_
+            'id_' : self.id_,
+            'type_' : self.type_,
+            'title_' : self.title_,
+            'survey_' : self.survey_id_
         }
 
 if not engine.has_table(tablename):
