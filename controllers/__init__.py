@@ -9,12 +9,14 @@ def home():
 
 
 from .Questions import routes as question_routes
+from .QuestionChoices import routes as questionchoice_routes
 from .Surveys import routes as survey_routes
+from .Results import routes as results_routes
+# from .Feedbacks import routes as feedback_routes WAITING
 
 
-routes = (
-    question_routes +
-    survey_routes)
+routes = (question_routes + survey_routes + questionchoice_routes + results_routes)
+# routes = (question_routes + survey_routes + feedback_routes) WAITING
 
 for r in routes:
     mod.add_url_rule(
@@ -22,4 +24,3 @@ for r in routes:
         endpoint=r.get('endpoint', None),
         view_func=r['view_func'],
 **r.get('options', {}))
-
