@@ -13,7 +13,7 @@
   {% endif %}
 {% endwith %}
 
-<h2>Surveys:</h2>
+<h2>Survey result list:</h2>
  
 <table border=solid>
 	<th>id_</th>
@@ -26,15 +26,9 @@
 		  <td>{{survey.description}}</td>
 		  <td>{{survey.start_date}}</td>
 		  <td>{{survey.end_date}}</td>
-		  <td><a href="\surveys\{{survey.id_}}\questions" method="GET">show questions</a></td>
-		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET">edit survey</a></td>
-		  <td><a href="\surveys\{{survey.id_}}\delete" method="GET">delete survey</a></td>
+		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
 	  </tr>
 	{% endfor %}
 </table>
-
-<br>
-
-<a href="\results\surveys" method="GET">Show results</a>
 
 {% endblock %}

@@ -25,4 +25,15 @@
     <input type=submit value=Submit>
 </form>
 
+<a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/new" method="GET">New questionChoice</a>
+
+<form>
+{% for questionChoice in questionChoices %}
+  <a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/{{questionChoice.id_}}/edit" method="GET">edit</a>
+  <a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/{{questionChoice.id_}}/delete" method="GET">delete</a>
+  {{questionChoice.title}}
+  <br>
+{% endfor %}
+</form>
+
 {% endblock %}

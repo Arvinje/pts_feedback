@@ -1,0 +1,26 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h2>Delete questionChoice</h2>
+
+<form method=post>
+    <dl>
+        {{ title }}
+    </dl>
+    <p>
+    <input type=submit value=Submit>
+</form>
+
+{% endblock %}
