@@ -1,0 +1,37 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h2>Results of survey {{survey.id_}} {{survey.description}}</h2>
+
+<table border=solid>
+	Questions:
+	{% for question in survey.questions %}
+		<th>{{question.title}}</th>
+	{% endfor %}
+
+	{% for i in range(10) %}
+		<tr>
+		{% for j in range(survey.questions|length) %}
+				<td>*answer from feedback-table*</td>
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+<br>
+
+<a href="\results\surveys" method="GET">Back to results</a>
+
+{% endblock %}

@@ -18,7 +18,7 @@ os.sys.path.insert(0,parentdir)
 # Form-class helps data processing
 # with html-files and it has useful validation-methods:
 class SurveyForm(Form):
-    description = StringField('Description', [validators.Length(min=4, max=25), 
+    description = StringField('Description', [validators.Length(min=4, max=50), 
                                             checkThatFieldIsNotOnlyWhiteSpace])
     start_date = DateField('Start date (YYYY-MM-DD)', [validators.DataRequired()])
     end_date = DateField('End date (YYYY-MM-DD)', [validators.DataRequired()])

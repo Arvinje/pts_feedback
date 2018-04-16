@@ -16,7 +16,7 @@ from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionForm(Form):
 	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture"),("Choice","Choice")])
-	title = StringField("Title", [validators.Length(min=1, max=20), 
+	title = StringField("Title", [validators.Length(min=1, max=250), 
 								checkThatFieldIsNotOnlyWhiteSpace])
 
 routes = []
