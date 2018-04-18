@@ -9,6 +9,7 @@ os.sys.path.insert(0,parentdir)
 
 from config.setup import Base, session, postgres_url
 from models.question import Question
+from models.questionChoice import QuestionChoice
 
 from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
@@ -94,14 +95,12 @@ def deleteQuestion(survey_id,question_id):
 			type_ = questionToBeDeleted.type_,
 			title_ = questionToBeDeleted.title_)
 	elif (request.method == 'POST'):
+		# deleting all the questionChoices of question:
+		for questionChoiceToBeDeleted in session.query(QuestionChoice).filter_by(question_id_=question_id).all():
+			session.delete(questionChoiceToBeDeleted)
 		session.delete(questionToBeDeleted)
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
-		#else:
-		#	flash("Question deletion error: survey start_date is not in the future.")
-		#	return render_template('delete_question.html',
-		#		type_ = questionToBeDeleted.type_,
-		#		title_ = questionToBeDeleted.title_)
 	else:
 		return render_template('delete_question.html', form=form)
 
