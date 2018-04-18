@@ -21,12 +21,10 @@
 		<th>{{question.title_}}</th>
 	{% endfor %}
 
+	<tr>
+
 	{% for question in survey.questions %}
-		<tr>
-		{% for answer in question.answers %}
-				<td>{{answer.value_}}</td>
-		{% endfor %}
-		</tr>
+		<td><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}">Show answers</a></td>
 	{% endfor %}
 </table>
 
