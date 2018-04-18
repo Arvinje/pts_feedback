@@ -9,13 +9,14 @@ os.sys.path.insert(0,parentdir)
 
 from config.setup import Base, session, postgres_url
 from models.question import Question
+from models.questionChoice import QuestionChoice
 
 from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionForm(Form):
-	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture")])
-	title = StringField("Title", [validators.Length(min=1, max=20), 
+	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture"),("Choices","Choices")])
+	title_ = StringField("Title", [validators.Length(min=1, max=20), 
 								checkThatFieldIsNotOnlyWhiteSpace])
 
 routes = []
@@ -32,7 +33,7 @@ routes.append(dict(
 def question(survey_id,question_id):
 	return render_template('questions.html',survey_id=survey_id,
 		questions=session.query(Question).order_by(Question.id_).\
-		filter(Question.survey_id == survey_id, Question.id_ == question_id).\
+		filter(Question.survey_id_ == survey_id, Question.id_ == question_id).\
 		all())
 
 routes.append(dict(
@@ -44,10 +45,10 @@ def questions(survey_id):
 	form = QuestionForm(request.form)
 	if (request.method == 'GET'):
 		return render_template('questions.html',survey_id=survey_id,
-			questions=session.query(Question).order_by(Question.id_).filter(Question.survey_id == survey_id).all())
+			questions=session.query(Question).order_by(Question.id_).filter(Question.survey_id_ == survey_id).all())
 
 	if (request.method == 'POST') and (form.validate()):
-		newQuestion = Question(form.type_.data,form.title.data, survey_id)
+		newQuestion = Question(form.type_.data,form.title_.data, survey_id)
 		session.add(newQuestion)
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
@@ -62,24 +63,24 @@ routes.append(dict(
 # Function for editing a single question:
 def editQuestion(survey_id,question_id):
 	form = QuestionForm(request.form)
-	questionToBeEdited = session.query(Question).filter(Question.id_==question_id,Question.survey_id==survey_id).one()
+	questionToBeEdited = session.query(Question).filter(Question.id_==question_id,Question.survey_id_==survey_id).one()
 
 	if request.method == 'GET':
 		# pre-filling the form:
 		form.type_.data = questionToBeEdited.type_
-		form.title.data = questionToBeEdited.title
+		form.title_.data = questionToBeEdited.title_
 
-		return render_template('edit_question.html', form=form)
+		return render_template('edit_question.html', form=form, survey_id=survey_id, question_id=question_id)
 	elif (request.method == 'POST') and (form.validate()):
 		# editing the question:
 		questionToBeEdited.type_ = form.type_.data
-		questionToBeEdited.title = form.title.data
+		questionToBeEdited.title_ = form.title_.data
 
 		session.add(questionToBeEdited)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id))
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return render_template('edit_question.html', form=form)
+		return render_template('edit_question.html', form=form, survey_id=survey_id, question_id=question_id)
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/edit',
 					view_func=editQuestion,
 					options=dict(methods=['GET','POST'])))
@@ -87,22 +88,19 @@ routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/ed
 # Function for removing a single question:
 def deleteQuestion(survey_id,question_id):
 	form = QuestionForm(request.form)
-	questionToBeDeleted = session.query(Question).filter(Question.id_==question_id,Question.survey_id==survey_id).one()
+	questionToBeDeleted = session.query(Question).filter(Question.id_==question_id,Question.survey_id_==survey_id).one()
 
 	if request.method == 'GET':
 		return render_template('delete_question.html',
 			type_ = questionToBeDeleted.type_,
-			title = questionToBeDeleted.title)
+			title_ = questionToBeDeleted.title_)
 	elif (request.method == 'POST'):
-		if (startDateIsBeforeToday(questionToBeDeleted.survey.start_date)):
-			session.delete(questionToBeDeleted)
-			session.commit()
-			return redirect("/surveys/" + str(survey_id) + "/questions")
-		else:
-			flash("Question deletion error: survey start_date is not in the future.")
-			return render_template('delete_question.html',
-				type_ = questionToBeDeleted.type_,
-				title = questionToBeDeleted.title)
+		# deleting all the questionChoices of question:
+		for questionChoiceToBeDeleted in session.query(QuestionChoice).filter_by(question_id_=question_id).all():
+			session.delete(questionChoiceToBeDeleted)
+		session.delete(questionToBeDeleted)
+		session.commit()
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
 		return render_template('delete_question.html', form=form)
 
