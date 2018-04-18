@@ -9,7 +9,6 @@ os.sys.path.insert(0,parentdir)
 
 from config.setup import Base, session, postgres_url
 from models.question import Question
-from models.questionChoice import QuestionChoice
 
 from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace

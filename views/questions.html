@@ -27,11 +27,10 @@
 		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST">delete question</a></td>
 		<td>
 		<form>
-		{% for questionChoice in question.questionChoices %}
-			{{questionChoice.title}}
-			<br>
+		{% for questionChoice in question.questionchoices %}
 			<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET">edit questionChoice</a>
 			<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET">delete questionChoice</a>
+			{{questionChoice.title_}}
 			<br>
 		{% endfor %}
 		</form>
