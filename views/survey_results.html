@@ -21,10 +21,10 @@
 		<th>{{question.title_}}</th>
 	{% endfor %}
 
-	{% for i in range(10) %}
+	{% for question in survey.questions %}
 		<tr>
-		{% for j in range(survey.questions|length) %}
-				<td>*answer from feedback-table*</td>
+		{% for answer in question.answers %}
+				<td>{{answer.value_}}</td>
 		{% endfor %}
 		</tr>
 	{% endfor %}
