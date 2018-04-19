@@ -41,4 +41,4 @@ class QuestionChoice(Base):
     }
 
 if not engine.has_table(tablename):
-    Base.metadata.create_all(engine)
+	Base.metadata.create_all(engine)
