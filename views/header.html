@@ -1,31 +1,29 @@
-<html>
+<!DOCTYPE html>
     <head>
       <title>LLB</title>
-      <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/cosmo.css') }}">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/cosmo.css') }}" media="all">
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-          <a class="navbar-brand" href= "/"><b>LLB</b></a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-          aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand navbar-dark bg-primary">
+          <a class="navbar-brand" href= "/">LLB</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-
           <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
                 <a href = "/" class="nav-link">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a href="/surveys/new" class="nav-link" method=GET>Add new survey</a>
+                <a href="/surveys/new" class="nav-link">Add a survey</a>
               </li>
               <li class="nav-item">
-                <a href="/surveys" method=GET class="nav-link">Print added surveys</a>
+                <a href="/surveys" class="nav-link">View surveys</a>
               </li>
             </ul>
           </div>
         </nav>
         {% block bodyOfPage %}{% endblock %}
-        <hr color=black>
     </body>
 </html>

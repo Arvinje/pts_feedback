@@ -1,13 +1,107 @@
 /*!
+* Base:
  * bootstrap-star-rating v4.0.3
  * http://plugins.krajee.com/star-rating
  *
- * Author: Kartik Visweswaran
- * Copyright: 2013 - 2017, Kartik Visweswaran, Krajee.com
+ * Forked by Saija to exclude bootsrtrap.css -file
+ * 4/2018
  *
- * Licensed under the BSD 3-Clause
- * https://github.com/kartik-v/bootstrap-star-rating/blob/master/LICENSE.md
+ * Used in stars.html
  */
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot');
+  src: url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+       url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+       url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff') format('woff'),
+       url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+       url('//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+.glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphicon-minus:before {
+    content: "\2212";
+}
+
+
+.glyphicon-star:before {
+    content: "\e006";
+}
+
+.glyphicon-star-empty:before {
+    content: "\e007";
+}
+.glyphicon-minus-sign:before {
+  content: "\e082";
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+*:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.has-success .control-label {
+    color: #3c763d;
+}
+
+.has-warning .control-label {
+    color: #8a6d3b;
+}
+
+.has-error .control-label {
+    color: #a94442;
+}
+
+.form-inline .control-label {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+@media (min-width: 768px) {
+    .form-horizontal .control-label {
+        padding-top: 7px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+}
+
+@media (min-width: 768px) {
+    .form-horizontal .form-group-lg .control-label {
+        padding-top: 11px;
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 768px) {
+    .form-horizontal .form-group-sm .control-label {
+        padding-top: 6px;
+        font-size: 12px;
+    }
+}
+
+.navbar-form .control-label {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
 .rating-loading {
     width: 25px;
     height: 25px;
@@ -20,6 +114,7 @@
 /*
  * Stars & Input
  */
+
 .rating-container .rating-stars {
     position: relative;
     cursor: pointer;
@@ -100,6 +195,7 @@
 /**
  * Sizes
  */
+
 .rating-xl {
     font-size: 4.89em;
 }
@@ -127,6 +223,7 @@
 /**
  * Clear
  */
+
 .rating-container .clear-rating {
     color: #aaa;
     cursor: not-allowed;
@@ -152,6 +249,7 @@
  */
 
 /* extend support to BS4 */
+
 .rating-container .caption .label {
     display: inline-block;
     padding: .25em .4em;
@@ -182,6 +280,7 @@
 /**
  * Print
  */
+
 @media print {
     .rating-container .clear-rating {
         display: none;

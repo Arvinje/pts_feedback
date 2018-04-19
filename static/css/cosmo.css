@@ -11,7 +11,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  *
- * ADDED BY SAIJA 4.4.18
+ * Modified by Saija 4/18 for LLB. Used in admin side of surveys
  */
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700");
 :root {
@@ -22,15 +22,15 @@
   --red: #FF0039;
   --orange: #f0ad4e;
   --yellow: #FF7518;
-  --green: #3FB618;
+  --green: #4CAF50;
   --teal: #20c997;
   --cyan: #9954BB;
   --white: #fff;
   --gray: #868e96;
   --gray-dark: #373a3c;
-  --primary: #2780E3;
+  --primary: #0277BD;
   --secondary: #373a3c;
-  --success: #3FB618;
+  --success: #4CAF50;
   --info: #9954BB;
   --warning: #FF7518;
   --danger: #FF0039;
@@ -2593,8 +2593,8 @@ fieldset:disabled a.btn {
 
 .btn-success {
   color: #fff;
-  background-color: #3FB618;
-  border-color: #3FB618;
+  background-color: #4CAF50;
+  border-color: #4CAF50;
 }
 
 .btn-success:hover {
@@ -5928,7 +5928,7 @@ button.close {
 }
 
 .bg-primary {
-  background-color: #2780E3 !important;
+  background-color: #0277BD !important;
 }
 
 a.bg-primary:hover, a.bg-primary:focus,
