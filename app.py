@@ -9,8 +9,8 @@ app.debug = True
 
 # Initialize db
 # from models.admin import Admin WAITING
-from models.feedback import Feedback
 from models.survey import Survey
+from models.feedback import Feedback
 from models.question import Question
 from models.answer import Answer
 from models.questionChoice import QuestionChoice
