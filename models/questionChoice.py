@@ -12,32 +12,33 @@ from models.question import Question
 from config.setup import engine
 
 
-tablename = "questionChoices"
+tablename = "questionchoices"
 
 class QuestionChoice(Base):
-	__tablename__ = tablename
+  __tablename__ = tablename
 
-	#Mappers
-	id_ = Column(Integer, primary_key=True)
-	title = Column(String)
-	question_id = Column(Integer, ForeignKey('questions.id_'))
-	question = relationship("Question", back_populates="question_choices")
+  # Mappers
+  id_ = Column(Integer, primary_key=True)
+  title_ = Column(String)
 
-	def __init__(self, id_, title, question_id):
-		self.id_ = id_
-		self.title = title
-		self.question_id = question_id
+  # Question choice is child of question
+  question_id_ = Column(Integer, ForeignKey('questions.id_'))
+  questions = relationship("Question", back_populates="questionchoices")
 
-	def __repr__(self):
-		return "<Id: {}, Title: {}, Question_id: {}>".format(self.id_, self.title, self.question_id)
+  def __init__(self, title_, question_id_):
+    self.title_ = title_
+    self.question_id_ = question_id_
 
-	@property
-	def serialize(self):
-		return {
-			'id_' : self.id_,
-			'title' : self.title,
-			'question_id' : self.question_id
-		}
+  def __repr__(self):
+    return "<Id: {}, Title: {}, Question_id: {}>".format(self.id_, self.title_, self.question_id_)
+
+  @property
+  def serialize(self):
+    return {
+      'id_' : self.id_,
+      'title_' : self.title_,
+      'question_id_' : self.question_id_
+    }
 
 if not engine.has_table(tablename):
-    Base.metadata.create_all(engine)
+	Base.metadata.create_all(engine)
