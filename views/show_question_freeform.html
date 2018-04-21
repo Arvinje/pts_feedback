@@ -1,0 +1,48 @@
+<doctype html>
+<title>LLB</title>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+
+
+<!-- Flashed messages -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h2>{{ question_title }}</h2>
+
+
+{% if is_first %}
+  <p> Is first <p>
+  {% from "_formhelpers.html" import render_field %}
+  <form action="/feedback/questions/1" method=post>
+      <dl>
+          {{ render_field(form.description) }}
+      </dl>
+      <input type=hidden name='question_id' value={{ question_id }}>
+      <input type=hidden name='prev_url' value={{ prev_url }}>
+      <input type=hidden name='next_url' value={{ next_url }}>
+      <p><input type=submit value=Next name=Next>
+</form>
+{% endif %}
+
+{% if not_first %}
+ <p> Not first <p>
+ {% from "_formhelpers.html" import render_field %}
+  <form action="/feedback/questions/1" method=post>
+      <dl>
+          {{ render_field(form.description) }}
+      </dl>
+      <input type=hidden name='question_id' value={{ question_id }}>
+      <input type=hidden name='prev_url' value={{ prev_url }}>
+      <input type=hidden name='next_url' value={{ next_url }}>
+      <p><input type=submit value=Prev name=Prev>
+      <p><input type=submit value=Next name=Next>
+  </form>
+ {% endif %}
+

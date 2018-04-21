@@ -14,13 +14,12 @@
   {% endif %}
 {% endwith %}
 
-<h2>{{ survey.description_}}</h2>
-<h4>Survey id: {{ survey.id_ }}</h4>
-<h4>Feedback id: {{ feedback.id_ }}</h4>
+<h2>Thank you!</h2>
 
-<!-- Go to first question -->
-<a href="{{ url_for('controllers.showQuestion', question_id=question_id) }}" method=GET>START</a>
+<!-- Gift -->
+<img src={{ gift_file }} width="218">
+
 <br><br>
 
-<!-- Logo -->
-<a href="http://livinglabbus.fi/"><img src="{{ url_for('static', filename='imgs/llb_logo.png') }}" width="218"></a>
+<!-- Go away -->
+<a href="https://upload.wikimedia.org/wikipedia/commons/a/aa/Gold_Coast_skyline.jpg" method=GET>GO AWAY</a>
