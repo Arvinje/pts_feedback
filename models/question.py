@@ -12,7 +12,7 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
-from models.feedback import Feedback
+# from models.feedback import Feedback
 from config.setup import engine
 
 tablename = "questions"
@@ -21,7 +21,7 @@ class Question(Base):
     __tablename__ = tablename
 
     # Mappers
-    id_ = Column(Integer, primary_key=True,autoincrement=True)
+    id_ = Column(Integer, primary_key=True, autoincrement=True)
     type_ = Column(String)
     title_ = Column(String)
 
@@ -43,7 +43,7 @@ class Question(Base):
 
 
     def __repr__(self):
-        return "<Id: {}, Type: '{}', Title: '{}', Survey_id: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
+        return "<id_: {}, type_: '{}', title_: '{}', survey_id_: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
 
     @property
     def serialize(self):

@@ -20,7 +20,7 @@ class Answer(Base):
     __tablename__ = tablename
 
     # Mappers
-    id_ = Column(Integer, primary_key=True)
+    id_ = Column(Integer, primary_key=True, autoincrement=True)
     value_ = Column(String)
     created_at_ = Column(DateTime, nullable=False)
 
@@ -39,7 +39,7 @@ class Answer(Base):
         self.created_at_ = datetime.datetime.now()
 
     def __repr__(self):
-        return "<Id: {}, Value: '{}', Created_at: '{}', Question_id: {}, Feedback_id: {}>".format(self.id_, self.value_, self.created_at_, self.question_id_, self.feedback_id_)
+        return "<id_: {}, value_: '{}', created_at_: '{}', question_id_: {}, feedback_id_: {}>".format(self.id_, self.value_, self.created_at_, self.question_id_, self.feedback_id_)
 
     @property
     def serialize(self):

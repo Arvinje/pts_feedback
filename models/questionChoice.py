@@ -18,7 +18,7 @@ class QuestionChoice(Base):
 	__tablename__ = tablename
 
 	# Mappers
-	id_ = Column(Integer, primary_key=True)
+	id_ = Column(Integer, primary_key=True, autoincrement=True)
 	title_ = Column(String)
 
   # Question choice is child of question
@@ -30,7 +30,7 @@ class QuestionChoice(Base):
 		self.question_id_ = question_id_
 
 	def __repr__(self):
-		return "<Id: {}, Title: {}, Question_id: {}>".format(self.id_, self.title_, self.question_id_)
+		return "<id_: {}, title_: {}, question_id_: {}>".format(self.id_, self.title_, self.question_id_)
 
 	@property
 	def serialize(self):
