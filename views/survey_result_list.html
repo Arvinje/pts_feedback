@@ -15,11 +15,11 @@
 
 <h2>Survey result list:</h2>
  
-<table border=solid>
-	<th>id_</th>
-	<th>description</th>
-	<th>start_date</th>
-	<th>end_date</th>
+<table class="table table-hover">
+	<th scope="col">id_</th>
+	<th scope="col">description</th>
+	<th scope="col">start_date</th>
+	<th scope="col">end_date</th>
 	{% for survey in surveys %}
 	  <tr>
 		  <td>{{survey.id_}}</td>
