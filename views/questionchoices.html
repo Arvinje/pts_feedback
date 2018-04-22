@@ -5,14 +5,14 @@
 
 <h2>QuestionsChoices:</h2>
  
-<table border=solid>
+<table class="table table-hover">
 	<a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/new" method="GET">New questionChoice</a>
 	<br><br>
 	<a href="/surveys/{{survey_id}}/questions" method="GET">Back to questions</a>
 	<br><br>
-	<th># Question ID #</th>
-	<th># ID #</th>
-	<th># title #</th>
+	<th scope="col"># Question ID #</th>
+	<th scope="col"># ID #</th>
+	<th scope="col"># title #</th>
 	{% for questionChoice in questionChoices %}
 	  <tr>
 		<td>{{questionChoice.question_id_}}</td>
