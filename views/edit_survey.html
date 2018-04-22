@@ -3,26 +3,24 @@
 
 {% block bodyOfPage %}
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <h2>Edit survey</h2>
 
+{% from "_formhelpers.html" import render_field %}
 <form method=post>
     <dl>
-	    ID:
-	    <br>
-	    <input type="text" name="id_" id="id_" value="{{ survey.id_ }}">
-	    <br>
-	    Description
-	    <br>
-	    <input type="text" name="description" value="{{ survey.description }}">
-	    <br>
-	    Start date (YYYY-MM-DD)
-	    <br>
-	    <input type="text" name="start_date" value="{{ survey.start_date }}">
-	    <br>
-	    End date (YYYY-MM-DD)
-	    <br>
-	    <input type="text" name="end_date" value="{{ survey.end_date }}">
-	    <br>
+        {{ render_field(form.description) }}
+        {{ render_field(form.start_date) }}
+        {{ render_field(form.end_date) }}
     </dl>
     <p>
     <input type=submit value=Submit>

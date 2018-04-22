@@ -13,6 +13,7 @@
     </ul>
   {% endif %}
 {% endwith %}
+
 <br>
 <h2>Added surveys:</h2>
 
@@ -31,16 +32,21 @@
     <tbody>
 	{% for result in surveys %}
 	  <tr>
-		  <td>{{result.id_}}</td>
-		  <td>{{result.description}}</td>
-		  <td>{{result.start_date}}</td>
-		  <td>{{result.end_date}}</td>
-		  <td><a href="\surveys\{{result.id_}}\questions" method="GET">show questions</a></td>
-		  <td><a href="\surveys\{{result.id_}}\edit" method="GET">edit survey</a></td>
-		  <td><a href="\surveys\{{result.id_}}\delete" method="GET">delete survey</a></td>
+		  <td>{{survey.id_}}</td>
+		  <td>{{survey.description_}}</td>
+		  <td>{{survey.start_date_}}</td>
+		  <td>{{survey.end_date_}}</td>
+		  <td><a href="\surveys\{{survey.id_}}\questions" method="GET">show questions</a></td>
+		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET">edit survey</a></td>
+		  <td><a href="\surveys\{{survey.id_}}\delete" method="GET">delete survey</a></td>
+		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">results</a></td>
 	  </tr>
 	{% endfor %}
     </tbody>
 </table>
+
+<br>
+
+<a href="\results\surveys" method="GET">show results of all surveys</a>
 
 {% endblock %}

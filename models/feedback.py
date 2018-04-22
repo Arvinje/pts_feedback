@@ -11,18 +11,16 @@ from models.base import Base
 from config.setup import engine
 
 
-tablename = "feedback"
+tablename = "feedbacks"
 
 class Feedback(Base):
     __tablename__ = tablename
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
-    # answers_ = relationship("Answer")
-    # answers = relationship("Answer", back_populates="answers")
 
-    def __init__(self, id_):
-        self.id_ = id_
+    # Feedback is parent to answers
+    answers = relationship("Answer", back_populates="feedbacks")
 
     def __repr__(self):
         return "<Id: {}>".format(self.id_)

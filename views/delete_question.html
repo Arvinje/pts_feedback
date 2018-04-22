@@ -13,17 +13,16 @@
   {% endif %}
 {% endwith %}
 
-<h2>New Survey</h2>
- 
-{% from "_formhelpers.html" import render_field %}
+<h2>Delete question</h2>
 
-<form action="/surveys" method=post>
+<form method=post>
     <dl>
-        {{ render_field(form.description) }}
-        {{ render_field(form.start_date) }}
-        {{ render_field(form.end_date) }}
+        {{ type_ }}
+        <br><br>
+        {{ title }}
     </dl>
-    <p><input type=submit value=Submit>
+    <p>
+    <input type=submit value=Submit>
 </form>
 
 {% endblock %}

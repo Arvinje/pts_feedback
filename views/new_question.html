@@ -1,0 +1,18 @@
+<doctype html>
+{% extends "header.html" %}
+
+{% block bodyOfPage %}
+
+<h2>New question</h2>
+ 
+{% from "_formhelpers.html" import render_field %}
+<form action="/surveys/{{survey_id}}/questions" method=post>
+    <dl>
+        Survey ID: {{ survey_id }}
+        {{ render_field(form.type_) }}
+        {{ render_field(form.title_) }}
+    </dl>
+    <p><input type=submit value=Submit>
+</form>
+
+{% endblock %}

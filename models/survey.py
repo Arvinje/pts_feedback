@@ -11,37 +11,38 @@ os.sys.path.insert(0,parentdir)
 from models.base import Base
 from config.setup import engine
 
-
 tablename = "surveys"
 
 class Survey(Base):
-    __tablename__ = "surveys"
+    __tablename__ = tablename
 
     # Mappers
-    id_ = Column(Integer, primary_key=True)
-    description = Column(String, nullable=False)
-    start_date = Column(DateTime)
-    end_date = Column(DateTime)
-    questions = relationship("Question", back_populates="survey")
+    id_ = Column(Integer, primary_key=True,autoincrement=True)
+    description_ = Column(String, nullable=False)
+    start_date_ = Column(DateTime)
+    end_date_ = Column(DateTime)
 
-    def __init__(self, id_, description_, start_date_, end_date_):
-        self.id_ = id_
-        self.description = description_
-        self.start_date = start_date_
-        self.end_date = end_date_
+    # Survey is parent to questions
+    questions = relationship("Question", back_populates="surveys")
+
+    def __init__(self, description_, start_date_, end_date_):
+        self.description_ = description_
+        self.start_date_ = start_date_
+        self.end_date_ = end_date_
+        # self.admin_id_ = admin_id_  # WAITING
 
     def __repr__(self):
-        return "<Id_: {}, Survey: {}>".format(self.id_, self.description)
+        return "<Id_: {}, Survey: {}, Start date: {}, End date: {}>".format(self.id_, self.description_, self.start_date_, self.end_date_)
 
     @property
     def serialize(self):
-        start_date = self.start_date if self.start_date != None else ''
-        end_date = self.end_date if self.end_date != None else ''
+        start_date_ = self.start_date_ if self.start_date_ != None else ''
+        end_date_ = self.end_date_ if self.end_date_ != None else ''
         return {
         'id_' : self.id_,
-        'description' : self.description,
-        'start_date' : start_date,
-        'end_date' : end_date,
+        'description_' : self.description_,
+        'start_date_' : self.start_date_,
+        'end_date_' : self.end_date_
         }
 
 if not engine.has_table(tablename):
