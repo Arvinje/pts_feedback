@@ -36,7 +36,7 @@ def surveys():
     form = SurveyForm(request.form)
     if request.method == 'GET':
       # the query returns list of all surveys and sends the list to the view:
-      return render_template('surveys.html', surveys=session.query(Survey).all())
+      return render_template('surveys.html', surveys=session.query(Survey).order_by(Survey.id_).all())
     if (request.method == 'POST') and (form.validate()):
       if form.start_date.data < form.end_date.data:
         surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data)
