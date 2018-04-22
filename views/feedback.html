@@ -15,8 +15,6 @@
 {% endwith %}
 
 <h2>{{ survey.description_}}</h2>
-<h4>Survey id: {{ survey.id_ }}</h4>
-<h4>Feedback id: {{ feedback.id_ }}</h4>
 
 <!-- Go to first question -->
 <a href="{{ url_for('controllers.showQuestion', question_id=question_id) }}" method=GET>START</a>

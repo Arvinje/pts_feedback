@@ -12,16 +12,13 @@
   {% endif %}
 {% endwith %}
 
-<h2>question_title: {{ question_title }}</h2>
-<!-- <p>form_action_url: {{ form_action_url }}</p>
-<p>question_id: {{ question_id }}</p>
-<p>prev_url: {{ prev_url }}</p>
-<p>next_url: {{ next_url }}</p>
-<p>is_first: {{ is_first }}</p>
- -->
+<h4>{{ question_title }}</h4>
 
+
+<!-- If this is the first question -->
 {% if is_first %}
-  <p>is first question</p>
+
+  <h2>Enter number of stars (1-5) </h2>
 
   {% from "_formhelpers.html" import render_field %}
   <form action="{{ form_action_url }}" method=post>
@@ -35,9 +32,10 @@
   </form>
 
 
-
+<!-- If not first question -->
 {% else %}
-  <p>not first question</p>
+
+  <h4>Enter number of stars (1-5) </h4>
 
  {% from "_formhelpers.html" import render_field %}
   <form action="{{ form_action_url }}" method=post>
