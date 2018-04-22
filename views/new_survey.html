@@ -16,6 +16,7 @@
 <h2>New Survey</h2>
  
 {% from "_formhelpers.html" import render_field %}
+
 <form action="/surveys" method=post>
     <dl>
         {{ render_field(form.description) }}

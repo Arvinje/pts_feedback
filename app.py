@@ -1,8 +1,13 @@
 from flask import Flask
 
+# experimenting with Bootstrap
+from flask_bootstrap import Bootstrap
+
 # Flask
 
 app = Flask(__name__, template_folder="views")
+
+Bootstrap(app)
 
 app.secret_key = "flask rocks!"
 app.debug = True

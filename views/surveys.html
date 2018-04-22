@@ -1,5 +1,6 @@
 <doctype html>
 {% extends "header.html" %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 {% block bodyOfPage %}
 
@@ -13,14 +14,23 @@
   {% endif %}
 {% endwith %}
 
+<br>
 <h2>Added surveys:</h2>
- 
-<table border=solid>
-	<th>id_</th>
-	<th>description</th>
-	<th>start_date</th>
-	<th>end_date</th>
-	{% for survey in surveys %}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Description</th>
+            <th scope="col">Start date</th>
+            <th scope="col">End date</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+	{% for result in surveys %}
 	  <tr>
 		  <td>{{survey.id_}}</td>
 		  <td>{{survey.description_}}</td>
@@ -32,6 +42,7 @@
 		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">results</a></td>
 	  </tr>
 	{% endfor %}
+    </tbody>
 </table>
 
 <br>
