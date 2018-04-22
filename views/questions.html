@@ -26,14 +26,20 @@
 		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/edit" method="GET">edit question</a></td>
 		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST">delete question</a></td>
 		<td>
-		<form>
-		{% for questionChoice in question.questionchoices %}
-			<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET">edit questionChoice</a>
-			<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET">delete questionChoice</a>
-			{{questionChoice.title_}}
-			<br>
-		{% endfor %}
-		</form>
+		{% if question.type_ ==  "Choices" %}
+			<form>
+				<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/new" method="GET">new questionchoice</a>
+				<br><br>
+
+				{% for questionChoice in question.questionchoices %}
+					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET">edit</a>
+					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET">delete</a>
+
+					{{questionChoice.title_}}
+					<br>
+				{% endfor %}
+			</form>
+		{% endif %}
 		</td> 
 	  </tr>
 	{% endfor %}

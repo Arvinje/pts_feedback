@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Thumbs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/thumbs.css') }}">
+</head>
+
+<body>
+
+    <body>
+        <nav class="navbar navbar-expand navbar-dark bg-primary">
+            <a class="navbar-brand" href="#"><b>LLB</b></a>
+        </nav>
+        <br>
+        <h1>Give us thumbs!</h1>
+        <p class="lead">Here is the question in which you can answer with thumbs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <hr class="my-4">
+        <h2>Are you satisfied with your journey?</h2>
+        <br>
+        <form>
+
+            <div class="thumbs-selector">
+                <input id="thumbdown" type="radio" name="thumb" value="thumbdown" />
+                <label class="thumbs-cc thumbdown" for="thumbdown"></label>
+                <input id="thumbsup" type="radio" name="thumb" value="thumbsup" />
+                <label class="thumbs-cc thumbsup" for="thumbsup"></label>
+            </div>
+        </form>
+        <hr>
+        <p class="lead">
+            <a class="btn btn-info btn-lg" href="#" role="button">Previous</a>
+            <a class="btn btn-success btn-lg" href="#" role="button">Next</a>
+        </p>
+
+    </body>
+
+    </html>
