@@ -299,7 +299,7 @@ def thankYou():
     a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
     missing = q_ids.difference(a_ids)
 
-    # If no answers missing
+    # If no answers missing <- NOT NEEDED
     if len(missing) == 0:
         gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
         gift_ix = int(request.cookies['feedback_id']) % len(gifts)
