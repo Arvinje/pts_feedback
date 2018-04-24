@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 import datetime
 
@@ -24,6 +24,7 @@ class Question(Base):
     id_ = Column(Integer, primary_key=True,autoincrement=True)
     type_ = Column(String)
     title_ = Column(String)
+    optional_ = Column(Boolean)
 
     # Question is child of survey
     survey_id_ = Column(Integer, ForeignKey('surveys.id_'))
@@ -36,14 +37,16 @@ class Question(Base):
     questionchoices = relationship("QuestionChoice", back_populates="questions")
 
 
-    def __init__(self, type_, title_, survey_id_):
+    def __init__(self, type_, title_, survey_id_, optional_):
         self.type_ = type_
         self.title_ = title_
         self.survey_id_ = survey_id_
+        self.optional_ = optional_
 
 
     def __repr__(self):
-        return "<Id: {}, Type: '{}', Title: '{}', Survey_id: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
+        return "<Id: {}, Type: '{}', Title: '{}', Survey_id: {}, optional_: {}>".\
+            format(self.id_, self.type_, self.title_, self.survey_id_, self.optional_)
 
     @property
     def serialize(self):
@@ -51,7 +54,8 @@ class Question(Base):
             'id_' : self.id_,
             'type_' : self.type_,
             'title_' : self.title_,
-            'survey_' : self.survey_id_
+            'survey_' : self.survey_id_,
+            'optional_' : self.optional_
         }
 
 if not engine.has_table(tablename):

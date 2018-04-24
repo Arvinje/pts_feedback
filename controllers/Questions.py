@@ -1,6 +1,6 @@
 import os, inspect
 from flask import render_template, request, redirect, flash, jsonify
-from wtforms import Form, StringField, SelectField, validators
+from wtforms import Form, StringField, SelectField, BooleanField, validators
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -18,6 +18,7 @@ class QuestionForm(Form):
 	type_ = SelectField("Type", choices=[("Text","Text"),("Stars","Stars"),("Picture","Picture"),("Choices","Choices")])
 	title_ = StringField("Title", [validators.Length(min=1, max=20), 
 								checkThatFieldIsNotOnlyWhiteSpace])
+	optional_ = BooleanField("Optional")
 
 routes = []
 
@@ -48,7 +49,7 @@ def questions(survey_id):
 			questions=session.query(Question).order_by(Question.id_).filter(Question.survey_id_ == survey_id).all())
 
 	if (request.method == 'POST') and (form.validate()):
-		newQuestion = Question(form.type_.data,form.title_.data, survey_id)
+		newQuestion = Question(form.type_.data,form.title_.data, survey_id, form.optional_.data)
 		session.add(newQuestion)
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
@@ -69,12 +70,14 @@ def editQuestion(survey_id,question_id):
 		# pre-filling the form:
 		form.type_.data = questionToBeEdited.type_
 		form.title_.data = questionToBeEdited.title_
+		form.optional_.data = questionToBeEdited.optional_
 
 		return render_template('edit_question.html', form=form, survey_id=survey_id, question_id=question_id)
 	elif (request.method == 'POST') and (form.validate()):
 		# editing the question:
 		questionToBeEdited.type_ = form.type_.data
 		questionToBeEdited.title_ = form.title_.data
+		questionToBeEdited.optional_ = form.optional_.data
 
 		session.add(questionToBeEdited)
 		session.commit()

@@ -10,19 +10,21 @@
 	<br><br>
 	<a href="/surveys/{{survey_id}}/edit" method="GET">Edit survey</a>
 	<br><br>
-	<th scope="col"># id #</th>
-	<th scope="col"># survey_id #</th>
-	<th scope="col"># type #</th>
-	<th scope="col"># title #</th>
+	<th scope="col">ID</th>
+	<th scope="col">survey_id</th>
+	<th scope="col">type</th>
+	<th scope="col">title</th>
+	<th scope="col">optional</th>
 	<th scope="col"></th>
 	<th scope="col"></th>
-	<th scope="col"># choices #</th>
+	<th scope="col">choices</th>
 	{% for question in questions %}
 	  <tr>
 		<td>{{question.id_}}</td>
 		<td>{{question.survey_id_}}</td>
 		<td>{{question.type_}}</td>
 		<td>{{question.title_}}</td>
+		<td>{{question.optional_}}</td>
 		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/edit" method="GET">edit question</a></td>
 		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST">delete question</a></td>
 		<td>
