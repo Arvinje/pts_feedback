@@ -6,9 +6,8 @@
 <h2>Questions:</h2>
  
 <table class="table table-hover">
-	<a href="/surveys/{{survey_id}}/questions/new" method="GET">New question</a>
 	<br><br>
-	<a href="/surveys/{{survey_id}}/edit" method="GET">Edit survey</a>
+	<a href="/surveys/{{survey_id}}/questions/new" method="GET">New question</a>
 	<br><br>
 	<th scope="col">ID</th>
 	<th scope="col">survey_id</th>
@@ -46,5 +45,7 @@
 	  </tr>
 	{% endfor %}
 </table>
+
+<a href="/surveys/{{survey_id}}/edit" method="GET">Edit survey</a>
 
 {% endblock %}
