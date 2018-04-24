@@ -32,19 +32,19 @@ s1 = Survey(description_='Emotional survey', start_date_='2018-04-12', end_date_
 # s1 = Survey(description_='Emotional survey', start_date_='2018-04-12', end_date_='2018-04-13', admin_id='1')
 
 # Survey 1 Q1
-q1 = Question(type_='Multiple choice', title_='Q1: How was the bus ride?', survey_id_=1)
+q1 = Question(type_='Multiple choice', title_='Q1: How was the bus ride?', survey_id_=1, optional_=False)
 q1_c1 = QuestionChoice(title_="I loved it", question_id_=1)
 
 # Survey 1 Q2
 q1_c2 = QuestionChoice(title_="I hated it", question_id_=1)
-q2 = Question(type_="Freeform", title_="Q2: Tell us how you feel", survey_id_=1)
+q2 = Question(type_="Freeform", title_="Q2: Tell us how you feel", survey_id_=1, optional_=True)
 
 # Survey 2
 s2 = Survey(description_='Technical survey', start_date_='2018-04-13', end_date_='2018-06-30')
 # s2 = Survey(id_=2, description_='Technical survey', start_date_='2018-04-13', end_date_='2018-06-30', admin_id_=1)
 
 # Survey 2 Q1
-q3 = Question(type_='Multiple choice', title_='Q1: Smoothness of ride', survey_id_=2)
+q3 = Question(type_='Multiple choice', title_='Q1: Smoothness of ride', survey_id_=2, optional_=False)
 q3_c1 = QuestionChoice(title_="1", question_id_=3)
 q3_c2 = QuestionChoice(title_="2", question_id_=3)
 q3_c3 = QuestionChoice(title_="3", question_id_=3)
@@ -52,7 +52,7 @@ q3_c4 = QuestionChoice(title_="4", question_id_=3)
 q3_c5 = QuestionChoice(title_="5", question_id_=3)
 
 # Survey 1 Q2
-q4 = Question(type_='Smileys', title_="Q2: Air quality", survey_id_=2)
+q4 = Question(type_='Smileys', title_="Q2: Air quality", survey_id_=2, optional_=True)
 q4_c1 = QuestionChoice(title_="frown", question_id_=3)
 q4_c2 = QuestionChoice(title_="meh", question_id_=3)
 q4_c3 = QuestionChoice(title_="incredible", question_id_=3)
