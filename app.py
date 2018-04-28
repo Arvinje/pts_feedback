@@ -1,21 +1,21 @@
 from flask import Flask
 
+# experimenting with Bootstrap
+from flask_bootstrap import Bootstrap
+
 # Flask
 
 app = Flask(__name__, template_folder="views")
-
+Bootstrap(app)
 app.secret_key = "flask rocks!"
 app.debug = True
 
 # Initialize db
-# from models.admin import Admin WAITING
-from models.survey import Survey
 from models.feedback import Feedback
+from models.survey import Survey
 from models.question import Question
 from models.answer import Answer
 from models.questionChoice import QuestionChoice
-
-#testi
 
 # Import routes
 from controllers import mod

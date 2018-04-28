@@ -22,10 +22,6 @@ class Survey(Base):
     start_date_ = Column(DateTime)
     end_date_ = Column(DateTime)
 
-    # # Survey is child of admin
-    # admin_id_ = Column(Integer, ForeignKey('admins.id_'))  # WAITING
-    # admins = relationship("Admin", back_populates='surveys') # WAITING
-
     # Survey is parent to questions
     questions = relationship("Question", back_populates="surveys")
 

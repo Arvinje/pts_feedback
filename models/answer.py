@@ -53,5 +53,3 @@ class Answer(Base):
 
 if not engine.has_table(tablename):
     Base.metadata.create_all(engine)
-
-

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- Done by Saija 4/18 -->
+<head>
+    <title>Smileys</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"><b>LLB</b></a>
+    </nav>
+    <br>
+    <h1>Hope you are happy!</h1>
+    <p class="lead">Here is the question in which you can answer with smileys. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <hr class="my-4">
+    <h2>How does your face look like?</h2>
+    <form>
+        <div class="cc-selector">
+            <input id="sad" type="radio" name="emoji" value="sad" />
+            <label class="face-cc sad" for="sad"></label>
+            <input id="neutral" type="radio" name="emoji" value="neutral" />
+            <label class="face-cc neutral" for="neutral"></label>
+            <input id="happy" type="radio" name="emoji" value="happy" />
+            <label class="face-cc happy" for="happy"></label>
+        </div>
+    </form>
+    <hr>
+    <p class="lead">
+        <a class="btn btn-info btn-lg" href="#" role="button">Previous</a>
+        <a class="btn btn-success btn-lg" href="#" role="button">Next</a>
+    </p>
+</body>
+
+</html>

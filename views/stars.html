@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- Done by Saija 4/18 -->
+<head>
+    <title>stars</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star-rating.css') }}">
+    <script src="static/js/star-rating.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"><b>LLB</b></a>
+    </nav>
+    <br>
+    <h1>Star us!</h1>
+    <p class="lead">Here is the question in which you can answer with stars. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <hr class="my-4">
+    <div class="container">
+        <h2>Stars</h2>
+        <label for="input-1" class="control-label"></label>
+        <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="1">
+    </div>
+
+    <hr>
+    <p class="lead">
+        <a class="btn btn-info btn-lg" href="#" role="button">Previous</a>
+        <a class="btn btn-success btn-lg" href="#" role="button">Next</a>
+    </p>
+</body>
+
+</html>

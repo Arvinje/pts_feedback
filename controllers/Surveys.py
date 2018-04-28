@@ -36,7 +36,7 @@ def surveys():
     form = SurveyForm(request.form)
     if request.method == 'GET':
       # the query returns list of all surveys and sends the list to the view:
-      return render_template('surveys.html', surveys=session.query(Survey).all())
+      return render_template('surveys.html', surveys=session.query(Survey).order_by(Survey.id_).all())
     if (request.method == 'POST') and (form.validate()):
       if form.start_date.data < form.end_date.data:
         surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data)
@@ -60,17 +60,17 @@ def editSurvey(id):
     if request.method == 'GET':
       # the query returns the survey:
 
-      form.description.data = surveyToBeEdited.description
-      form.start_date.data = surveyToBeEdited.start_date
-      form.end_date.data = surveyToBeEdited.end_date
+      form.description.data = surveyToBeEdited.description_
+      form.start_date.data = surveyToBeEdited.start_date_
+      form.end_date.data = surveyToBeEdited.end_date_
 
       return render_template('edit_survey.html', form=form)
     if (request.method == 'POST'):
       if (form.validate()):
         if form.start_date.data < form.end_date.data:
-          surveyToBeEdited.description = form.description.data
-          surveyToBeEdited.start_date = form.start_date.data
-          surveyToBeEdited.end_date = form.end_date.data
+          surveyToBeEdited.description_ = form.description.data
+          surveyToBeEdited.start_date_ = form.start_date.data
+          surveyToBeEdited.end_date_ = form.end_date.data
           session.add(surveyToBeEdited) # this updates the database
           session.commit()
           return redirect('/surveys')
@@ -89,11 +89,11 @@ def deleteSurvey(id):
     surveyToBeDeleted = session.query(Survey).filter_by(id_=id).one()
 
     if request.method == 'GET':
-      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
     elif (request.method == 'POST'):
-      if (startDateIsBeforeToday(surveyToBeDeleted.start_date)):        
+      if (startDateIsBeforeToday(surveyToBeDeleted.start_date_)):        
         # deleting all the questions of survey:
-        for questionToBeDeleted in session.query(Question).filter_by(survey_id=id).all():
+        for questionToBeDeleted in session.query(Question).filter_by(survey_id_=id).all():
           session.delete(questionToBeDeleted)
 
         session.delete(surveyToBeDeleted)
@@ -102,9 +102,9 @@ def deleteSurvey(id):
         return redirect('/surveys')
       else:
         flash("Survey deletion error: start_date is not in the future.")
-        return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
+        return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
     else:
-      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description)
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
 routes.append(dict(rule='/surveys/<int:id>/delete',view_func=deleteSurvey,
                    options=dict(methods=['GET','POST'])))
 

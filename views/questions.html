@@ -3,32 +3,49 @@
 
 {% block bodyOfPage %}
 
-<h2>Added questions:</h2>
+<h2>Questions:</h2>
  
-<table border=solid>
+<table class="table table-hover">
+	<br><br>
 	<a href="/surveys/{{survey_id}}/questions/new" method="GET">New question</a>
 	<br><br>
-	<th># id #</th>
-	<th># survey_id #</th>
-	<th># type #</th>
-	<th># title #</th>
-	{% for result in questions %}
+	<th scope="col">ID</th>
+	<th scope="col">survey_id</th>
+	<th scope="col">type</th>
+	<th scope="col">title</th>
+	<th scope="col">optional</th>
+	<th scope="col"></th>
+	<th scope="col"></th>
+	<th scope="col">choices</th>
+	{% for question in questions %}
 	  <tr>
-		<td>{{result.id_}}</td>
-		<td>{{result.survey_id}}</td>
-		<td>{{result.type_}}</td>
-		<td>{{result.title}}</td>
-		<td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/edit" method="GET">edit</a></td>
-		<td><a href="/surveys/{{result.survey_id}}/questions/{{result.id_}}/delete" method="POST" action="POST">delete</a></td>
+		<td>{{question.id_}}</td>
+		<td>{{question.survey_id_}}</td>
+		<td>{{question.type_}}</td>
+		<td>{{question.title_}}</td>
+		<td>{{question.optional_}}</td>
+		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/edit" method="GET">edit question</a></td>
+		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST">delete question</a></td>
 		<td>
-		<form>
-			{% for x in range(0) %}
-				<input type="radio" name="option" value="male" checked>questionChoice test<br>
-			{% endfor %}
-		</form>
+		{% if question.type_ ==  "Choices" %}
+			<form>
+				<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/new" method="GET">new questionchoice</a>
+				<br><br>
+
+				{% for questionChoice in question.questionchoices %}
+					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET">edit</a>
+					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET">delete</a>
+
+					{{questionChoice.title_}}
+					<br>
+				{% endfor %}
+			</form>
+		{% endif %}
 		</td> 
 	  </tr>
 	{% endfor %}
 </table>
+
+<a href="/surveys/{{survey_id}}/edit" method="GET">Edit survey</a>
 
 {% endblock %}

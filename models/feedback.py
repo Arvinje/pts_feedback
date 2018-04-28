@@ -8,8 +8,6 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
-# from models.base import Survey
-# from models.admin import Admin  # WAITING
 from config.setup import engine
 
 
@@ -28,17 +26,24 @@ class Feedback(Base):
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
 
+<<<<<<< HEAD
     def __init__(self, survey_id_):
         survey_id_ = survey_id_
 
+=======
+>>>>>>> b221f43bf967fdc0574c9c40c272976b2067c9be
     def __repr__(self):
         return "<id_: {}, survey_id_: {}>".format(self.id_, survey_id_)
 
     @property
     def serialize(self):
         return {
+<<<<<<< HEAD
             'id_' : self.id_,
             'survey_id_' : self.survey_id_
+=======
+            'id_' : self.id_
+>>>>>>> b221f43bf967fdc0574c9c40c272976b2067c9be
         }
 
 if not engine.has_table(tablename):
