@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!-- Done by Saija 4/18 -->
+<!-- Mangled further by Inka 4/28 -->
 <head>
     <title>Smileys</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
     <h1>Hope you are happy!</h1>
     <p class="lead">Here is the question in which you can answer with smileys. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     <hr class="my-4">
-    <h2>How does your face look like?</h2>
+    <h2>{{ question_title }}</h2>
     <form>
         <div class="cc-selector">
             <input id="sad" type="radio" name="emoji" value="sad" />
@@ -26,12 +27,16 @@
             <input id="happy" type="radio" name="emoji" value="happy" />
             <label class="face-cc happy" for="happy"></label>
         </div>
+        <hr>
+
+        <p class="lead">
+            {% if not is_first %}
+                <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+            {% endif %}
+                <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+        </p>
     </form>
-    <hr>
-    <p class="lead">
-        <a class="btn btn-info btn-lg" href="#" role="button">Previous</a>
-        <a class="btn btn-success btn-lg" href="#" role="button">Next</a>
-    </p>
+
 </body>
 
 </html>

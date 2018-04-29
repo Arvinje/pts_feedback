@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!-- Done by Saija 4/18 -->
+<!-- Mangled further by Inka 4/28 -->
 <head>
     <title>stars</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,16 +19,20 @@
     <p class="lead">Here is the question in which you can answer with stars. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     <hr class="my-4">
     <div class="container">
-        <h2>Stars</h2>
+        <h2>{{ question_title }}</h2>
         <label for="input-1" class="control-label"></label>
         <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="1">
     </div>
 
     <hr>
+
     <p class="lead">
-        <a class="btn btn-info btn-lg" href="#" role="button">Previous</a>
-        <a class="btn btn-success btn-lg" href="#" role="button">Next</a>
+        {% if not is_first %}
+            <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+        {% endif %}
+            <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
     </p>
+
 </body>
 
 </html>
