@@ -44,9 +44,7 @@ class Question(Base):
 
 
     def __repr__(self):
-        # return "<id_: {}, type_: '{}', title_: '{}', survey_id_: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
-        return "<Id: {}, Type: '{}', Title: '{}', Survey_id: {}, optional_: {}>".\
-            format(self.id_, self.type_, self.title_, self.survey_id_, self.optional_)
+        return "<id_: {}, type_: '{}', title_: '{}', survey_id_: {}>".format(self.id_, self.type_, self.title_, self.survey_id_)
 
     @property
     def serialize(self):
