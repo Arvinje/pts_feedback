@@ -3,7 +3,7 @@ import os, inspect, datetime
 from flask import Flask, render_template, request, redirect, flash, make_response, url_for
 from flask import session as flasksession
 from sqlalchemy import desc, distinct
-from wtforms import Form, StringField, DateField, validators
+from wtforms import Form, StringField, DateField, RadioField, TextAreaField, validators
 
 from models.feedback import Feedback
 from models.survey import Survey
@@ -23,16 +23,47 @@ os.sys.path.insert(0,parentdir)
 
 routes = []
 
-templates = {'Freeform': 'show_question_freeform.html',
-            'Thumbs': 'show_question_thumbs.html',
-            'Stars': 'show_question_stars.html',
-            'Smileys': 'show_question_smileys.html',
-            'Thankyou': 'thankyou.html'}
+templates = {'Freeform': 'freeform.html',
+            'Thumbs': 'thumbs.html',
+            'Stars': 'stars.html',
+            'Smileys': 'smileys.html',
+            'Thankyou': 'survey_lastpage.html'}
 print('---TEMPLATE DICT: {}'.format(templates))
 
 
 class AnswerFormFree(Form):
+    value_ = TextAreaField('', [validators.DataRequired()])
+
+class AnswerFormThumbs(Form):
+    value_ = RadioField('', choices=[('value: up','description: up'),('value: down','description: down')])
+
+class AnswerFormStars(Form):
     value_ = StringField('Answer', [validators.DataRequired()])
+
+class AnswerFormSmileys(Form):
+    value_ = StringField('Answer', [validators.DataRequired()])
+
+
+def parse_answer_from_request_form(requestform):
+    qtype = requestform['question_type']
+    template = templates[qtype]
+
+    print('\n{}'.format(90 * '*'))
+    print('---- PARSING ANSWER VALUE FROM REQUEST FORM:')
+    print('--- request.form.keys():')
+    for item in request.form.keys():
+        print(item)
+    print('--- QUESTION TYPE: {}'.format(qtype))
+    print('--- NEEDS TEMPLATE: {}'.format(template))
+    print('\n{}'.format(90 * '*'))
+
+    if 'value_' in requestform.keys():
+        parsed_answer = requestform['value_']
+
+    else:
+        parsed_answer = requestform['value_']
+
+    return parsed_answer
 
 #---------------------------------------------------------------------------------------------------
 # NEW FEEDBACK
@@ -43,8 +74,10 @@ def newFeedback():
     # Creates a feedback record
     # Stores the id to that record in a cookie
     # Has respective view that shows the latest active survey
-    session.flush()
     print('\n--- ENTERING newFeedback, method: {}'.format(request.method))
+
+    session.rollback()
+    session.flush()
 
     # NOTE: ALL SET TO ONE FORM FOR NOW
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
@@ -125,16 +158,15 @@ def newFeedback():
 
         flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
-        response = make_response(render_template('feedback.html',
+        response = make_response(render_template('survey_frontpage.html',
                                                     survey=survey,
                                                     question_id=q.id_,
-                                                    question_title=q.title_,
                                                     feedback=feedback
                                                     ))
 
         # Set cookie to value of feedback.id_
         response.set_cookie('feedback_id', str(feedback.id_))
-        print('---RESPONSE CREATED. EXITING newFeedback AND RENDERING feedback.html: {}'.format(response))
+        print('---RESPONSE CREATED. EXITING newFeedback AND RENDERING survey_frontpage.html: {}'.format(response))
 
     return response
 
@@ -153,6 +185,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
     # The page has links to next and previous question.
     # Renders a different view based on the question type.
 
+    print('\n--- ENTERING showQuestion:')
+
     cookie = request.cookies['feedback_id']
     feedback = session.query(Feedback).filter_by(id_=int(cookie)).one()
 
@@ -161,10 +195,13 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
     # NOTE: ALL SET TO ONE FORM FOR NOW
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
-                    'Thumbs': AnswerFormFree(request.form),
-                    'Stars': AnswerFormFree(request.form),
-                    'Smileys': AnswerFormFree(request.form)}
+                    'Thumbs': AnswerFormThumbs(request.form),
+                    'Stars': AnswerFormStars(request.form),
+                    'Smileys': AnswerFormSmileys(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
+
+    session.rollback()
+    session.flush()
 
     #-------------------
     # GET: SHOW QUESTION
@@ -192,6 +229,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Set up question form and fetch possible pre-existing answer
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
+        flash('form.value_: {}'.format(form.value_))
 
         # Check for pre-existing answers
         try:
@@ -228,6 +266,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 form_action_url=form_action_url,
                                                 question_id=q.id_,
                                                 question_title=q.title_,
+                                                question_type=q.type_,
                                                 prev_url=prev_url,
                                                 next_url=next_url,
                                                 is_first=is_first))
@@ -241,24 +280,35 @@ def showQuestion(question_id, methods=['GET', 'POST']):
     #----------------
     elif request.method == 'POST':
         print('\n---ENTERING WITH POST')
+        print('request.form: {}'.format(request.form))
+        print('request.cookies: {}'.format(request.cookies))
 
-        # Replace possible pre-existing answer
-        try:
-            print('---COMPARING POSTED ANSWER TO POSSIBLY PRE-EXISTING ANSWER')
-            answer = session.query(Answer).filter_by(feedback_id_=request.cookies['feedback_id'], question_id_=request.form['question_id'])[0]
-            if answer.value_ != request.form['value_']:
-                print('---CHANGING PRE-EXISTING ANSWER')
-                answer.value_ = request.form['value_']
-                print('---REPLACED VALUE OF PRE-EXISTING ANSWER, ANSWER NOW:')
-                print(answer.serialize)
-            else:
+        parsed_answer = parse_answer_from_request_form(request.form)
+
+        # Get possibly pre-existing answer
+        print('---COMPARING POSTED ANSWER TO POSSIBLY PRE-EXISTING ANSWER')
+        answer = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
+        print('len(answer): {}'.format(len(answer)))
+        if len(answer) > 0:
+            print('---FOUND PRE-EXISTING ANSWER:')
+            answer = answer[0]
+            print(answer)
+            print('---PRE-EXISTING answer.value_: {}'.format(answer.value_))
+            if answer.value_ == parsed_answer:
                 print('Scrolling through, did not change answer')
-        except:
+            else:
+                print('---CHANGING PRE-EXISTING ANSWER')
+                answer.value_ = parsed_answer
+                print('---REPLACED VALUE OF PRE-EXISTING ANSWER WITH:')
+                print(answer.serialize)
+        else:
             # Create new answer object
-            answer = Answer(request.form['value_'], int(request.cookies['feedback_id']), int(request.form['question_id']))
+            print('---NO PRE-EXISTING ANSWER FOUND!')
+            answer = Answer(parsed_answer, int(request.cookies['feedback_id']), int(request.form['question_id']))
             print('---CREATED NEW ANSWER OBJECT:')
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
+
         if len(answer.value_) > 0:
             session.add(answer)
             session.commit()
@@ -288,6 +338,9 @@ def thankYou():
     # This should be checked when this action gets called.
     # The cookie should also be deleted.
     print('\n--- ENTERING thankYou, method: {}'.format(request.method))
+
+    session.rollback()
+    session.flush()
 
     # Check that answer entries have been created for each survey question
     feedback_id = request.cookies['feedback_id']
