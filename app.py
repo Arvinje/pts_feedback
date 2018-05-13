@@ -16,6 +16,7 @@ from models.feedback import Feedback
 from models.question import Question
 from models.answer import Answer
 from models.questionChoice import QuestionChoice
+from models.reward import Reward
 
 # Import routes
 from controllers import mod
