@@ -34,36 +34,72 @@ print('---TEMPLATE DICT: {}'.format(templates))
 class AnswerFormFree(Form):
     value_ = TextAreaField('', [validators.DataRequired()])
 
+
 class AnswerFormThumbs(Form):
-    value_ = RadioField('', choices=[('value: up','description: up'),('value: down','description: down')])
+    value_ = RadioField('', choices=[('thumbsup','(this is up)'),('thumbdown','(this is down)')])
+
 
 class AnswerFormStars(Form):
-    value_ = StringField('Answer', [validators.DataRequired()])
+    value_ = RadioField('', choices=[(1,'(one star)'),(2,'(two stars)'),(3,'(three stars)'),(4,'(four stars)'),(5,'(five stars)')])
+
 
 class AnswerFormSmileys(Form):
-    value_ = StringField('Answer', [validators.DataRequired()])
+    value_ = RadioField('', choices=[('sad','(sad)'),('neutral','(neutral'), ('happy', '(happy)')])
 
 
-def parse_answer_from_request_form(requestform):
+def parse_answer_from_request_form(requestform, existing_ans=None):
     qtype = requestform['question_type']
-    template = templates[qtype]
+    parsed_answer = ''
 
     print('\n{}'.format(90 * '*'))
     print('---- PARSING ANSWER VALUE FROM REQUEST FORM:')
     print('--- request.form.keys():')
     for item in request.form.keys():
-        print(item)
+        print('key: {} request.form[key]: {}'.format(item, request.form[item]))
     print('--- QUESTION TYPE: {}'.format(qtype))
-    print('--- NEEDS TEMPLATE: {}'.format(template))
     print('\n{}'.format(90 * '*'))
 
-    if 'value_' in requestform.keys():
-        parsed_answer = requestform['value_']
+    if requestform['question_type'] == 'Freeform':
+        if 'value_' in requestform.keys():
+            parsed_answer = requestform['value_']
+
+    elif requestform['question_type'] == 'Thumbs':
+        if 'thumbsup' in requestform.keys() and 'thumbdown' in requestform.keys():
+            if existing_ans != None:
+                parsed_answer = 'thumbsup' if existing_ans != 'thumbsup' else 'thumbdown'
+            else:
+                parsed_answer = 'thumbsup'
+        elif 'thumbsup' in requestform.keys():
+            parsed_answer = 'thumbsup'
+        elif 'thumbdown' in requestform.keys():
+            parsed_answer = 'thumbdown'
+        else:
+            pass
 
     else:
-        parsed_answer = requestform['value_']
+        pass
 
     return parsed_answer
+
+
+def db_answer_to_response(pre_existing_answer, qtype, form):
+    db_to_thumbstatus = {'thumbdown' : {'thumbdown_selected', 'thumbsup'}, 'thumbsup' : {'thumbdown', 'thumbsup_selected'}}
+
+    downthumb_status = ''
+    upthumb_status = ''
+
+    print('--- CREATING RESPONSE PARAMS FROM PRE-EXISTING ANSWER:')
+    print('--- PRE-EXISTING ANSWER: {}, QTYPE: {}, FORM.VALUE_: {}'.format(pre_existing_answer.value_, qtype, form.value_))
+    if qtype == 'Freeform':
+        form.value_.data = pre_existing_answer.value_
+    elif qtype == 'Thumbs':
+        downthumb_status, upthumb_status = db_to_thumbstatus.get(pre_existing_answer.value_, ('thumbdown', 'thumbsup'))
+        print('--- SETTING THUMBSTATUS: down: {}, up: {}'.format(downthumb_status, upthumb_status))
+    else:
+        form.value_ = pre_existing_answer.value_
+
+    return downthumb_status, upthumb_status, form
+
 
 #---------------------------------------------------------------------------------------------------
 # NEW FEEDBACK
@@ -76,8 +112,8 @@ def newFeedback():
     # Has respective view that shows the latest active survey
     print('\n--- ENTERING newFeedback, method: {}'.format(request.method))
 
-    session.rollback()
-    session.flush()
+    # session.rollback()
+    # session.flush()
 
     # NOTE: ALL SET TO ONE FORM FOR NOW
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
@@ -200,9 +236,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     'Smileys': AnswerFormSmileys(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
-    session.rollback()
-    session.flush()
-
     #-------------------
     # GET: SHOW QUESTION
     #-------------------
@@ -230,6 +263,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
         flash('form.value_: {}'.format(form.value_))
+        downthumb_status = "thumbdown"
+        upthumb_status = "thumbsup"
 
         # Check for pre-existing answers
         try:
@@ -242,7 +277,11 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         if pre_existing_answer != None:
             print('form.value_.data == {}'.format(form.value_.data))
             print('---PRE-EXISTING ANSWER FOUND WITH VALUE {}'.format(pre_existing_answer.value_))
-            form.value_.data = pre_existing_answer.value_
+
+            # Parse answer in db to response parameters for displaying it
+            downthumb_status, upthumb_status, form = db_answer_to_response(pre_existing_answer, q.type_, form)
+
+            # form.value_.data = pre_existing_answer.value_
             print('form.value_.data == {} {}'.format(type(form.value_.data), form.value_.data))
         else:
             print('---NO PRE-EXISTING ANSWER FOUND.')
@@ -269,7 +308,10 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 question_type=q.type_,
                                                 prev_url=prev_url,
                                                 next_url=next_url,
-                                                is_first=is_first))
+                                                is_first=is_first,
+                                                downthumb_status=downthumb_status,
+                                                upthumb_status=upthumb_status,
+                                                ))
 
         print('---RESPONSE CREATED. EXITING showQuestion AND RENDERING {}'.format(template))
 
@@ -283,9 +325,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('request.form: {}'.format(request.form))
         print('request.cookies: {}'.format(request.cookies))
 
-        parsed_answer = parse_answer_from_request_form(request.form)
-
-        # Get possibly pre-existing answer
+        # Get possible pre-existing answer
         print('---COMPARING POSTED ANSWER TO POSSIBLY PRE-EXISTING ANSWER')
         answer = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
         print('len(answer): {}'.format(len(answer)))
@@ -294,6 +334,10 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             answer = answer[0]
             print(answer)
             print('---PRE-EXISTING answer.value_: {}'.format(answer.value_))
+
+            # Parse
+            parsed_answer = parse_answer_from_request_form(request.form, answer.value_)
+
             if answer.value_ == parsed_answer:
                 print('Scrolling through, did not change answer')
             else:
@@ -304,6 +348,9 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         else:
             # Create new answer object
             print('---NO PRE-EXISTING ANSWER FOUND!')
+
+            parsed_answer = parse_answer_from_request_form(request.form, None)
+
             answer = Answer(parsed_answer, int(request.cookies['feedback_id']), int(request.form['question_id']))
             print('---CREATED NEW ANSWER OBJECT:')
             print('answer.serialize {}'.format(answer.serialize))
