@@ -29,6 +29,9 @@ class Survey(Base):
     # feedbacks = relationship("Feedback", back_populates="surveys")
     feedbacks = relationship("Feedback")
 
+    # Survey is parent to reward
+    rewards = relationship("Reward")
+
     def __init__(self, description_, start_date_, end_date_):
         self.description_ = description_
         self.start_date_ = start_date_

@@ -26,6 +26,9 @@ class Feedback(Base):
     # Feedback is parent to answers
     answers = relationship("Answer", back_populates="feedbacks")
 
+    # Feedback is parent to reward
+    rewards = relationship("Reward")
+
     def __init__(self, survey_id_):
         survey_id_ = survey_id_
 
