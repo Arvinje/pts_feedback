@@ -31,17 +31,17 @@
 
     {% from "_formhelpers.html" import render_field %}
     <form action="{{ form_action_url }}" method="post" role="form">
+
         <div class="form-group">
-            <!-- Show pre-existing answer if it exists -->
-                <!-- <textarea class="form-control" id="exampleTextarea" rows="3"> -->
-                    {{ form.value_(cols="100", rows="3") }}
-                <!-- </textarea> -->
+
+            {{ form.value_(cols="100", rows="3") }}
+
         </div>
 
 <!--         <div align="left">
           <button type="button" class="btn btn-outline-secondary btn-sm">Clear all</button>
-        </div> -->
-
+        </div>
+ -->
         <hr>
 
         <p class="lead">
