@@ -20,12 +20,14 @@
 	<th scope="col">description</th>
 	<th scope="col">start_date</th>
 	<th scope="col">end_date</th>
+	<th scope="col">enabled</th>
 	{% for survey in surveys %}
 	  <tr>
 		  <td>{{survey.id_}}</td>
 		  <td>{{survey.description_}}</td>
 		  <td>{{survey.start_date_}}</td>
 		  <td>{{survey.end_date_}}</td>
+		  <td>{{survey.enabled_}}</td>
 		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
 	  </tr>
 	{% endfor %}
