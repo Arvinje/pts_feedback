@@ -64,41 +64,51 @@ def parse_answer_from_request_form(requestform, existing_ans=None):
             parsed_answer = requestform['value_']
 
     elif requestform['question_type'] == 'Thumbs':
-        if 'thumbsup' in requestform.keys() and 'thumbdown' in requestform.keys():
-            if existing_ans != None:
-                parsed_answer = 'thumbsup' if existing_ans != 'thumbsup' else 'thumbdown'
-            else:
-                parsed_answer = 'thumbsup'
-        elif 'thumbsup' in requestform.keys():
-            parsed_answer = 'thumbsup'
-        elif 'thumbdown' in requestform.keys():
-            parsed_answer = 'thumbdown'
-        else:
-            pass
+        if 'value_' in requestform.keys():
+            parsed_answer = requestform['value_']
 
-    else:
-        pass
+        # if 'thumbsup' in requestform.keys() and 'thumbdown' in requestform.keys():
+        #     if existing_ans != None:
+        #         parsed_answer = 'thumbsup' if existing_ans != 'thumbsup' else 'thumbdown'
+        #     else:
+        #         parsed_answer = 'thumbsup'
+        # elif 'thumbsup' in requestform.keys():
+        #     parsed_answer = 'thumbsup'
+        # elif 'thumbdown' in requestform.keys():
+        #     parsed_answer = 'thumbdown'
+        # else:
+        #     pass
+
+    elif requestform['question_type'] == 'Stars':
+        if 'value_' in requestform.keys():
+            parsed_answer = requestform['value_']
+
+    elif requestform['question_type'] == 'Smileys':
+        if 'value_' in requestform.keys():
+            parsed_answer = requestform['value_']
 
     return parsed_answer
 
 
 def db_answer_to_response(pre_existing_answer, qtype, form):
-    db_to_thumbstatus = {'thumbdown' : {'thumbdown_selected', 'thumbsup'}, 'thumbsup' : {'thumbdown', 'thumbsup_selected'}}
+    # db_to_thumbstatus = {'thumbdown' : {'thumbdown_selected', 'thumbsup'}, 'thumbsup' : {'thumbdown', 'thumbsup_selected'}}
 
-    downthumb_status = ''
-    upthumb_status = ''
+    # downthumb_status = ''
+    # upthumb_status = ''
 
     print('--- CREATING RESPONSE PARAMS FROM PRE-EXISTING ANSWER:')
     print('--- PRE-EXISTING ANSWER: {}, QTYPE: {}, FORM.VALUE_: {}'.format(pre_existing_answer.value_, qtype, form.value_))
     if qtype == 'Freeform':
         form.value_.data = pre_existing_answer.value_
     elif qtype == 'Thumbs':
-        downthumb_status, upthumb_status = db_to_thumbstatus.get(pre_existing_answer.value_, ('thumbdown', 'thumbsup'))
-        print('--- SETTING THUMBSTATUS: down: {}, up: {}'.format(downthumb_status, upthumb_status))
+        form.value_.data = pre_existing_answer.value_
+        # downthumb_status, upthumb_status = db_to_thumbstatus.get(pre_existing_answer.value_, ('thumbdown', 'thumbsup'))
+        # print('--- SETTING THUMBSTATUS: down: {}, up: {}'.format(downthumb_status, upthumb_status))
     else:
-        form.value_ = pre_existing_answer.value_
+        form.value_.data = pre_existing_answer.value_
 
-    return downthumb_status, upthumb_status, form
+    # return downthumb_status, upthumb_status, form
+    return form
 
 
 #---------------------------------------------------------------------------------------------------
@@ -263,8 +273,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
         flash('form.value_: {}'.format(form.value_))
-        downthumb_status = "thumbdown"
-        upthumb_status = "thumbsup"
+        # downthumb_status = "thumbdown"
+        # upthumb_status = "thumbsup"
 
         # Check for pre-existing answers
         try:
@@ -279,7 +289,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('---PRE-EXISTING ANSWER FOUND WITH VALUE {}'.format(pre_existing_answer.value_))
 
             # Parse answer in db to response parameters for displaying it
-            downthumb_status, upthumb_status, form = db_answer_to_response(pre_existing_answer, q.type_, form)
+            form = db_answer_to_response(pre_existing_answer, q.type_, form)
+            # downthumb_status, upthumb_status, form = db_answer_to_response(pre_existing_answer, q.type_, form)
 
             # form.value_.data = pre_existing_answer.value_
             print('form.value_.data == {} {}'.format(type(form.value_.data), form.value_.data))
@@ -309,8 +320,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 prev_url=prev_url,
                                                 next_url=next_url,
                                                 is_first=is_first,
-                                                downthumb_status=downthumb_status,
-                                                upthumb_status=upthumb_status,
+                                                # downthumb_status=downthumb_status,
+                                                # upthumb_status=upthumb_status,
                                                 ))
 
         print('---RESPONSE CREATED. EXITING showQuestion AND RENDERING {}'.format(template))
@@ -337,6 +348,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
             # Parse
             parsed_answer = parse_answer_from_request_form(request.form, answer.value_)
+            print('---PARSED_ANSWER: {}'.format(parsed_answer))
 
             if answer.value_ == parsed_answer:
                 print('Scrolling through, did not change answer')
@@ -366,7 +378,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             return redirect(request.form['next_url'])
 
         # Redirect to prev if 'Prev' was clicked
-        if 'Prev' in request.form.keys():
+        if 'Previous' in request.form.keys():
             print('---EXITING showQuestion [POST], REDIRECTING TO PREV: {}'.format(request.form['prev_url']))
             return redirect(request.form['prev_url'])
 
@@ -405,12 +417,12 @@ def thankYou():
         gift_ix = int(request.cookies['feedback_id']) % len(gifts)
         gift_file = '/static/imgs/{}'.format(gifts[gift_ix])
 
-        response = make_response(render_template('thankyou.html', gift_file=gift_file))
+        response = make_response(render_template('survey_lastpage.html', gift_file=gift_file))
 
         # Delete cookie
         response.set_cookie('feedback_id', '', expires=0)
 
-        print('---RESPONSE CREATED. EXITING thankYou AND RENDERING thankyou.html: {}'.format(response))
+        print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
 
 
         return response
