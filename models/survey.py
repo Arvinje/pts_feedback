@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 import datetime
 
@@ -21,18 +21,20 @@ class Survey(Base):
     description_ = Column(String, nullable=False)
     start_date_ = Column(DateTime)
     end_date_ = Column(DateTime)
+    enabled_ = Column(Boolean)
 
     # Survey is parent to questions
     questions = relationship("Question", back_populates="surveys")
 
-    def __init__(self, description_, start_date_, end_date_):
+    def __init__(self, description_, start_date_, end_date_, enabled_):
         self.description_ = description_
         self.start_date_ = start_date_
         self.end_date_ = end_date_
         # self.admin_id_ = admin_id_  # WAITING
 
     def __repr__(self):
-        return "<Id_: {}, Survey: {}, Start date: {}, End date: {}>".format(self.id_, self.description_, self.start_date_, self.end_date_)
+        return "<Id_: {}, Survey: {}, Start date: {}, End date: {}, Enabled: {}>".\
+                format(self.id_, self.description_, self.start_date_, self.end_date_, self.enabled_)
 
     @property
     def serialize(self):
@@ -42,7 +44,8 @@ class Survey(Base):
         'id_' : self.id_,
         'description_' : self.description_,
         'start_date_' : self.start_date_,
-        'end_date_' : self.end_date_
+        'end_date_' : self.end_date_,
+        'enabled_' : self.enabled
         }
 
 if not engine.has_table(tablename):
