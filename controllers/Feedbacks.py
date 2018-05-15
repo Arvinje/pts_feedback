@@ -111,6 +111,28 @@ def db_answer_to_response(pre_existing_answer, qtype, form):
     return form
 
 
+def get_progress(feedback):
+    survey_id = feedback.survey_id_
+    questions = session.query(Question).filter_by(survey_id_=survey_id).all()
+    answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
+    missing_q_ids = set([item.id_ for item in questions])
+    missing_a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
+    missing = missing_q_ids.difference(missing_a_ids)
+    progress = int(len(missing_a_ids) / float(len(missing_q_ids)) * 100)
+
+    missing_mandatory = []
+    for item in questions:
+        print(item.id_, item.title_)
+        print('OPTIONAL: {}'.format(item.optional_))
+        print('IN MISSING: {}'.format(item.id_ in missing))
+        if not bool(item.optional_) and item.id_ in missing:
+            print('---MISSING MANDATORY QUESTION WITH ID {}: {}'.format(item.id_, item.title_))
+            missing_mandatory.append(item.title_)
+
+    return progress, missing, missing_mandatory
+
+
+
 #---------------------------------------------------------------------------------------------------
 # NEW FEEDBACK
 #---------------------------------------------------------------------------------------------------
@@ -321,9 +343,13 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
         # Get progress
-        progress, missing = get_progress(feedback)
+        progress, missing, missing_mandatory = get_progress(feedback)
         print('---PROGRESS! {}'.format(progress))
+        print('---MISSING! {}'.format(missing))
+        print('---MISSING MANDATORY! {}'.format(missing_mandatory))
         flash('progress: {}'.format(progress))
+        flash('missing: {}'.format(missing))
+        flash('missing_mandatory: {}'.format(missing_mandatory))
 
 
         response = make_response(render_template(template,
@@ -384,6 +410,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
 
+        # Validate: data required
         if len(answer.value_) > 0:
             session.add(answer)
             session.commit()
@@ -421,9 +448,13 @@ def thankYou():
     feedback = session.query(Feedback).filter_by(id_=feedback_id).one()
 
     # Check that answer entries have been created for each survey question
-    progress, missing = get_progress(feedback)
+    progress, missing, missing_mandatory = get_progress(feedback)
     print('---PROGRESS! {}'.format(progress))
+    print('---MISSING! {}'.format(missing))
+    print('---MISSING MANDATORY! {}'.format(missing_mandatory))
     flash('progress: {}'.format(progress))
+    flash('missing: {}'.format(missing))
+    flash('missing_mandatory: {}'.format(missing_mandatory))
 
 
     # survey_id = feedback.survey_id_
@@ -435,9 +466,8 @@ def thankYou():
 
     flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
-    # If no answers missing <- NOT NEEDED
-    if len(missing) == 0:
-    # if progress == 100:
+    # If no mandatory answers missing <- NOT NEEDED
+    if len(missing_mandatory) == 0:
         gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
         gift_ix = int(request.cookies['feedback_id']) % len(gifts)
         gift_file = '/static/imgs/{}'.format(gifts[gift_ix])
@@ -452,24 +482,13 @@ def thankYou():
         return response
 
     # If answers missing
-    elif len(missing) == 1:
-        return '<h1>Please fill in question {}</h1>'.format(list(missing)[0])
+    elif len(missing_mandatory) == 1:
+        print('len(missing) == 1')
+        return '<h3>Please fill in the following question:</h3><h4>{}</h4>'.format(list(missing_mandatory)[0])
     else:
-        return '<h1>Please fill in questions {}</h1>'.format(list(missing))
+        print('len(missing) > 1')
+        return '<h3>Please fill in the following questions:</h3><h4>{}</h4>'.format('<br>'.join(list(missing_mandatory)))
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
-
-
-def get_progress(feedback):
-    survey_id = feedback.survey_id_
-    questions = session.query(Question).filter_by(survey_id_=survey_id).all()
-    answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
-    q_ids = set([item.id_ for item in questions])
-    a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
-    missing = q_ids.difference(a_ids)
-    progress = int(len(a_ids) / float(len(q_ids)) * 100)
-
-    return progress, missing
-
 
