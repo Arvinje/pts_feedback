@@ -15,8 +15,11 @@
 
 <h2>Results ({{survey.id_}}: {{survey.description_}})</h2>
 
+<br>
+  <a href="\results\surveys\{{survey.id_}}\export">Export answers to CSV-file</a>
+<br><br>
+
 <table class="table table-hover">
-	Questions:
 	{% for question in survey.questions %}
 		<th scope="col">{{question.title_}}</th>
 	{% endfor %}
@@ -24,12 +27,12 @@
 	<tr>
 
 	{% for question in survey.questions %}
-		<td><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}">Show answers</a></td>
+		<td><b><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}">Show answers</a></b></td>
 	{% endfor %}
 </table>
 
-<br><br>
+<br>
 
-<a href="\results\surveys" method="GET">Back to results</a>
+<a href="\results\surveys" method="GET">Back to the results</a>
 
 {% endblock %}
