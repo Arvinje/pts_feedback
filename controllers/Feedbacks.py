@@ -149,9 +149,9 @@ def newFeedback():
 
     # NOTE: ALL SET TO ONE FORM FOR NOW
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
-                    'Thumbs': AnswerFormFree(request.form),
-                    'Stars': AnswerFormFree(request.form),
-                    'Smileys': AnswerFormFree(request.form)}
+                    'Thumbs': AnswerFormThumbs(request.form),
+                    'Stars': AnswerFormStars(request.form),
+                    'Smileys': AnswerFormSmileys(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
     # From active surveys, get one with greatest id
