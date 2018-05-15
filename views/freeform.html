@@ -10,13 +10,13 @@
 
 <!-- Flashed messages -->
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 {% endwith %}
 
 <body>
@@ -38,10 +38,12 @@
 
         </div>
 
-<!--         <div align="left">
-          <button type="button" class="btn btn-outline-secondary btn-sm">Clear all</button>
+        <!--
+        <div align="left">
+            <button type="button" class="btn btn-outline-secondary btn-sm">Clear all</button>
         </div>
- -->
+         -->
+
         <hr>
 
         <p class="lead">
