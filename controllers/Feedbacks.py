@@ -21,16 +21,6 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 
-routes = []
-
-templates = {'Freeform': 'freeform.html',   # which of these two is redundant?
-            'Text': 'freeform.html',        # which of these two is redundant?
-            'Thumbs': 'thumbs.html',
-            'Stars': 'stars.html',
-            'Smileys': 'smileys.html',
-            'Thankyou': 'survey_lastpage.html'}
-print('---TEMPLATE DICT: {}'.format(templates))
-
 
 class AnswerFormFree(Form):
     value_ = TextAreaField('', [validators.DataRequired()])
@@ -48,17 +38,18 @@ class AnswerFormSmileys(Form):
     value_ = RadioField('', choices=[('sad','(sad)'),('neutral','(neutral'), ('happy', '(happy)')])
 
 
-def parse_answer_from_request_form(requestform, existing_ans=None):
+def parse_answer_from_request_form(requestform, existing_ans=None, verbose=False):
     qtype = requestform['question_type']
     parsed_answer = ''
 
-    print('\n{}'.format(90 * '*'))
-    print('---- PARSING ANSWER VALUE FROM REQUEST FORM:')
-    print('--- request.form.keys():')
-    for item in request.form.keys():
-        print('key: {} request.form[key]: {}'.format(item, request.form[item]))
-    print('--- QUESTION TYPE: {}'.format(qtype))
-    print('\n{}'.format(90 * '*'))
+    if verbose:
+        print('\n{}'.format(90 * '*'))
+        print('---- PARSING ANSWER VALUE FROM REQUEST FORM:')
+        print('--- request.form.keys():')
+        for item in request.form.keys():
+            print('key: {} request.form[key]: {}'.format(item, request.form[item]))
+        print('--- QUESTION TYPE: {}'.format(qtype))
+        print('\n{}'.format(90 * '*'))
 
     if 'value_' in requestform.keys():
         parsed_answer = requestform['value_']
@@ -68,28 +59,15 @@ def parse_answer_from_request_form(requestform, existing_ans=None):
     return parsed_answer
 
 
-def db_answer_to_response(pre_existing_answer, qtype, form):
-    # db_to_thumbstatus = {'thumbdown' : {'thumbdown_selected', 'thumbsup'}, 'thumbsup' : {'thumbdown', 'thumbsup_selected'}}
-
-    # downthumb_status = ''
-    # upthumb_status = ''
-
-    print('--- CREATING RESPONSE PARAMS FROM PRE-EXISTING ANSWER:')
-    print('--- PRE-EXISTING ANSWER: {}, QTYPE: {}, FORM.VALUE_: {}'.format(pre_existing_answer.value_, qtype, form.value_))
-    if qtype == 'Freeform':
-        form.value_.data = pre_existing_answer.value_
-    elif qtype == 'Thumbs':
-        form.value_.data = pre_existing_answer.value_
-        # downthumb_status, upthumb_status = db_to_thumbstatus.get(pre_existing_answer.value_, ('thumbdown', 'thumbsup'))
-        # print('--- SETTING THUMBSTATUS: down: {}, up: {}'.format(downthumb_status, upthumb_status))
-    else:
-        form.value_.data = pre_existing_answer.value_
-
-    # return downthumb_status, upthumb_status, form
+def db_answer_to_response(pre_existing_answer, qtype, form, verbose=False):
+    if verbose:
+        print('--- CREATING RESPONSE PARAMS FROM PRE-EXISTING ANSWER:')
+        print('--- PRE-EXISTING ANSWER: {}, QTYPE: {}, FORM.VALUE_: {}'.format(pre_existing_answer.value_, qtype, form.value_))
+    form.value_.data = pre_existing_answer.value_
     return form
 
 
-def get_progress(feedback):
+def get_progress(feedback, verbose=False):
     survey_id = feedback.survey_id_
     questions = session.query(Question).filter_by(survey_id_=survey_id).all()
     answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
@@ -100,9 +78,10 @@ def get_progress(feedback):
 
     missing_mandatory = []
     for item in questions:
-        print(item.id_, item.title_)
-        print('OPTIONAL: {}'.format(item.optional_))
-        print('IN MISSING: {}'.format(item.id_ in missing))
+        if verbose:
+            print(item.id_, item.title_)
+            print('OPTIONAL: {}'.format(item.optional_))
+            print('IN MISSING: {}'.format(item.id_ in missing))
         if not bool(item.optional_) and item.id_ in missing:
             print('---MISSING MANDATORY QUESTION WITH ID {}: {}'.format(item.id_, item.title_))
             missing_mandatory.append(item.title_)
@@ -110,9 +89,20 @@ def get_progress(feedback):
     return progress, missing, missing_mandatory
 
 
+routes = []
+
+templates = {'Freeform': 'freeform.html',   # can this be removed?
+            'Text': 'freeform.html',
+            'Thumbs': 'thumbs.html',
+            'Stars': 'stars.html',
+            'Smileys': 'smileys.html',
+            'Thankyou': 'survey_lastpage.html'}
+
+print('---TEMPLATE DICT: {}'.format(templates))
+
 
 #---------------------------------------------------------------------------------------------------
-# NEW FEEDBACK
+# ROUTE: NEW FEEDBACK
 #---------------------------------------------------------------------------------------------------
 
 # /feedback
@@ -122,14 +112,12 @@ def newFeedback():
     # Has respective view that shows the latest active survey
     print('\n--- ENTERING newFeedback, method: {}'.format(request.method))
 
-    # session.rollback()
-    # session.flush()
-
-    # NOTE: ALL SET TO ONE FORM FOR NOW
+    # Question types dict
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
                     'Smileys': AnswerFormSmileys(request.form)}
+
     print('---FORM DICT: {}'.format(qtype_forms))
 
     # From active surveys, get one with greatest id
@@ -224,7 +212,7 @@ routes.append(dict(rule='/feedback', view_func=newFeedback, options=dict(methods
 
 
 #---------------------------------------------------------------------------------------------------
-# SHOW QUESTION
+# ROUTE: SHOW QUESTION
 #---------------------------------------------------------------------------------------------------
 
 # /feedback/questions/<int:question_id>
@@ -243,19 +231,18 @@ def showQuestion(question_id, methods=['GET', 'POST']):
     print('\n--- COOKIE / SESSION ID: {}'.format(cookie))
     print('---FEEDBACK: {}'.format(feedback.serialize))
 
-    # NOTE: ALL SET TO ONE FORM FOR NOW
-    qtype_forms = {'Freeform': AnswerFormFree(request.form),
+    # Template dict
+    qtype_forms = {'Freeform': AnswerFormFree(request.form), # can this be removed?
+                    'Text': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
                     'Smileys': AnswerFormSmileys(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
-    # TODO: REMOVE!
     progress = 0
 
-    #-------------------
+
     # GET: SHOW QUESTION
-    #-------------------
     if request.method == 'GET':
         print('\n--- ENTERING showQuestion with question_id: {}, method: {}'.format(question_id, request.method))
 
@@ -284,8 +271,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         flash('Feedback_id == Cookie == {}'.format(feedback.id_))
         flash('form.value_: {}'.format(form.value_))
-        # downthumb_status = "thumbdown"
-        # upthumb_status = "thumbsup"
 
         # Check for pre-existing answers
         try:
@@ -301,9 +286,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
             # Parse answer in db to response parameters for displaying it
             form = db_answer_to_response(pre_existing_answer, q.type_, form)
-            # downthumb_status, upthumb_status, form = db_answer_to_response(pre_existing_answer, q.type_, form)
-
-            # form.value_.data = pre_existing_answer.value_
             print('form.value_.data == {} {}'.format(type(form.value_.data), form.value_.data))
         else:
             print('---NO PRE-EXISTING ANSWER FOUND.')
@@ -324,12 +306,13 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         # Get progress
         progress, missing, missing_mandatory = get_progress(feedback)
-        print('---PROGRESS! {}'.format(progress))
-        print('---MISSING! {}'.format(missing))
-        print('---MISSING MANDATORY! {}'.format(missing_mandatory))
-        flash('progress: {}'.format(progress))
-        flash('missing: {}'.format(missing))
-        flash('missing_mandatory: {}'.format(missing_mandatory))
+
+        # print('---PROGRESS! {}'.format(progress))
+        # print('---MISSING! {}'.format(missing))
+        # print('---MISSING MANDATORY! {}'.format(missing_mandatory))
+        # flash('progress: {}'.format(progress))
+        # flash('missing: {}'.format(missing))
+        # flash('missing_mandatory: {}'.format(missing_mandatory))
 
         response = make_response(render_template(template,
                                                 form=form,
@@ -349,9 +332,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         return response
 
-    #----------------
+
     # POST QUESTION:
-    #----------------
     elif request.method == 'POST':
         print('\n---ENTERING WITH POST')
         print('request.form: {}'.format(request.form))
@@ -411,7 +393,7 @@ routes.append(dict(rule='/feedback/questions/<int:question_id>', view_func=showQ
 
 
 #---------------------------------------------------------------------------------------------------
-# THANK YOU
+# ROUTE: THANK YOU
 #---------------------------------------------------------------------------------------------------
 
 # /feedback/thankyou
@@ -435,30 +417,19 @@ def thankYou():
     flash('progress: {}'.format(progress))
     flash('missing: {}'.format(missing))
     flash('missing_mandatory: {}'.format(missing_mandatory))
-
-
-    # survey_id = feedback.survey_id_
-    # questions = session.query(Question).filter_by(survey_id_=survey_id).all()
-    # answers = session.query(Answer).filter_by(feedback_id_=feedback_id).all()
-    # q_ids = set([item.id_ for item in questions])
-    # a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
-    # missing = q_ids.difference(a_ids)
-
     flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
-    # If no mandatory answers missing <- NOT NEEDED
+    # If no mandatory answers missing
     if len(missing_mandatory) == 0:
+
+        # This is a placeholder for actual gift
         gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
         gift_ix = int(request.cookies['feedback_id']) % len(gifts)
         gift_file = '/static/imgs/{}'.format(gifts[gift_ix])
 
         response = make_response(render_template('survey_lastpage.html', gift_file=gift_file))
-
-        # Delete cookie
-        response.set_cookie('feedback_id', '', expires=0)
-
+        response.set_cookie('feedback_id', '', expires=0)  # Delete cookie
         print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
-
         return response
 
     # If answers missing
