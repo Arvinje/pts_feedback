@@ -193,6 +193,8 @@ def newFeedback():
         prev_url = None
         next_url = url_for('controllers.thankYou') if len(q_list) <= 1 else url_for('controllers.showQuestion', question_id=q_list[1].id_)
 
+        progress = 0
+
         # Debug statements
         print('---QUESTION TYPE: {}'.format(q.type_))
         print('---TEMPLATE: {}, {}'.format(type(template), template))
@@ -203,11 +205,13 @@ def newFeedback():
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
         flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+        flash('progress: {}'.format(progress))
 
         response = make_response(render_template('survey_frontpage.html',
                                                     survey=survey,
                                                     question_id=q.id_,
-                                                    feedback=feedback
+                                                    feedback=feedback,
+                                                    progress=progress
                                                     ))
 
         # Set cookie to value of feedback.id_
@@ -246,6 +250,9 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     'Smileys': AnswerFormSmileys(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
+    # TODO: REMOVE!
+    progress = 0
+
     #-------------------
     # GET: SHOW QUESTION
     #-------------------
@@ -272,6 +279,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Set up question form and fetch possible pre-existing answer
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
+
         flash('Feedback_id == Cookie == {}'.format(feedback.id_))
         flash('form.value_: {}'.format(form.value_))
         # downthumb_status = "thumbdown"
@@ -312,6 +320,12 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('---NEXT_URL: {}, {}'.format(type(next_url), next_url))
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
+        # Get progress
+        progress, missing = get_progress(feedback)
+        print('---PROGRESS! {}'.format(progress))
+        flash('progress: {}'.format(progress))
+
+
         response = make_response(render_template(template,
                                                 form=form,
                                                 form_action_url=form_action_url,
@@ -321,6 +335,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 prev_url=prev_url,
                                                 next_url=next_url,
                                                 is_first=is_first,
+                                                progress=progress
                                                 # downthumb_status=downthumb_status,
                                                 # upthumb_status=upthumb_status,
                                                 ))
@@ -402,20 +417,27 @@ def thankYou():
     session.rollback()
     session.flush()
 
-    # Check that answer entries have been created for each survey question
     feedback_id = request.cookies['feedback_id']
     feedback = session.query(Feedback).filter_by(id_=feedback_id).one()
-    survey_id = feedback.survey_id_
-    questions = session.query(Question).filter_by(survey_id_=survey_id).all()
-    answers = session.query(Answer).filter_by(feedback_id_=feedback_id).all()
-    q_ids = set([item.id_ for item in questions])
-    a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
-    missing = q_ids.difference(a_ids)
+
+    # Check that answer entries have been created for each survey question
+    progress, missing = get_progress(feedback)
+    print('---PROGRESS! {}'.format(progress))
+    flash('progress: {}'.format(progress))
+
+
+    # survey_id = feedback.survey_id_
+    # questions = session.query(Question).filter_by(survey_id_=survey_id).all()
+    # answers = session.query(Answer).filter_by(feedback_id_=feedback_id).all()
+    # q_ids = set([item.id_ for item in questions])
+    # a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
+    # missing = q_ids.difference(a_ids)
 
     flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
     # If no answers missing <- NOT NEEDED
     if len(missing) == 0:
+    # if progress == 100:
         gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
         gift_ix = int(request.cookies['feedback_id']) % len(gifts)
         gift_file = '/static/imgs/{}'.format(gifts[gift_ix])
@@ -431,11 +453,23 @@ def thankYou():
 
     # If answers missing
     elif len(missing) == 1:
-        return 'Please fill in question {}'.format(list(missing)[0])
+        return '<h1>Please fill in question {}</h1>'.format(list(missing)[0])
     else:
-        return 'Please fill in questions {}'.format(list(missing))
+        return '<h1>Please fill in questions {}</h1>'.format(list(missing))
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
+
+
+def get_progress(feedback):
+    survey_id = feedback.survey_id_
+    questions = session.query(Question).filter_by(survey_id_=survey_id).all()
+    answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
+    q_ids = set([item.id_ for item in questions])
+    a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
+    missing = q_ids.difference(a_ids)
+    progress = int(len(a_ids) / float(len(q_ids)) * 100)
+
+    return progress, missing
 
 
