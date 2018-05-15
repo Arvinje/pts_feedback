@@ -192,8 +192,8 @@ def newFeedback():
         print('---NEXT_URL: {}, {}'.format(type(next_url), next_url))
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
-        flash('Feedback_id == Cookie == {}'.format(feedback.id_))
-        flash('progress: {}'.format(progress))
+        # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+        # flash('progress: {}'.format(progress))
 
         response = make_response(render_template('survey_frontpage.html',
                                                     survey=survey,
@@ -254,8 +254,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Figure out next_url and prev_url
         prev_q_ix = q_list_ids.index(q.id_) - 1 if q_list_ids.index(q.id_) - 1 >= 0 else None
         next_q_ix = q_list_ids.index(q.id_) + 1 if q_list_ids.index(q.id_) + 1 < len(q_list) else None
-        flash('prev_q_ix: {}'.format(prev_q_ix))
-        flash('next_q_ix: {}'.format(next_q_ix))
+        # flash('prev_q_ix: {}'.format(prev_q_ix))
+        # flash('next_q_ix: {}'.format(next_q_ix))
         prev_url = url_for('controllers.showQuestion', question_id=q_list_ids[prev_q_ix]) if prev_q_ix != None else None # <---
         next_url = url_for('controllers.showQuestion', question_id=q_list_ids[next_q_ix]) if next_q_ix != None else url_for('controllers.thankYou')
         is_first = prev_url == None
@@ -269,8 +269,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
 
-        flash('Feedback_id == Cookie == {}'.format(feedback.id_))
-        flash('form.value_: {}'.format(form.value_))
+        # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+        # flash('form.value_: {}'.format(form.value_))
 
         # Check for pre-existing answers
         try:
@@ -414,10 +414,10 @@ def thankYou():
     print('---PROGRESS! {}'.format(progress))
     print('---MISSING! {}'.format(missing))
     print('---MISSING MANDATORY! {}'.format(missing_mandatory))
-    flash('progress: {}'.format(progress))
-    flash('missing: {}'.format(missing))
-    flash('missing_mandatory: {}'.format(missing_mandatory))
-    flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+    # flash('progress: {}'.format(progress))
+    # flash('missing: {}'.format(missing))
+    # flash('missing_mandatory: {}'.format(missing_mandatory))
+    # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
     # If no mandatory answers missing
     if len(missing_mandatory) == 0:
