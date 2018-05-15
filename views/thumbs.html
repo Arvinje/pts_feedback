@@ -3,63 +3,66 @@
 <!-- Mangled further by Inka 4/28 -->
 
 <head>
-    <title>Thumbs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/thumbs.css') }}">
+	<title>Thumbs</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/thumbs.css') }}">
 </head>
 
 <!-- Flashed messages -->
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+	{% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+			<li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
 {% endwith %}
 
 <body>
+	<nav class="navbar navbar-expand navbar-dark bg-primary">
+		<a class="navbar-brand" href="#"><b>LLB</b></a>
+	</nav>
+	<br>
+	<h1>Give us thumbs!</h1>
+	<p class="lead">Here is the question in which you can answer with thumbs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+	<hr class="my-4">
+	<h2>{{ question_title }}</h2>
+	<br>
 
-    <body>
-        <nav class="navbar navbar-expand navbar-dark bg-primary">
-            <a class="navbar-brand" href="#"><b>LLB</b></a>
-        </nav>
-        <br>
-        <h1>Give us thumbs!</h1>
-        <p class="lead">Here is the question in which you can answer with thumbs. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <hr class="my-4">
-        <h2>{{ question_title }}</h2>
-        <br>
+	{% from "_formhelpers.html" import render_field %}
+	<form action="{{ form_action_url }}" method=post>
 
-        {% from "_formhelpers.html" import render_field %}
-        <form action="{{ form_action_url }}" method="post" role="form">
+		{{ render_field(form.value_) }}
 
-            {{ render_field(form.value_)}}
+		<!-- Inka stares cluelessly at the following, unable to integrate. -->
 
-            <div class="thumbs-selector">
-                <input id="thumbdown" type="radio" name="thumb_down" value="thumbdown" />
-                <label class="thumbs-cc thumbdown" for="thumbdown"></label>
-                <input id="thumbsup" type="radio" name="thumb_up" value="thumbsup" />
-                <label class="thumbs-cc thumbsup" for="thumbsup"></label>
-            </div>
+		<!--
+				<div class="thumbs-selector">
+				<input id="thumbdown" type="radio" name="thumb" value="thumbdown" />
+		        <label class="thumbs-cc thumbdown" for="thumbdown"></label>
+		        <input id="thumbsup" type="radio" name="thumb" value="thumbsup" />
+				<label class="thumbs-cc thumbsup" for="thumbsup"></label>
+				</div>
+		 -->
+		<hr>
 
-            <hr>
-            <p class="lead">
-                {% if not is_first %}
-                    <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button">
-                {% endif %}
-                <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button">
-            </p>
+		<!-- If this is the first question -->
+		<p class="lead">
+			{% if not is_first %}
+				<input type="submit" class="btn btn-info btn-lg"  name="Previous" value="Prev" role="button">
+			{% endif %}
+			<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button">
+		</p>
 
-            <input type=hidden name='question_id' value={{ question_id }}>
-            <input type=hidden name='question_type' value={{ question_type }}>
-            <input type=hidden name='prev_url' value={{ prev_url }}>
-            <input type=hidden name='next_url' value={{ next_url }}>
+		<input type=hidden name='question_id' value={{ question_id }}>
+		<input type=hidden name='question_type' value={{ question_type }}>
+		<input type=hidden name='prev_url' value={{ prev_url }}>
+		<input type=hidden name='next_url' value={{ next_url }}>
 
-        </form>
+	</form>
 
-    </body>
+</body>
 
-    </html>
+</html>
