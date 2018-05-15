@@ -272,6 +272,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Set up question form and fetch possible pre-existing answer
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
         print('Chose form from qtype_forms: {}'.format(form))
+        flash('Feedback_id == Cookie == {}'.format(feedback.id_))
         flash('form.value_: {}'.format(form.value_))
         # downthumb_status = "thumbdown"
         # upthumb_status = "thumbsup"
@@ -411,6 +412,8 @@ def thankYou():
     a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
     missing = q_ids.difference(a_ids)
 
+    flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+
     # If no answers missing <- NOT NEEDED
     if len(missing) == 0:
         gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
@@ -423,7 +426,6 @@ def thankYou():
         response.set_cookie('feedback_id', '', expires=0)
 
         print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
-
 
         return response
 
