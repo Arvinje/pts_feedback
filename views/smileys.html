@@ -2,40 +2,67 @@
 <!-- Done by Saija 4/18 -->
 <!-- Mangled further by Inka 4/28 -->
 <head>
-    <title>Smileys</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
+	<title>Smileys</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
 
 </head>
 
-<body>
-    <nav class="navbar navbar-expand navbar-dark bg-primary">
-        <a class="navbar-brand" href="#"><b>LLB</b></a>
-    </nav>
-    <br>
-    <h1>Hope you are happy!</h1>
-    <p class="lead">Here is the question in which you can answer with smileys. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    <hr class="my-4">
-    <h2>{{ question_title }}</h2>
-    <form>
-        <div class="cc-selector">
-            <input id="sad" type="radio" name="emoji" value="sad" />
-            <label class="face-cc sad" for="sad"></label>
-            <input id="neutral" type="radio" name="emoji" value="neutral" />
-            <label class="face-cc neutral" for="neutral"></label>
-            <input id="happy" type="radio" name="emoji" value="happy" />
-            <label class="face-cc happy" for="happy"></label>
-        </div>
-        <hr>
+<!-- Flashed messages -->
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+			<li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
 
-        <p class="lead">
-            {% if not is_first %}
-                <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
-            {% endif %}
-                <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
-        </p>
-    </form>
+<body>
+	<nav class="navbar navbar-expand navbar-dark bg-primary">
+		<a class="navbar-brand" href="#"><b>LLB</b></a>
+	</nav>
+	<br>
+	<h1>Hope you are happy!</h1>
+	<p class="lead">Here is the question in which you can answer with smileys. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+	<hr class="my-4">
+	<h2>{{ question_title }}</h2>
+	<br>
+
+		{% from "_formhelpers.html" import render_field %}
+		<form action="{{ form_action_url }}" method=post>
+
+			{{ render_field(form.value_) }}
+
+		<!-- Inka stares cluelessly at the following, unable to integrate. -->
+
+	<!--
+			<div class="cc-selector">
+			<input id="sad" type="radio" name="emoji" value="sad" />
+			<label class="face-cc sad" for="sad"></label>
+			<input id="neutral" type="radio" name="emoji" value="neutral" />
+			<label class="face-cc neutral" for="neutral"></label>
+			<input id="happy" type="radio" name="emoji" value="happy" />
+			<label class="face-cc happy" for="happy"></label>
+			</div>
+	 -->
+			<input type=hidden name='question_id' value={{ question_id }}>
+			<input type=hidden name='question_type' value={{ question_type }}>
+			<input type=hidden name='prev_url' value={{ prev_url }}>
+			<input type=hidden name='next_url' value={{ next_url }}>
+
+			<hr>
+
+			<p class="lead">
+				{% if not is_first %}
+					<input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+				{% endif %}
+					<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+			</p>
+
+	</form>
 
 </body>
 
