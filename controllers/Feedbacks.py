@@ -353,8 +353,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         flash('missing: {}'.format(missing))
         flash('missing_mandatory: {}'.format(missing_mandatory))
 
-        print('template: {}'.format(template))
-
         response = make_response(render_template(template,
                                                 form=form,
                                                 form_action_url=form_action_url,
