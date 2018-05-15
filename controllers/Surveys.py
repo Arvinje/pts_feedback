@@ -1,7 +1,7 @@
 import os, inspect, time
 from flask import Flask, render_template, request, redirect, flash
 from config.setup import session # for SQL-connection
-from wtforms import Form, StringField, DateField, validators 
+from wtforms import Form, StringField, DateField, validators
 
 from models.survey import Survey
 from models.question import Question

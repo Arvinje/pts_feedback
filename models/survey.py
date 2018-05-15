@@ -17,13 +17,20 @@ class Survey(Base):
     __tablename__ = tablename
 
     # Mappers
-    id_ = Column(Integer, primary_key=True,autoincrement=True)
+    id_ = Column(Integer, primary_key=True, autoincrement=True)
     description_ = Column(String, nullable=False)
     start_date_ = Column(DateTime)
     end_date_ = Column(DateTime)
 
     # Survey is parent to questions
     questions = relationship("Question", back_populates="surveys")
+
+    # Survey is parent to feedback
+    # feedbacks = relationship("Feedback", back_populates="surveys")
+    feedbacks = relationship("Feedback")
+
+    # Survey is parent to reward
+    rewards = relationship("Reward")
 
     def __init__(self, description_, start_date_, end_date_):
         self.description_ = description_
@@ -32,7 +39,7 @@ class Survey(Base):
         # self.admin_id_ = admin_id_  # WAITING
 
     def __repr__(self):
-        return "<Id_: {}, Survey: {}, Start date: {}, End date: {}>".format(self.id_, self.description_, self.start_date_, self.end_date_)
+        return "<id_: {}, description_: {}, start_date_: {}, end_date_: {}>".format(self.id_, self.description_, self.start_date_, self.end_date_)
 
     @property
     def serialize(self):

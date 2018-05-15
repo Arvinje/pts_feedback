@@ -108,5 +108,9 @@ projectwork.sublime-workspace
 # Mac stuff
 .DS_Store
 
+# Windows stuff
 llb_install.bat
 llb_run.bat
+
+# Other
+other/*.*

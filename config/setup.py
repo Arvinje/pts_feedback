@@ -11,6 +11,7 @@ Base = declarative_base()
 
 # Bind SQLAlchemy
 postgres_url = os.environ['LLB_POSTGRES_URL']
+# engine = create_engine(postgres_url, echo=True)      # engine bound to type of database
 engine = create_engine(postgres_url)      # engine bound to type of database
 Base.metadata.bind = engine               # base class (+ my classes) bound to engine
 DBSession = sessionmaker(bind=engine)     # session class bound to engine
