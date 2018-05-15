@@ -3,6 +3,10 @@
       <title>LLB</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/cosmo.css') }}" media="all">
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-expand navbar-dark bg-primary">
@@ -16,10 +20,7 @@
                 <a href = "/" class="nav-link">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a href="/surveys/new" class="nav-link">Add a survey</a>
-              </li>
-              <li class="nav-item">
-                <a href="/surveys" class="nav-link">View surveys</a>
+                <a href="/surveys" class="nav-link">Surveys</a>
               </li>
             </ul>
           </div>

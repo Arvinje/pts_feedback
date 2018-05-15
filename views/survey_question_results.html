@@ -16,7 +16,7 @@
 <h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
 
 <br>
-  <b><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">Export answers to CSV-file</a></b>
+  <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">Export answers to CSV-file</a>
 <br><br>
 
 <table class="table table-hover">
@@ -25,13 +25,11 @@
 	<th scope="col">{{question.title_}}</th>
 		{% for answer in question.answers %}
 		<tr>
-			<td>{{answer.value_}}</td>
+			<b><td>{{answer.value_}}</td></b>
 		</tr>
 		{% endfor %}
 </table>
 
-<br>
-
-<a href="\results\surveys" method="GET">Back to results</a>
+<a href="\results\surveys" method="GET">Back to the results</a>
 
 {% endblock %}
