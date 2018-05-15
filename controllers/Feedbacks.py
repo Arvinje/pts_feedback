@@ -294,7 +294,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         is_first = prev_url == None
 
         # Set up proper template
-        template = templates.get(q.type_, 'Freeform')  # Freeform is default fallback
+        template = templates.get(q.type_, 'freeform.html')  # Freeform is default fallback
         print('Chose template {} from templates: {}'.format(template, templates))
         form_action_url = '/feedback/questions/' + str(q.id_)
 
@@ -350,7 +350,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         flash('progress: {}'.format(progress))
         flash('missing: {}'.format(missing))
         flash('missing_mandatory: {}'.format(missing_mandatory))
-
 
         response = make_response(render_template(template,
                                                 form=form,
