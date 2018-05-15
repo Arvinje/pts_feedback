@@ -210,7 +210,7 @@ def newFeedback():
 
     # Show first survey question:
     if q != None:
-        template = templates.get(q.type_, 'show_question_freeform.html')  # Defaults to show_question_freeform for now
+        template = templates.get(q.type_, 'freeform.html')  # Defaults to show_question_freeform for now
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))  # Defaults to AnswerFormFree for now
         prev_url = None
         next_url = url_for('controllers.thankYou') if len(q_list) <= 1 else url_for('controllers.showQuestion', question_id=q_list[1].id_)
@@ -289,12 +289,14 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Figure out next_url and prev_url
         prev_q_ix = q_list_ids.index(q.id_) - 1 if q_list_ids.index(q.id_) - 1 >= 0 else None
         next_q_ix = q_list_ids.index(q.id_) + 1 if q_list_ids.index(q.id_) + 1 < len(q_list) else None
+        flash('prev_q_ix: {}'.format(prev_q_ix))
+        flash('next_q_ix: {}'.format(next_q_ix))
         prev_url = url_for('controllers.showQuestion', question_id=q_list_ids[prev_q_ix]) if prev_q_ix != None else None # <---
         next_url = url_for('controllers.showQuestion', question_id=q_list_ids[next_q_ix]) if next_q_ix != None else url_for('controllers.thankYou')
         is_first = prev_url == None
 
         # Set up proper template
-        template = templates.get(q.type_, 'Freeform')  # Freeform is default fallback
+        template = templates.get(q.type_, 'freeform.html')  # Freeform is default fallback
         print('Chose template {} from templates: {}'.format(template, templates))
         form_action_url = '/feedback/questions/' + str(q.id_)
 
@@ -351,6 +353,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         flash('missing: {}'.format(missing))
         flash('missing_mandatory: {}'.format(missing_mandatory))
 
+        print('template: {}'.format(template))
 
         response = make_response(render_template(template,
                                                 form=form,
