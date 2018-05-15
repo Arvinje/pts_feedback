@@ -14,18 +14,20 @@
 {% endwith %}
 
 <h2>Survey result list:</h2>
- 
+
 <table class="table table-hover">
-	<th scope="col">id_</th>
-	<th scope="col">description</th>
-	<th scope="col">start_date</th>
-	<th scope="col">end_date</th>
+	<th scope="col">ID</th>
+	<th scope="col">Description</th>
+	<th scope="col">Start Date</th>
+	<th scope="col">End Date</th>
+  <th scope="col">Enabled</th>
 	{% for survey in surveys %}
 	  <tr>
 		  <td>{{survey.id_}}</td>
 		  <td>{{survey.description_}}</td>
 		  <td>{{survey.start_date_}}</td>
 		  <td>{{survey.end_date_}}</td>
+      <td>{{survey.enabled_}}</td>
 		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
 	  </tr>
 	{% endfor %}

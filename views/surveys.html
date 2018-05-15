@@ -42,6 +42,7 @@
               <th scope="col">Description</th>
               <th scope="col">Start date</th>
               <th scope="col">End date</th>
+              <th scope="col">Enabled</th>
               <th scope="col"></th>
               <th scope="col"></th>
               <th scope="col"></th>
@@ -56,6 +57,7 @@
         		  <td>{{survey.description_}}</td>
         		  <td>{{survey.start_date_}}</td>
         		  <td>{{survey.end_date_}}</td>
+              <td>{{survey.enabled_}}</td>
                 <td><a href="\surveys\{{survey.id_}}\questions" method="GET">show questions</a></td>
                 <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
           		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a></td>

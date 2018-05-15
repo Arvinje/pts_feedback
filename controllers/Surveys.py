@@ -1,7 +1,7 @@
 import os, inspect, time
 from flask import Flask, render_template, request, redirect, flash
 from config.setup import session # for SQL-connection
-from wtforms import Form, StringField, DateField, validators 
+from wtforms import Form, StringField, DateField, BooleanField, validators
 
 from models.survey import Survey
 from models.question import Question
@@ -17,10 +17,11 @@ os.sys.path.insert(0,parentdir)
 # Form-class helps data processing
 # with html-files and it has useful validation-methods:
 class SurveyForm(Form):
-    description = StringField('Description', [validators.Length(min=4, max=25), 
+    description = StringField('Description', [validators.Length(min=4, max=25),
                                             checkThatFieldIsNotOnlyWhiteSpace])
     start_date = DateField('Start date (YYYY-MM-DD)', [validators.DataRequired()])
     end_date = DateField('End date (YYYY-MM-DD)', [validators.DataRequired()])
+    enabled_ = BooleanField('Enabled',default=True)
 
 #list that includes function routes:
 routes = []
@@ -39,7 +40,7 @@ def surveys():
       return render_template('surveys.html', surveys=session.query(Survey).order_by(Survey.id_).all())
     if (request.method == 'POST') and (form.validate()):
       if form.start_date.data < form.end_date.data:
-        surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data)
+        surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data, form.enabled_.data)
         session.add(surveyToBeAdded) #adding record to database
         session.commit() #commiting addition
 
@@ -63,6 +64,7 @@ def editSurvey(id):
       form.description.data = surveyToBeEdited.description_
       form.start_date.data = surveyToBeEdited.start_date_
       form.end_date.data = surveyToBeEdited.end_date_
+      form.enabled_.data = surveyToBeEdited.enabled_
 
       return render_template('edit_survey.html', form=form)
     if (request.method == 'POST'):
@@ -71,6 +73,7 @@ def editSurvey(id):
           surveyToBeEdited.description_ = form.description.data
           surveyToBeEdited.start_date_ = form.start_date.data
           surveyToBeEdited.end_date_ = form.end_date.data
+          surveyToBeEdited.enabled_ = form.enabled_.data
           session.add(surveyToBeEdited) # this updates the database
           session.commit()
           return redirect('/surveys')
@@ -91,7 +94,7 @@ def deleteSurvey(id):
     if request.method == 'GET':
       return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
     elif (request.method == 'POST'):
-      if (startDateIsBeforeToday(surveyToBeDeleted.start_date_)):        
+      if (startDateIsBeforeToday(surveyToBeDeleted.start_date_)):
         # deleting all the questions of survey:
         for questionToBeDeleted in session.query(Question).filter_by(survey_id_=id).all():
           session.delete(questionToBeDeleted)
