@@ -23,7 +23,8 @@ os.sys.path.insert(0,parentdir)
 
 routes = []
 
-templates = {'Freeform': 'freeform.html',
+templates = {'Freeform': 'freeform.html',   # which of these two is redundant?
+            'Text': 'freeform.html',        # which of these two is redundant?
             'Thumbs': 'thumbs.html',
             'Stars': 'stars.html',
             'Smileys': 'smileys.html',
@@ -59,33 +60,10 @@ def parse_answer_from_request_form(requestform, existing_ans=None):
     print('--- QUESTION TYPE: {}'.format(qtype))
     print('\n{}'.format(90 * '*'))
 
-    if requestform['question_type'] == 'Freeform':
-        if 'value_' in requestform.keys():
-            parsed_answer = requestform['value_']
+    if 'value_' in requestform.keys():
+        parsed_answer = requestform['value_']
 
-    elif requestform['question_type'] == 'Thumbs':
-        if 'value_' in requestform.keys():
-            parsed_answer = requestform['value_']
-
-        # if 'thumbsup' in requestform.keys() and 'thumbdown' in requestform.keys():
-        #     if existing_ans != None:
-        #         parsed_answer = 'thumbsup' if existing_ans != 'thumbsup' else 'thumbdown'
-        #     else:
-        #         parsed_answer = 'thumbsup'
-        # elif 'thumbsup' in requestform.keys():
-        #     parsed_answer = 'thumbsup'
-        # elif 'thumbdown' in requestform.keys():
-        #     parsed_answer = 'thumbdown'
-        # else:
-        #     pass
-
-    elif requestform['question_type'] == 'Stars':
-        if 'value_' in requestform.keys():
-            parsed_answer = requestform['value_']
-
-    elif requestform['question_type'] == 'Smileys':
-        if 'value_' in requestform.keys():
-            parsed_answer = requestform['value_']
+    print('---QUESTION TYPE WAS {}, parsed_answer is {}'.format(requestform['question_type'], parsed_answer))
 
     return parsed_answer
 
@@ -405,6 +383,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('---NO PRE-EXISTING ANSWER FOUND!')
 
             parsed_answer = parse_answer_from_request_form(request.form, None)
+            print('---PARSED_ANSWER: {}'.format(parsed_answer))
 
             answer = Answer(parsed_answer, int(request.cookies['feedback_id']), int(request.form['question_id']))
             print('---CREATED NEW ANSWER OBJECT:')
