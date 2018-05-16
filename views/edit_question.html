@@ -13,7 +13,8 @@
   {% endif %}
 {% endwith %}
 
-<h2>Edit question</h2>
+<h2 align="middle">Edit question</h2>
+<div align="middle">
 
 {% from "_formhelpers.html" import render_field %}
 <form method=post>
@@ -36,5 +37,6 @@
   <br>
 {% endfor %}
 </form>
+</div>
 
 {% endblock %}

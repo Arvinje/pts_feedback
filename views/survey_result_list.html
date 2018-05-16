@@ -13,13 +13,15 @@
   {% endif %}
 {% endwith %}
 
-<h2>Survey result list:</h2>
- 
+<h2 align="middle">Survey result list:</h2>
+
 <table class="table table-hover">
-	<th scope="col">id_</th>
-	<th scope="col">description</th>
-	<th scope="col">start_date</th>
-	<th scope="col">end_date</th>
+	<th scope="col">ID</th>
+	<th scope="col">Description</th>
+	<th scope="col">Start Date</th>
+	<th scope="col">End Date</th>
+  <th scope="col">Feedback</th>
+  <th scope="col">Export</th>
 	{% for survey in surveys %}
 	  <tr>
 		  <td>{{survey.id_}}</td>
@@ -27,6 +29,11 @@
 		  <td>{{survey.start_date_}}</td>
 		  <td>{{survey.end_date_}}</td>
 		  <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
+      <td>
+      <span class="glyphicon glyphicon-export">
+        <a href="\results\surveys\{{survey.id_}}\export">Export answers to CSV-file</a>
+      </span>
+    </td>
 	  </tr>
 	{% endfor %}
 </table>
