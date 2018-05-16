@@ -13,14 +13,14 @@
   {% endif %}
 {% endwith %}
 
-<h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
+<h2 align="middle">Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
 
 <br>
+<span class="glyphicon glyphicon-export">
   <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">Export answers to CSV-file</a>
-<br><br>
+</span>
 
 <table class="table table-hover">
-	Answers:
 	<br><br>
 	<th scope="col">{{question.title_}}</th>
 		{% for answer in question.answers %}

@@ -12,11 +12,13 @@
     </ul>
   {% endif %}
 {% endwith %}
-
-<h2>Results ({{survey.id_}}: {{survey.description_}})</h2>
+<body>
+<h2 align="middle">Results ({{survey.id_}}: {{survey.description_}})</h2>
 
 <br>
+<span class="glyphicon glyphicon-export">
   <a href="\results\surveys\{{survey.id_}}\export">Export answers to CSV-file</a>
+</span>
 <br><br>
 
 <table class="table table-hover">
@@ -36,3 +38,4 @@
 <a href="\results\surveys" method="GET">Back to the results</a>
 
 {% endblock %}
+</body>
