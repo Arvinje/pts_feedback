@@ -13,7 +13,8 @@
   {% endif %}
 {% endwith %}
 
-<h2>Edit questionChoice</h2>
+<h2 align="middle">Edit questionChoice</h2>
+<div align="middle">
 
 {% from "_formhelpers.html" import render_field %}
 <form method=post>
@@ -23,5 +24,6 @@
     <p>
     <input type=submit value=Submit>
 </form>
+</div>
 
 {% endblock %}
