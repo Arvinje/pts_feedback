@@ -46,7 +46,6 @@ class AnswerFormChoices(Form):
         for choice in listOfChoices:
             self.value_.choices.append((i,choice.title_))
             i += 1
-            print("PESTI")
 
 def parse_answer_from_request_form(requestform, existing_ans=None, verbose=False):
     qtype = requestform['question_type']
