@@ -44,11 +44,11 @@
                   <th scope="col">Description</th>
                   <th scope="col">Start date</th>
                   <th scope="col">End date</th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
+                  <th scope="col">Enabled</th>
+                  <th scope="col">Questions</th>
+                  <th scope="col">Feedback</th>
+                  <th scope="col">Edit</th>
+                  <th scope="col">Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -58,25 +58,25 @@
             		  <td>{{survey.description_}}</td>
             		  <td>{{survey.start_date_}}</td>
             		  <td>{{survey.end_date_}}</td>
-                  glyphicon glyphicon-list
-                    <td>
-                      <a href="\surveys\{{survey.id_}}\questions" method="GET">
-                        <button type="button" class="btn btn-default btn-sm">
-                          <span class="glyphicon glyphicon-list">  show questions</span>
-                        </button>
-                      </a>
-                    </td>
-                    <td>
-                      <a href="\results\surveys\{{survey.id_}}" method="GET">
-                        <button type="button" class="btn btn-default btn-sm">
-                          <span class="glyphicon glyphicon-list">  show feedback</span>
-                        </button>
-                      </a>
-                    </td>
-              		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              		  <td><a href="\surveys\{{survey.id_}}\delete" method="GET"><span class="glyphicon glyphicon-trash"></span></a></td>
-              	  </tr>
-                  {% endfor %}
+                  <td>{{survey.enabled_}}</td>
+                  <td>
+                    <a href="\surveys\{{survey.id_}}\questions" method="GET">
+                      <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-list">  show questions</span>
+                      </button>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="\results\surveys\{{survey.id_}}" method="GET">
+                      <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-list">  show feedback</span>
+                      </button>
+                    </a>
+                  </td>
+            		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            		  <td><a href="\surveys\{{survey.id_}}\delete" method="GET"><span class="glyphicon glyphicon-trash"></span></a></td>
+            	  </tr>
+                {% endfor %}
               </tbody>
           </table>
 
