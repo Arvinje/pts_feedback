@@ -2,17 +2,17 @@
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
+<div align="middle">
+  <h2>New question choice</h2>
 
-<h2>New question choice</h2>
- 
-{% from "_formhelpers.html" import render_field %}
-<form action="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices" method=post>
-    <dl>
-        Survey ID: {{ survey_id }}
-        Question ID: {{ question_id }}
-        {{ render_field(form.title_) }}
-    </dl>
-    <p><input type=submit value=Submit>
-</form>
-
+  {% from "_formhelpers.html" import render_field %}
+  <form action="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices" method=post>
+      <dl>
+          Survey ID: {{ survey_id }}
+          Question ID: {{ question_id }}
+          {{ render_field(form.title_) }}
+      </dl>
+      <p><input type=submit value=Submit>
+  </form>
+</div>
 {% endblock %}

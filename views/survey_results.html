@@ -2,37 +2,38 @@
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
+<div  align="middle">
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
-<h2>Results ({{survey.id_}}: {{survey.description_}})</h2>
+  <h2>Results ({{survey.id_}}: {{survey.description_}})</h2>
 
-<br>
-  <a href="\results\surveys\{{survey.id_}}\export">Export answers to CSV-file</a>
-<br><br>
+  <br>
+    <a href="\results\surveys\{{survey.id_}}\export">Export answers to CSV-file</a>
+  <br><br>
 
-<table class="table table-hover">
-	{% for question in survey.questions %}
-		<th scope="col">{{question.title_}}</th>
-	{% endfor %}
+  <table class="table table-hover">
+  	{% for question in survey.questions %}
+  		<th scope="col">{{question.title_}}</th>
+  	{% endfor %}
 
-	<tr>
+  	<tr>
 
-	{% for question in survey.questions %}
-		<td><b><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}">Show answers</a></b></td>
-	{% endfor %}
-</table>
+  	{% for question in survey.questions %}
+  		<td><b><a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}">Show answers</a></b></td>
+  	{% endfor %}
+  </table>
 
-<br>
+  <br>
 
-<a href="\results\surveys" method="GET">Back to the results</a>
-
+  <a href="\results\surveys" method="GET">Back to the results</a>
+</div>
 {% endblock %}
