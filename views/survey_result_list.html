@@ -21,6 +21,7 @@
   	<th scope="col">Start Date</th>
   	<th scope="col">End Date</th>
     <th scope="col">Feedback</th>
+    <th scope="col">Export</th>
   	{% for survey in surveys %}
   	  <tr>
   		  <td>{{survey.id_}}</td>
@@ -32,6 +33,13 @@
           <a href="\results\surveys\{{survey.id_}}" method="GET">
             <button type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-list-alt">  show feedback</span>
+            </button>
+          </a>
+        </td>
+        <td>
+          <a href="\results\surveys\{{survey.id_}}\export">
+            <button type="button" class="btn btn-default btn-sm">
+              <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
             </button>
           </a>
         </td>

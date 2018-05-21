@@ -16,7 +16,11 @@
   <h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
 
   <br>
-    <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">Export answers to CSV-file</a>
+    <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">
+      <button type="button" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
+      </button>
+    </a>
   <br><br>
 
   <table class="table table-hover">
@@ -30,6 +34,13 @@
   		{% endfor %}
   </table>
 
-  <a href="\results\surveys" method="GET">Back to the results</a>
+  <a href="\results\surveys" method="GET">
+    <button type="button" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-chevron-left">  Back to the results</span>
+    </button>
+  </a>
+
+  <br><br>
+  
 </div>
 {% endblock %}
