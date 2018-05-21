@@ -58,8 +58,21 @@
             		  <td>{{survey.description_}}</td>
             		  <td>{{survey.start_date_}}</td>
             		  <td>{{survey.end_date_}}</td>
-                    <td><a href="\surveys\{{survey.id_}}\questions" method="GET">show questions</a></td>
-                    <td><a href="\results\surveys\{{survey.id_}}" method="GET">show feedback</a></td>
+                  glyphicon glyphicon-list
+                    <td>
+                      <a href="\surveys\{{survey.id_}}\questions" method="GET">
+                        <button type="button" class="btn btn-default btn-sm">
+                          <span class="glyphicon glyphicon-list">  show questions</span>
+                        </button>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="\results\surveys\{{survey.id_}}" method="GET">
+                        <button type="button" class="btn btn-default btn-sm">
+                          <span class="glyphicon glyphicon-list">  show feedback</span>
+                        </button>
+                      </a>
+                    </td>
               		  <td><a href="\surveys\{{survey.id_}}\edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a></td>
               		  <td><a href="\surveys\{{survey.id_}}\delete" method="GET"><span class="glyphicon glyphicon-trash"></span></a></td>
               	  </tr>

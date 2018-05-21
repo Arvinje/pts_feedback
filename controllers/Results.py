@@ -58,7 +58,7 @@ def exportSurveyResultsToCSVFile(survey_id):
 
             # if no answer is given, empty value is printed
             if answer == None:
-                answers.append("")
+                answers.append("empty")
             else:
                 answers.append(answer.value_)
 
