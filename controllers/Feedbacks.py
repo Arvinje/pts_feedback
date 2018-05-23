@@ -3,7 +3,7 @@ import os, inspect, datetime
 from flask import Flask, render_template, request, redirect, flash, make_response, url_for
 from flask import session as flasksession
 from sqlalchemy import desc, distinct
-from wtforms import Form, StringField, DateField, RadioField, TextAreaField, validators
+from wtforms import Form, StringField, SelectField, DateField, RadioField, TextAreaField, validators
 
 from models.feedback import Feedback
 from models.survey import Survey
@@ -37,6 +37,15 @@ class AnswerFormStars(Form):
 class AnswerFormSmileys(Form):
     value_ = RadioField('', choices=[('sad','(sad)'),('neutral','(neutral'), ('happy', '(happy)')])
 
+class AnswerFormChoices(Form):
+    value_ = SelectField('', choices=[])
+
+    def setChoices(self,listOfChoices):
+        self.value_.choices.clear()
+        i = 0
+        for choice in listOfChoices:
+            self.value_.choices.append((i,choice.title_))
+            i += 1
 
 def parse_answer_from_request_form(requestform, existing_ans=None, verbose=False):
     qtype = requestform['question_type']
@@ -96,7 +105,8 @@ templates = {'Freeform': 'freeform.html',   # can this be removed?
             'Thumbs': 'thumbs.html',
             'Stars': 'stars.html',
             'Smileys': 'smileys.html',
-            'Thankyou': 'survey_lastpage.html'}
+            'Thankyou': 'survey_lastpage.html',
+            'Choices': 'choices.html'}
 
 print('---TEMPLATE DICT: {}'.format(templates))
 
@@ -116,7 +126,8 @@ def newFeedback():
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
-                    'Smileys': AnswerFormSmileys(request.form)}
+                    'Smileys': AnswerFormSmileys(request.form),
+                    'Choices': AnswerFormChoices(request.form)}
 
     print('---FORM DICT: {}'.format(qtype_forms))
 
@@ -236,7 +247,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     'Text': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
-                    'Smileys': AnswerFormSmileys(request.form)}
+                    'Smileys': AnswerFormSmileys(request.form),
+                    'Choices': AnswerFormChoices(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
     progress = 0
@@ -313,6 +325,9 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # flash('progress: {}'.format(progress))
         # flash('missing: {}'.format(missing))
         # flash('missing_mandatory: {}'.format(missing_mandatory))
+
+        if q.type_ == 'Choices':
+            form.setChoices(q.questionchoices)
 
         response = make_response(render_template(template,
                                                 form=form,
@@ -442,4 +457,3 @@ def thankYou():
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
-

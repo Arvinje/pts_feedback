@@ -10,19 +10,20 @@
 {% endblock %}
 
 {% block bodyOfPage %}
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-<br>
-<h1>Hello Admin!</h1>
-<p class="lead">You can add, edit and delete surveys.</p>
-<hr class="my-4">
-<img alt="llb" src="static/img/logoLLB.png">
+<div align="middle">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <br>
+  <h1>Hello Admin!</h1>
+  <p class="lead">You can add, edit and delete surveys.</p>
+  <hr class="my-4">
+  <img alt="llb" src="static/img/logoLLB.png">
+</div>
 {% endblock %}

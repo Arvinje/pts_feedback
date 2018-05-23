@@ -2,58 +2,71 @@
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
+<div align="middle">
+  <h2>Questions:</h2>
 
-<h2>Questions:</h2>
+  <a href="/surveys/{{survey_id}}/questions/new" method="GET">
+    <button type="button" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-plus">New</span>
+    </button>
+  </a>
 
-<a href="/surveys/{{survey_id}}/questions/new" method="GET">
-  <button type="button" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-plus">New</span>
-  </button>
-</a>
+  <br><br>
 
-<br><br>
-
-<table class="table table-hover">
-	<th scope="col">ID</th>
-	<th scope="col">survey_id</th>
-	<th scope="col">type</th>
-	<th scope="col">title</th>
-	<th scope="col">optional</th>
-	<th scope="col"></th>
-	<th scope="col"></th>
-	<th scope="col">choices</th>
-	{% for question in questions %}
-	  <tr>
-		<td>{{question.id_}}</td>
-		<td>{{question.survey_id_}}</td>
-		<td>{{question.type_}}</td>
-		<td>{{question.title_}}</td>
-		<td>{{question.optional_}}</td>
-		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/edit" method="GET"><span class="glyphicon glyphicon-pencil"></a></td>
-		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST"><span class="glyphicon glyphicon-trash"></a></td>
-		<td>
-		{% if question.type_ ==  "Choices" %}
-			<form>
-				<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/new" method="GET">
+  <table class="table table-hover">
+  	<th scope="col">ID</th>
+  	<th scope="col">Survey ID</th>
+  	<th scope="col">Type</th>
+  	<th scope="col">Title</th>
+  	<th scope="col">Optional</th>
+  	<th scope="col">Edit</th>
+  	<th scope="col">Delete</th>
+  	<th scope="col">Choices</th>
+  	{% for question in questions %}
+  	  <tr>
+  		<td>{{question.id_}}</td>
+  		<td>{{question.survey_id_}}</td>
+  		<td>{{question.type_}}</td>
+  		<td>{{question.title_}}</td>
+  		<td>{{question.optional_}}</td>
+  		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/edit" method="GET"><span class="glyphicon glyphicon-pencil"></a></td>
+  		<td><a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/delete" method="POST" action="POST"><span class="glyphicon glyphicon-trash"></a></td>
+  		<td>
+  		{% if question.type_ ==  "Choices" %}
+  			<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/new" method="GET">
           <button type="button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-plus">New</span>
           </button>
         </a>
-				<br><br>
 
-				{% for questionChoice in question.questionchoices %}
-          {{questionChoice.title_}}
-					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a>
-					<a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET"><span class="glyphicon glyphicon-trash"></span></a>
-					<br>
-				{% endfor %}
-			</form>
-		{% endif %}
-		</td>
-	  </tr>
-	{% endfor %}
-</table>
+        <br><br>
 
-<a href="/surveys/{{survey_id}}/edit" method="GET">Edit survey</a>
+        <table>
+          <th scope="col">Title</th>
+        	<th scope="col">Edit</th>
+        	<th scope="col">Delete</th>
+  				{% for questionChoice in question.questionchoices %}
+            <tr>
+            <td>
+              {{questionChoice.title_}}
+            </td>
+            <td>
+              <a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/edit" method="GET"><span class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+  					<td>
+              <a href="/surveys/{{question.survey_id_}}/questions/{{question.id_}}/questionChoices/{{questionChoice.id_}}/delete" method="GET"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+  				{% endfor %}
+        </table>
+  		{% endif %}
+  		</td>
+  	{% endfor %}
+  </table>
 
+  <a href="/surveys/{{survey_id}}/edit" method="GET">
+    <button type="button" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-edit">  Edit survey</span>
+    </button>
+  </a>
+</div>
 {% endblock %}

@@ -2,34 +2,45 @@
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
+<div align="middle">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+  <h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
 
-<h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
+  <br>
+    <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">
+      <button type="button" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
+      </button>
+    </a>
+  <br><br>
 
-<br>
-  <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">Export answers to CSV-file</a>
-<br><br>
+  <table class="table table-hover">
+  	Answers:
+  	<br><br>
+  	<th scope="col">{{question.title_}}</th>
+  		{% for answer in question.answers %}
+  		<tr>
+  			<b><td>{{answer.value_}}</td></b>
+  		</tr>
+  		{% endfor %}
+  </table>
 
-<table class="table table-hover">
-	Answers:
-	<br><br>
-	<th scope="col">{{question.title_}}</th>
-		{% for answer in question.answers %}
-		<tr>
-			<b><td>{{answer.value_}}</td></b>
-		</tr>
-		{% endfor %}
-</table>
+  <a href="\results\surveys" method="GET">
+    <button type="button" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-chevron-left">  Back to the results</span>
+    </button>
+  </a>
 
-<a href="\results\surveys" method="GET">Back to the results</a>
-
+  <br><br>
+  
+</div>
 {% endblock %}

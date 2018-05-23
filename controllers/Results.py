@@ -1,10 +1,13 @@
 import os, inspect, time
 import csv
-from flask import Flask, render_template, make_response
+import io
+from flask import Flask, render_template, make_response, send_file
 from config.setup import session # for SQL-connection
 
+from models.answer import Answer
 from models.survey import Survey
 from models.question import Question
+from models.feedback import Feedback
 from flask import Response
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -34,38 +37,70 @@ def surveyQuestionResults(survey_id,question_id):
 routes.append(dict(rule='/results/surveys/<int:survey_id>/questions/<int:question_id>',view_func=surveyQuestionResults))
 
 def exportSurveyResultsToCSVFile(survey_id):
-    def generateSurveyResultsCSV():
-        yield "Survey " + str(survey_id) + " results:" + '\n' + '\n'
+    si = io.StringIO()
+    outputWriter = csv.writer(si)
 
-        questions=session.query(Question).order_by(Question.id_).filter(Question.survey_id_ == survey_id).all()
+    #printing question titles as a header:
+    questions=session.query(Question).order_by(Question.id_).filter(Question.survey_id_ == survey_id).all()
+    questionIDs = ["feedback_id"]
+    for question in questions:
+        questionIDs.append(question.title_)
+    outputWriter.writerow(questionIDs)
+    outputWriter.writerow("")
 
+    #searching for all the feedback of survey:
+    feedbacks=session.query(Feedback).filter(Feedback.survey_id_ == survey_id).all()
+    for feedback in feedbacks:
+        answers = [str(feedback.id_)]
+        #searching an answer for each question:
         for question in questions:
-            yield str(question.id_) + '\n' + question.title_ + '\n'
+            answer=session.query(Answer).filter(Answer.feedback_id_ == feedback.id_,Answer.question_id_ == question.id_).first()
 
-            for answer in question.answers:
-                yield answer.value_ + '\n'
+            # if no answer is given, empty value is printed
+            if answer == None:
+                answers.append("empty")
+            else:
+                answers.append(answer.value_)
 
-            yield '\n'
+        outputWriter.writerow(answers)
 
-    return Response(generateSurveyResultsCSV(), mimetype='text/csv')
+    #exporting file:
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=feedback_export.csv"
+    output.headers["Content-type"] = "text/csv"
+
+    return output
 
 routes.append(dict(rule='/results/surveys/<int:survey_id>/export',view_func=exportSurveyResultsToCSVFile,
                    options=dict(methods=['GET'])))
 
 # Function for retrieving the results of a survey:
 def exportSurveyQuestionResultsToCSVFile(survey_id,question_id):
-    def generateQuestionResultsCSV():
-        question = session.query(Question).filter_by(survey_id_=survey_id,id_=question_id).one()
+    si = io.StringIO()
+    outputWriter = csv.writer(si)
 
-        if question:
-            yield "Survey " + str(survey_id) + ", Question " + str(question_id) + " results:"
-            yield '\n' + '\n' + question.title_ + '\n' + '\n'
+    #printing question title as a header:
+    question=session.query(Question).filter(Question.id_ == question_id).one()
+    outputWriter.writerow(["Feedback ID",question.title_])
+    outputWriter.writerow("")
 
-            for answer in question.answers:
-                yield answer.value_ + '\n'
+    #searching for all the feedback of survey:
+    feedbacks=session.query(Feedback).order_by(Feedback.id_).filter(Feedback.survey_id_ == survey_id).all()
+    for feedback in feedbacks:
+        #searching an answer for each question:
+        answer=session.query(Answer).filter(Answer.feedback_id_ == feedback.id_,Answer.question_id_ == question_id).first()
 
-            yield '\n'
+        # if no answer is given, empty value is printed
+        if answer == None:
+            outputWriter.writerow([feedback.id_,"empty"])
+        else:
+            outputWriter.writerow([feedback.id_,answer.value_])
 
-    return Response(generateQuestionResultsCSV(), mimetype='text/csv')
+    #exporting file:
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=feedback_export.csv"
+    output.headers["Content-type"] = "text/csv"
+
+    return output
 
 routes.append(dict(rule='/results/surveys/<int:survey_id>/questions/<int:question_id>/export',view_func=exportSurveyQuestionResultsToCSVFile))
