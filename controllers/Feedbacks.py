@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, flash, make_respons
 from flask import session as flasksession
 from sqlalchemy import desc, distinct
 from wtforms import Form, StringField, SelectField, DateField, RadioField, TextAreaField, validators
+from werkzeug.utils import secure_filename#for picture
 
 from models.feedback import Feedback
 from models.survey import Survey
@@ -106,7 +107,8 @@ templates = {'Freeform': 'freeform.html',   # can this be removed?
             'Stars': 'stars.html',
             'Smileys': 'smileys.html',
             'Thankyou': 'survey_lastpage.html',
-            'Choices': 'choices.html'}
+            'Choices': 'choices.html',
+            'Picture': 'picture.html'}
 
 print('---TEMPLATE DICT: {}'.format(templates))
 
@@ -127,7 +129,8 @@ def newFeedback():
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
                     'Smileys': AnswerFormSmileys(request.form),
-                    'Choices': AnswerFormChoices(request.form)}
+                    'Choices': AnswerFormChoices(request.form),
+                    'Picture': AnswerFormFree(request.form)}
 
     print('---FORM DICT: {}'.format(qtype_forms))
 
@@ -248,7 +251,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
                     'Smileys': AnswerFormSmileys(request.form),
-                    'Choices': AnswerFormChoices(request.form)}
+                    'Choices': AnswerFormChoices(request.form),
+                    'Picture': AnswerFormFree(request.form)}
     print('---FORM DICT: {}'.format(qtype_forms))
 
     progress = 0
@@ -387,10 +391,28 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
 
-        # Validate: data required
-        if len(answer.value_) > 0:
+
+        question = session.query(Question).filter_by(id_=answer.question_id_).first()
+
+        if question.type_ == 'Picture':
             session.add(answer)
             session.commit()
+            file = request.files['userPicture']
+            if file:
+                fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
+                fileName = secure_filename(fileName)
+                imgPath = 'C:/Temp/' + fileName
+                savePath = 'C:/Temp/' + fileName
+                file.save(savePath)
+                answer.image_source_ = imgPath
+                answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
+                session.add(answer)
+                session.commit()
+        else:
+            # Validate: data required
+            if len(answer.value_) > 0:
+                session.add(answer)
+                session.commit()
 
         # Redirect to next if 'Next' was clicked
         if 'Next' in request.form.keys():
