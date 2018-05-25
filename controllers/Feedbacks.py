@@ -21,19 +21,14 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
-
-
 class AnswerFormFree(Form):
     value_ = TextAreaField('', [validators.DataRequired()])
-
 
 class AnswerFormThumbs(Form):
     value_ = RadioField('', choices=[('thumbsup','(this is up)'),('thumbdown','(this is down)')])
 
-
 class AnswerFormStars(Form):
     value_ = RadioField('', choices=[(1,'(one star)'),(2,'(two stars)'),(3,'(three stars)'),(4,'(four stars)'),(5,'(five stars)')])
-
 
 class AnswerFormSmileys(Form):
     value_ = RadioField('', choices=[('sad','(sad)'),('neutral','(neutral'), ('happy', '(happy)')])
@@ -401,8 +396,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             if file:
                 fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
                 fileName = secure_filename(fileName)
-                imgPath = currentdir + fileName
-                savePath = currentdir + fileName
+                imgPath = '/static/' + fileName
+                savePath = parentdir + '/static/' + fileName
                 file.save(savePath)
                 answer.image_source_ = imgPath
                 answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
