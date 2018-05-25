@@ -401,8 +401,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             if file:
                 fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
                 fileName = secure_filename(fileName)
-                imgPath = 'C:/Temp/' + fileName
-                savePath = 'C:/Temp/' + fileName
+                imgPath = currentdir + fileName
+                savePath = currentdir + fileName
                 file.save(savePath)
                 answer.image_source_ = imgPath
                 answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
