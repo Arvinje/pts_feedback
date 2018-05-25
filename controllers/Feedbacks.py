@@ -132,7 +132,7 @@ def newFeedback():
     print('---FORM DICT: {}'.format(qtype_forms))
 
     # From active surveys, get one with greatest id
-    survey = session.query(Survey).filter(Survey.end_date_ >= datetime.datetime.now()).order_by(Survey.id_.desc()).first()
+    survey = session.query(Survey).filter(Survey.end_date_ >= datetime.datetime.now(),Survey.enabled_).order_by(Survey.id_.desc()).first()
     if survey != None:
         print('--- FOUND SURVEY ID {}, TITLE {}'.format(survey.id_, survey.description_))
     else:
