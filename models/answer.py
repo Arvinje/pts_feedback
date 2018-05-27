@@ -32,6 +32,8 @@ class Answer(Base):
     question_id_ = Column(Integer, ForeignKey('questions.id_'))
     questions = relationship("Question", back_populates='answers')
 
+    image_source_ = Column(String)
+
     def __init__(self, value_, feedback_id_, question_id_):
         self.value_ =  value_
         self.feedback_id_ = feedback_id_

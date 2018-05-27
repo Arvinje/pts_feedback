@@ -29,13 +29,27 @@
   <br><br>
 
   <table class="table table-hover">
-  	Answers:
   	<br><br>
-  	<th scope="col">{{question.title_}}</th>
+
+    <th scope="col">{{question.title_}}</th>
+
+    {% if question.type_ == "Picture" %}
+    <th scope="col">Picture</th>
+    {% endif %}
+
   		{% for answer in question.answers %}
   		<tr>
   			<b><td>{{answer.value_}}</td></b>
-  		</tr>
+
+        {% if question.type_ == "Picture" %}
+        <td>
+          <a href="{{answer.image_source_}}">
+            <img src="{{answer.image_source_}}" / width=100 height=100>
+          </a>
+        </td>
+        {% endif %}
+
+      </tr>
   		{% endfor %}
   </table>
 

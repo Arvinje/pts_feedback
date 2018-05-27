@@ -1,71 +1,56 @@
 <!DOCTYPE html>
-<!-- Done by Saija 4/18 -->
-<!-- Mangled further by Inka 4/28 -->
-<head>
-    <title>stars</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+<!-- Done by Peter (based on Saijas and Inkas work :V :) )5/18 -->
+  <head>
+      <title>Choices</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star-rating.css') }}">
-    <script src="static/js/star-rating.min.js" type="text/javascript"></script>
-</head>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star-rating.css') }}">
+      <script src="static/js/star-rating.min.js" type="text/javascript"></script>
+  </head>
 
-<!-- Flashed messages -->
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
+  <!-- Flashed messages -->
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+              <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+      {% endif %}
+  {% endwith %}
 
-<body>
-    <nav class="navbar navbar-expand navbar-dark bg-primary">
-        <a class="navbar-brand" href="#"><b>LLB</b></a>
-    </nav>
-    <br>
-    <h1>Pick your choice!</h1>
-    <p class="lead">Here is the multiple-choice question. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    <hr class="my-4">
-    <div class="container">
-        <h2>{{ question_title }}</h2>
+  <body>
+      <nav class="navbar navbar-expand navbar-dark bg-primary">
+          <a class="navbar-brand" href="#"><b>LLB</b></a>
+      </nav>
+      <br>
+      <h1>Pick your choice!</h1>
+      <p class="lead">Here is the multiple-choice question. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <hr class="my-4">
+      <div class="container">
+          <h2>{{ question_title }}</h2>
 
-        {% from "_formhelpers.html" import render_field %}
-        <form action="{{ form_action_url }}" method=post>
-            {{ render_field(form.value_) }}
+          {% from "_formhelpers.html" import render_field %}
+          <form action="{{ form_action_url }}" method=post>
+              {{ render_field(form.value_) }}
+              <hr>
 
-            <!-- Inka stares cluelessly at the following, unable to integrate. -->
+              <p class="lead">
+                  {% if not is_first %}
+                      <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+                  {% endif %}
+                      <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+              </p>
 
-            <!--
-                    <label for="input-1" class="control-label"></label>
-                    <input id="input-1" name="input-1" class="rating rating-loading" data-min="0" data-max="5" data-step="1">
-             -->
+              <input type=hidden name='question_id' value={{ question_id }}>
+              <input type=hidden name='question_type' value={{ question_type }}>
+              <input type=hidden name='prev_url' value={{ prev_url }}>
+              <input type=hidden name='next_url' value={{ next_url }}>
+          </form>
+      </div>
 
-            <hr>
-
-            <p class="lead">
-                {% if not is_first %}
-                    <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
-                {% endif %}
-                    <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
-            </p>
-
-            <input type=hidden name='question_id' value={{ question_id }}>
-            <input type=hidden name='question_type' value={{ question_type }}>
-            <input type=hidden name='prev_url' value={{ prev_url }}>
-            <input type=hidden name='next_url' value={{ next_url }}>
-
-        </form>
-
-
-    </div>
-
-    <h4>Progress: {{ progress }}</h4>
-
-
-</body>
-
+      <h4>Progress: {{ progress }}</h4>
+  </body>
 </html>
