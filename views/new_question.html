@@ -7,13 +7,15 @@
 
   {% from "_formhelpers.html" import render_field %}
   <form action="/surveys/{{survey_id}}/questions" method=post>
+      <fieldset>
       <dl>
           Survey ID: {{ survey_id }}
           {{ render_field(form.type_) }}
           {{ render_field(form.title_) }}
           {{ render_field(form.optional_) }}
       </dl>
-      <p><input type=submit value=Submit>
+      <button type="submit" class="btn btn-primary">Submit</button>
+      </fieldset>
   </form>
 </div>
 {% endblock %}

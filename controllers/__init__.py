@@ -5,7 +5,7 @@ mod = Blueprint('controllers', __name__)
 
 @mod.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html')                                            
 
 from .Questions import routes as question_routes
 from .QuestionChoices import routes as questionchoice_routes

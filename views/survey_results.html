@@ -1,4 +1,4 @@
-<doctype html>
+<!DOCTYPE html>
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
@@ -13,14 +13,19 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <h2>Results ({{survey.id_}}: {{survey.description_}})</h2>
+  <br>
+  <h2>Results {{survey.id_}}: {{survey.description_}}</h2>
 
   <br>
-  <a href="\results\surveys\{{survey.id_}}\export">
-    <button type="button" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
+  <a href="\results\surveys" method="GET">
+    <button type="button" class="btn btn-outline-secondary">
+      <span class="glyphicon glyphicon-chevron-left"></span> Back to the results
     </button>
+  </a>
+  <a href="\results\surveys\{{survey.id_}}\export">
+      <button type="button" class="btn btn-info">
+        <span class="glyphicon">&#xe170;</span> Export answers to CSV-file
+      </button>
   </a>
   <br><br>
 
@@ -37,12 +42,6 @@
   </table>
 
   <br>
-
-  <a href="\results\surveys" method="GET">
-    <button type="button" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-chevron-left">  Back to the results</span>
-    </button>
-  </a>
 
 </div>
 {% endblock %}

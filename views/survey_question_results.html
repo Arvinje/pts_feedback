@@ -12,13 +12,18 @@
       </ul>
     {% endif %}
   {% endwith %}
-
+  <br>
   <h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
 
   <br>
+  <a href="\results\surveys" method="GET">
+    <button type="button" class="btn btn-outline-secondary">
+      <span class="glyphicon glyphicon-chevron-left"></span> Back to the results
+    </button>
+  </a>
     <a href="\results\surveys\{{survey.id_}}\questions\{{question.id_}}\export">
-      <button type="button" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
+      <button type="button" class="btn btn-info">
+        <span class="glyphicon">&#xe170;</span> Export answers to CSV-file
       </button>
     </a>
   <br><br>
@@ -34,13 +39,9 @@
   		{% endfor %}
   </table>
 
-  <a href="\results\surveys" method="GET">
-    <button type="button" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-chevron-left">  Back to the results</span>
-    </button>
-  </a>
+
 
   <br><br>
-  
+
 </div>
 {% endblock %}
