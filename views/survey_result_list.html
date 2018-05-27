@@ -1,4 +1,4 @@
-<doctype html>
+<!DOCTYPE html>
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
@@ -12,16 +12,22 @@
       </ul>
     {% endif %}
   {% endwith %}
+  <br>
+  <h2>Survey result list</h2>
+  <br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Description</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Feedback</th>
+            <th scope="col">Export</th>
+        </tr>
+    </thead>
+    <tbody>
 
-  <h2>Survey result list:</h2>
-
-  <table class="table table-hover">
-  	<th scope="col">ID</th>
-  	<th scope="col">Description</th>
-  	<th scope="col">Start Date</th>
-  	<th scope="col">End Date</th>
-    <th scope="col">Feedback</th>
-    <th scope="col">Export</th>
   	{% for survey in surveys %}
   	  <tr>
   		  <td>{{survey.id_}}</td>
@@ -45,6 +51,7 @@
         </td>
   	  </tr>
   	{% endfor %}
+   </tbody>
   </table>
 </div>
 {% endblock %}

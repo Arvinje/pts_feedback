@@ -1,22 +1,29 @@
-<doctype html>
+<!DOCTYPE html>
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
 <div align="middle">
-  <h2>QuestionsChoices: (Survey {{ survey_id}}, Question {{ question_id}})</h2>
-
-  <table class="table table-hover">
-  	<a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/new" method="GET">
-      <button type="button" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-plus">New</span>
-      </button>
-    </a>
-  	<br><br>
-  	<th scope="col">Question ID</th>
-  	<th scope="col">ID</th>
-  	<th scope="col">Title</th>
-    <th scope="col">Edit</th>
-  	<th scope="col">Delete</th>
+  <br>
+  <h2>Question choices: Survey {{ survey_id}}, Question {{ question_id}}</h2>
+  <br>
+  <a href="/surveys/{{survey_id}}/questions" method="GET">
+      <button type="button" class="btn btn-outline-secondary"><span class="glyphicon">&#xe257;</span> Questions</button>
+  </a>
+  <a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/new" method="GET">
+      <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> New question</button>
+  </a>
+<br><br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Question ID</th>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
     {% for questionChoice in questionChoices %}
   	  <tr>
   		<td>{{questionChoice.question_id_}}</td>
@@ -30,12 +37,7 @@
       </a></td>
   	  </tr>
   	{% endfor %}
+    </tbody>
   </table>
-
-  <a href="/surveys/{{survey_id}}/questions" method="GET">
-    <button type="button" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-chevron-left">  Back to question</span>
-    </button>
-  </a>
 </div>
 {% endblock %}

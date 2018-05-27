@@ -3,7 +3,6 @@
   {% extends "header.html" %}
 
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -26,12 +25,14 @@
               </ul>
             {% endif %}
           {% endwith %}
-
-          <h2>Surveys:</h2>
-
+          <br>
+          <h2>Surveys</h2>
+          <br>
           <a href="/surveys/new" method="GET">
-            <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-plus">New</span>
+            <button type="button" class="btn btn-success"><span class="glyphicon">&#x2b;</span> Create new survey</button>
+          </a>
+          <a href="\results\surveys" method="GET">
+            <button type="button" class="btn btn-info"><span class="glyphicon">&#xe012;</span> Show results of all surveys
             </button>
           </a>
 
@@ -61,15 +62,15 @@
                   <td>{{survey.enabled_}}</td>
                   <td>
                     <a href="\surveys\{{survey.id_}}\questions" method="GET">
-                      <button type="button" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-list">  show questions</span>
+                      <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <span class="glyphicon">&#xe012;</span>  Show questions
                       </button>
                     </a>
                   </td>
                   <td>
                     <a href="\results\surveys\{{survey.id_}}" method="GET">
-                      <button type="button" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-list">  show feedback</span>
+                      <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <span class="glyphicon">&#xe012;</span>  Show feedback
                       </button>
                     </a>
                   </td>
@@ -80,11 +81,7 @@
               </tbody>
           </table>
 
-          <a href="\results\surveys" method="GET">
-            <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-list-alt">  show results of all surveys</span>
-            </button>
-          </a>
+
         </div>
       {% endblock %}
   </body>
