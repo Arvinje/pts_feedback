@@ -61,6 +61,27 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+
+#cam {
+   background-color: black;
+   font-family: "Brush Script MT";
+   font-size: 20px;
+   display: :flex;
+   position: fixed;
+   border: dotted;
+   left: 30%;
+   right: 30%;
+   height: 5%;
+   color: hotpink;
+}
+
+#cam:hover {
+   color:black;
+   background-color: gold;
+}
+
+
+
 @-ms-viewport {
   width: device-width;
 }
