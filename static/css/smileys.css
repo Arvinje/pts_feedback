@@ -7,70 +7,53 @@
  * Needed in smileys.html
  * Created by Saija 18.4.18
  */
-form {
+
+ form {
      display: inline-block;
      text-align: center;
+}
+
+.input-hidden {
+ position: absolute;
+ left: -9999px;
+}
+
+ .cc-selector input{
+     margin:0;padding:0;
+     -webkit-appearance:none;
+        -moz-appearance:none;
+             appearance:none;
+ }
+ .sadFace{background-image:url(../img/sad_face.svg);}
+ .neutralFace{background-image:url(../img/neutral_face.svg);}
+ .happyFace{background-image:url(../img/happy_face.svg);}
+
+ .cc-selector input:active +.emoji-cc{opacity: .9;}
+ .cc-selector input:checked +.emoji-cc{
+     -webkit-filter: none;
+        -moz-filter: none;
+             filter: none;
+ }
+ .emoji-cc{
+     cursor:pointer;
+     background-size:contain;
+     background-repeat:no-repeat;
+     display:inline-block;
+     width:100px;height:70px;
+     -webkit-transition: all 100ms ease-in;
+        -moz-transition: all 100ms ease-in;
+             transition: all 100ms ease-in;
+     -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+        -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+             filter: brightness(1.8) grayscale(1) opacity(.7);
+ }
+ .emoji-cc:hover{
+     -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+        -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+             filter: brightness(1.2) grayscale(.5) opacity(.9);
  }
 
- .input-hidden {
-  position: absolute;
-  left: -9999px;
-}
-
-input[type=radio]:checked + label>img {
-  border: 1px solid #fff;
-  box-shadow: 0 0 3px 3px #090;
-}
-
-/* Stuff after this is only to make things more pretty */
-input[type=radio] + label>img {
-  border: 1px dashed #444;
-  width: 150px;
-  height: 150px;
-  transition: 500ms all;
-}
-
-input[type=radio]:checked + label>img {
-  transform:
-    rotateZ(-10deg)
-    rotateX(10deg);
-}
-.cc-selector input{
-    margin:0;padding:0;
-    -webkit-appearance:none;
-       -moz-appearance:none;
-            appearance:none;
-}
-.happy{background-image:url(../img/happy_face.svg);}
-.neutral{background-image:url(../img/neutral_face.svg);}
-.sad{background-image:url(../img/sad_face.svg);}
-
-.cc-selector input:active +.face-cc{opacity: .9;}
-.cc-selector input:checked +.face-cc{
-    -webkit-filter: none;
-       -moz-filter: none;
-            filter: none;
-}
-.face-cc{
-    cursor:pointer;
-    background-size:contain;
-    background-repeat:no-repeat;
-    display:inline-block;
-    width:100px;height:70px;
-    -webkit-transition: all 100ms ease-in;
-       -moz-transition: all 100ms ease-in;
-            transition: all 100ms ease-in;
-    -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
-       -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
-            filter: brightness(1.8) grayscale(1) opacity(.7);
-}
-.face-cc:hover{
-    -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
-       -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
-            filter: brightness(1.2) grayscale(.5) opacity(.9);
-}
-
-/* Extras
-a:visited{color:#888}
-a{color:#444;text-decoration:none;}
-p{margin-bottom:.3em;}*/
+ /* Extras */
+ a:visited{color:#888}
+ a{color:#444;text-decoration:none;}
+ p{margin-bottom:.3em;}
