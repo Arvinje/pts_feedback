@@ -393,36 +393,36 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         question = session.query(Question).filter_by(id_=answer.question_id_).first()
 
-        if question.type_ == 'Picture':
-            session.add(answer)
-            session.commit()
-            file = request.files['userPicture']
-            if file:
-                fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
-                imgPath = '/static/' + fileName
-                savePath = parentdir + '/static/' + fileName
-                file.save(savePath)
-                answer.image_source_ = imgPath
-                answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
+        if not 'Previous' in request.form.keys():
+            if question.type_ == 'Picture':
                 session.add(answer)
                 session.commit()
+                file = request.files['userPicture']
+                if file:
+                    fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
+                    imgPath = '/static/' + fileName
+                    savePath = parentdir + '/static/' + fileName
+                    file.save(savePath)
+                    answer.image_source_ = imgPath
+                    answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
+                    session.add(answer)
+                    session.commit()
+            else:
+                if request.form.get('emoji'):
+                    if question.type_ == 'Smileys':
+                        answer.value_ = str(request.form['emoji'])
+                # Validate: data required
+                if len(answer.value_) > 0:
+                    session.add(answer)
+                    session.commit()
         else:
-            if question.type_ == 'Smileys':
-                answer.value_ = str(request.form['emoji'])
-            # Validate: data required
-            if len(answer.value_) > 0:
-                session.add(answer)
-                session.commit()
+            print('---EXITING showQuestion [POST], REDIRECTING TO PREV: {}'.format(request.form['prev_url']))
+            return redirect(request.form['prev_url'])
 
         # Redirect to next if 'Next' was clicked
         if 'Next' in request.form.keys():
             print('---EXITING showQuestion [POST], REDIRECTING TO NEXT: {}'.format(request.form['next_url']))
             return redirect(request.form['next_url'])
-
-        # Redirect to prev if 'Prev' was clicked
-        if 'Previous' in request.form.keys():
-            print('---EXITING showQuestion [POST], REDIRECTING TO PREV: {}'.format(request.form['prev_url']))
-            return redirect(request.form['prev_url'])
 
         return 'POST redirection to next/prev failed'
 
