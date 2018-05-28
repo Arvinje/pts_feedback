@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!-- Done by Saija 4/18 -->
 <!-- Mangled further by Inka 4/28 -->
+<!-- Additions Peter 5/28 -->
 <head>
 	<title>Smileys</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
-
 </head>
 
 <!-- Flashed messages -->
@@ -30,44 +30,16 @@
 	<hr class="my-4">
 	<h2>{{ question_title }}</h2>
 	<br>
-
 		{% from "_formhelpers.html" import render_field %}
 		<form action="{{ form_action_url }}" method=post>
-
-			<input
-			  type="radio" name="emotion"
-			  id="sad" class="input-hidden" />
-			<label for="sad">
-			  <img
-			    src="//placekitten.com/150/150"
-			    alt="I'm sad" />
-			</label>
-
-			<input
-			  type="radio" name="emotion"
-			  id="happy" class="input-hidden" />
-			<label for="happy">
-			  <img
-			    src="//placekitten.com/151/151"
-			    alt="I'm happy" />
-			</label>
-
-			{% for subfield in form.value_ %}
-			    <tr>
-						<td>{{ subfield }}</td>
-			    </tr>
-			{% endfor %}
-		<!-- Inka stares cluelessly at the following, unable to integrate. -->
-
-
 			<div class="cc-selector">
-			<input id="sad" type="radio" name="emoji" value="sad" />
-			<label class="face-cc sad" for="sad"></label>
-			<input id="neutral" type="radio" name="emoji" value="neutral" />
-			<label class="face-cc neutral" for="neutral"></label>
-			<input id="happy" type="radio" name="emoji" value="happy" />
-			<label class="face-cc happy" for="happy"></label>
-			</div>
+	        <input id="sadFace" type="radio" name="emoji" value="sadFace" />
+	        <label class="emoji-cc sadFace" for="sadFace"></label>
+					<input id="neutralFace" type="radio" name="emoji" value="neutralFace" />
+	        <label class="emoji-cc neutralFace"for="neutralFace"></label>
+	        <input id="happyFace" type="radio" name="emoji" value="happyFace" />
+	        <label class="emoji-cc happyFace"for="happyFace"></label>
+	    </div>
 
 			<input type=hidden name='question_id' value={{ question_id }}>
 			<input type=hidden name='question_type' value={{ question_type }}>
@@ -82,8 +54,8 @@
 				{% endif %}
 					<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
 			</p>
-
 	</form>
+
 
     <h4>Progress: {{ progress }}</h4>
 

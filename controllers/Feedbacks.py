@@ -361,6 +361,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('---COMPARING POSTED ANSWER TO POSSIBLY PRE-EXISTING ANSWER')
         answer = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
         print('len(answer): {}'.format(len(answer)))
+
         if len(answer) > 0:
             print('---FOUND PRE-EXISTING ANSWER:')
             answer = answer[0]
@@ -390,7 +391,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
 
-
         question = session.query(Question).filter_by(id_=answer.question_id_).first()
 
         if question.type_ == 'Picture':
@@ -407,6 +407,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                 session.add(answer)
                 session.commit()
         else:
+            if question.type_ == 'Smileys':
+                answer.value_ = str(request.form['emoji'])
             # Validate: data required
             if len(answer.value_) > 0:
                 session.add(answer)
