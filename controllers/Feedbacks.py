@@ -408,9 +408,11 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     session.add(answer)
                     session.commit()
             else:
-                if request.form.get('emoji'):
-                    if question.type_ == 'Smileys':
+                if question.type_ == 'Smileys':
+                    if request.form.get('emoji'):
                         answer.value_ = str(request.form['emoji'])
+                elif question.type_ == 'Stars':
+                    answer.value_ = str(request.form['rating'])
                 # Validate: data required
                 if len(answer.value_) > 0:
                     session.add(answer)
