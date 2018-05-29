@@ -7,6 +7,19 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
 </head>
 
+<style>
+    label {
+        border: dotted;
+    }
+
+    label:hover {
+       color:black;
+       background-color: gold;
+}
+
+
+</style>
+
 <!-- Flashed messages -->
 {% with messages = get_flashed_messages() %}
 	{% if messages %}
@@ -32,14 +45,14 @@
 		{% from "_formhelpers.html" import render_field %}
 		<form action="{{ form_action_url }}" method=post  enctype="multipart/form-data">
 
-			<label for=userPicture>
-	        <div id="cam">take a photo!</div>
-	        <input style='width:0px'
-	              type=file
-	              name=userPicture
-	              id=userPicture
-	              accept="image/*"
-	              capture="camera">
+		<label>
+        take a photo!
+        <input style='width:0px'
+              type=file
+              name=userPicture
+              id=userPicture
+              accept="image/*"
+              capture="camera">
 	    </label>
 
 			<br><br><br>
