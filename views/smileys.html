@@ -8,7 +8,64 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
 </head>
+<style>
 
+button {
+  background-image: url(/static/happy_face_selected.svg);
+  padding: 10px 30px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover, button:focus, button:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
+}
+
+.container {
+  position: relative;
+  width: 50%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #008CBA;
+}
+
+.container:hover .overlay {
+  opacity: 1;
+}
+
+.container:focus .overlay {
+  opacity: 1;
+}
+
+.container:active .overlay {
+  opacity: 1;
+}
+
+
+.text {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+</style>
 <!-- Flashed messages -->
 {% with messages = get_flashed_messages() %}
 	{% if messages %}
@@ -30,31 +87,63 @@
 	<hr class="my-4">
 	<h2>{{ question_title }}</h2>
 	<br>
-		{% from "_formhelpers.html" import render_field %}
-		<form action="{{ form_action_url }}" method=post>
-			<div class="cc-selector">
+
+    <!---Some tests worth saving. These work too as an option to radiobuttons:
+
+    <div class="container">
+    <input type="image" src="/static/happy_face.svg" border="0" alt="Submit" height=100 width=100 />
+      <div class="overlay">
+        <div class="text"><a href="google1.com"><img src="/static/happy_face_selected.svg" height=100 width=100 /></a></div>
+      </div>
+    </div>
+
+    <div class="container">
+    <input type="image" src="/static/neutral_face.svg" border="0" alt="Submit" height=100 width=100 />
+      <div class="overlay">
+        <div class="text"><a href="google2.com"><img src="/static/neutral_face_selected.svg" height=100 width=100 /></a></div>
+      </div>
+    </div>
+
+    <div class="container">
+    <input type="image" src="/static/sad_face.svg" border="0" alt="Submit" height=100 width=100 />
+      <div class="overlay">
+        <div class="text"><a href="google3.com"><img src="/static/sad_face_selected.svg" height=100 width=100 /></a></div>
+      </div>
+    </div>
+
+    --->
+
+	{% from "_formhelpers.html" import render_field %}
+	<form action="{{ form_action_url }}" method=post>
+		<div class="cc-selector">
 	        <input id="sadFace" type="radio" name="emoji" value="sadFace" />
-	        <label class="emoji-cc sadFace" for="sadFace"></label>
-					<input id="neutralFace" type="radio" name="emoji" value="neutralFace" />
-	        <label class="emoji-cc neutralFace"for="neutralFace"></label>
+	        <label class="emoji-cc sadFace"for="sadFace"></label>
+        </div>
+
+		<div class="cc-selector">
+	        <input id="neutralFace" type="radio" name="emoji" value="neutralFace" />
+	        <label class="emoji-cc neutralFace" for="neutralFace"></label>
+        </div>
+
+		<div class="cc-selector">
 	        <input id="happyFace" type="radio" name="emoji" value="happyFace" />
 	        <label class="emoji-cc happyFace"for="happyFace"></label>
 	    </div>
 
-			<input type=hidden name='question_id' value={{ question_id }}>
-			<input type=hidden name='question_type' value={{ question_type }}>
-			<input type=hidden name='prev_url' value={{ prev_url }}>
-			<input type=hidden name='next_url' value={{ next_url }}>
+		<input type=hidden name='question_id' value={{ question_id }}>
+		<input type=hidden name='question_type' value={{ question_type }}>
+		<input type=hidden name='prev_url' value={{ prev_url }}>
+		<input type=hidden name='next_url' value={{ next_url }}>
 
-			<hr>
+		<hr>
 
-			<p class="lead">
-				{% if not is_first %}
-					<input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
-				{% endif %}
-					<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
-			</p>
-	</form>
+		<p class="lead">
+			{% if not is_first %}
+				<input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+			{% endif %}
+				<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+		</p>
+    </form>
 
 
     <h4>Progress: {{ progress }}</h4>
