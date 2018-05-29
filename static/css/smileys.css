@@ -7,6 +7,13 @@
  * Needed in smileys.html
  * Created by Saija 18.4.18
  */
+.button {
+  position: absolute;
+}
+
+#startBtn:active {
+  box-shadow: #00823F;
+}
 
  form {
      display: inline-block;
@@ -39,7 +46,7 @@
      background-size:contain;
      background-repeat:no-repeat;
      display:inline-block;
-     width:100px;height:70px;
+     width:200px;height:140px;
      -webkit-transition: all 100ms ease-in;
         -moz-transition: all 100ms ease-in;
              transition: all 100ms ease-in;
