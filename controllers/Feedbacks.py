@@ -390,6 +390,9 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('---CREATED NEW ANSWER OBJECT:')
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
+            if request.form['question_type'] == 'Thumbs':
+                session.add(answer)
+                session.commit()
 
         question = session.query(Question).filter_by(id_=answer.question_id_).first()
 
