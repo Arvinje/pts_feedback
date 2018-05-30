@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 # Backtrack to parent dir to prevent import problems
@@ -33,7 +33,7 @@ class Feedback(Base):
         survey_id_ = survey_id_
 
     def __repr__(self):
-        return "<id_: {}, survey_id_: {}>".format(self.id_, survey_id_)
+        return "<id_: {}, survey_id_: {}>".format(self.id_, self.survey_id_)
 
     @property
     def serialize(self):

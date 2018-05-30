@@ -1,6 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
-import datetime
 
 # Backtrack to parent dir to prevent import problems
 # made by Saija, not sure if working properly 29.3.2018
@@ -21,8 +20,8 @@ class Question(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True, autoincrement=True)
-    type_ = Column(String)
-    title_ = Column(String)
+    type_ = Column(String(100))
+    title_ = Column(String(250))
     optional_ = Column(Boolean)
 
     # Question is child of survey

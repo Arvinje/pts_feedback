@@ -9,10 +9,7 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 from models.base import Base
-from models.feedback import Feedback
-from models.question import Question
 from config.setup import engine
-
 
 tablename = "answers"
 

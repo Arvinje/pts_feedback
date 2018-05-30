@@ -1,19 +1,14 @@
 import os, inspect, datetime
 
-from flask import Flask, render_template, request, redirect, flash, make_response, url_for
-from flask import session as flasksession
-from sqlalchemy import desc, distinct
-from wtforms import Form, StringField, SelectField, DateField, RadioField, TextAreaField, validators
+from flask import Flask, render_template, request, redirect, make_response, url_for
+from wtforms import Form, SelectField, RadioField, TextAreaField, validators
 
 from models.feedback import Feedback
 from models.survey import Survey
 from models.question import Question
 from models.answer import Answer
-from models.questionChoice import QuestionChoice
 
 from config.setup import session
-from controllers.Functions import startDateIsBeforeToday
-from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -46,6 +41,9 @@ class AnswerFormChoices(Form):
         for choice in listOfChoices:
             self.value_.choices.append((i,choice.title_))
             i += 1
+
+    def getChoices(self):
+        return self.value_choices
 
 def parse_answer_from_request_form(requestform, existing_ans=None, verbose=False):
     qtype = requestform['question_type']
@@ -391,28 +389,30 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             print('answer.serialize {}'.format(answer.serialize))
             print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
 
-        question = session.query(Question).filter_by(id_=answer.question_id_).first()
+        question_type = qtype = request.form['question_type']
 
         if not 'Previous' in request.form.keys():
-            if question.type_ == 'Picture':
-                session.add(answer)
+            if question_type == 'Picture':
+                session.add(answer) #answer ID and feedback ID are needed for filename, so...
                 session.commit()
                 file = request.files['userPicture']
                 if file:
                     fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
                     imgPath = '/static/' + fileName
-                    savePath = parentdir + '/static/' + fileName
-                    file.save(savePath)
+                    file.save(parentdir + imgPath)
                     answer.image_source_ = imgPath
-                    answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
+                    answer.value_ = fileName
                     session.add(answer)
                     session.commit()
             else:
-                if question.type_ == 'Smileys':
+                if question_type == 'Smileys':
                     if request.form.get('emoji'):
                         answer.value_ = str(request.form['emoji'])
-                elif question.type_ == 'Stars':
+                elif question_type == 'Stars':
                     answer.value_ = str(request.form['rating'])
+                elif question_type == 'Choices':
+                    return str(request.form)
+                #    dict(form.choice.choices).get(form.choice.data)
                 # Validate: data required
                 if len(answer.value_) > 0:
                     session.add(answer)

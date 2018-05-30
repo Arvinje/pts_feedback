@@ -40,7 +40,6 @@
             </thead>
             <tbody>
 
-
             {% for question in questions %}
             <tr>
                 <td>{{question.id_}}</td>
@@ -56,6 +55,12 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <span class="glyphicon">&#xe081;</span> New choice
                         </button>
+                    </a>
+
+                    <a href="\surveys\{{question.survey_id_}}\questions\{{question.id_}}\questionChoices" method="GET">
+                      <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <span class="glyphicon">&#xe012;</span> Show details
+                      </button>
                     </a>
 
                     <br><br>
