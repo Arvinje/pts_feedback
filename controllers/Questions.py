@@ -1,5 +1,5 @@
 import os, inspect
-from flask import render_template, request, redirect, flash, jsonify
+from flask import render_template, request, redirect
 from wtforms import Form, StringField, SelectField, BooleanField, validators
 
 # Backtrack to parent dir to prevent import problems
@@ -7,11 +7,10 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
-from config.setup import Base, session, postgres_url
+from config.setup import session
 from models.question import Question
 from models.questionChoice import QuestionChoice
 
-from controllers.Functions import startDateIsBeforeToday
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionForm(Form):
@@ -50,6 +49,11 @@ def questions(survey_id):
 
 	if (request.method == 'POST') and (form.validate()):
 		newQuestion = Question(form.type_.data,form.title_.data, survey_id, form.optional_.data)
+
+		# picture is set to optional, because not all devices work with it
+		if newQuestion.type_ == 'Picture':
+			newQuestion.optional_ = True
+
 		session.add(newQuestion)
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")

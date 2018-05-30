@@ -1,4 +1,4 @@
-import os, inspect, time
+import os, inspect
 from flask import Flask, render_template, request, redirect, flash
 from config.setup import session # for SQL-connection
 from wtforms import Form, BooleanField, StringField, DateField, validators
@@ -88,7 +88,6 @@ routes.append(dict(rule='/surveys/<int:id>/edit',view_func=editSurvey,
 
 # Running this function deletes Survey with id given as a parameter.
 def deleteSurvey(id):
-    form = SurveyForm(request.form)
     surveyToBeDeleted = session.query(Survey).filter_by(id_=id).one()
 
     if request.method == 'GET':

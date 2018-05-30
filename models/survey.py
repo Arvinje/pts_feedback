@@ -1,6 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
-import datetime
 
 # Backtrack to parent dir to prevent import problems
 import os, inspect
@@ -18,7 +17,7 @@ class Survey(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True, autoincrement=True)
-    description_ = Column(String, nullable=False)
+    description_ = Column(String(420), nullable=False)
     start_date_ = Column(DateTime)
     end_date_ = Column(DateTime)
     enabled_ = Column(Boolean)

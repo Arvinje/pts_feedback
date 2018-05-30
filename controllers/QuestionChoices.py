@@ -1,20 +1,19 @@
 import os, inspect
-from flask import render_template, request, redirect, flash, jsonify
-from wtforms import Form, StringField, SelectField, validators
+from flask import render_template, request, redirect
+from wtforms import Form, StringField, validators
 
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
-from config.setup import Base, session, postgres_url
-from models.question import Question
+from config.setup import session
 from models.questionChoice import QuestionChoice
 
 from controllers.Functions import checkThatFieldIsNotOnlyWhiteSpace
 
 class QuestionChoiceForm(Form):
-	title_ = StringField("Title", [validators.Length(min=1, max=250), 
+	title_ = StringField("Title", [validators.Length(min=1, max=250),
 								checkThatFieldIsNotOnlyWhiteSpace])
 
 routes = []
@@ -54,7 +53,7 @@ def questionChoices(survey_id,question_id):
 		newQuestionChoice = QuestionChoice(form.title_.data, question_id)
 		session.add(newQuestionChoice)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id) + "/questionChoices")
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
 		return render_template('new_questionChoice.html', form=form,survey_id=survey_id,question_id=question_id)
 
@@ -79,7 +78,7 @@ def editQuestionChoice(survey_id,question_id,questionChoice_id):
 
 		session.add(questionChoiceToBeEdited)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id) + "/questionChoices")
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
 		return render_template('edit_questionChoice.html', form=form)
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/questionChoices/<int:questionChoice_id>/edit',
@@ -97,7 +96,7 @@ def deleteQuestionChoice(survey_id,question_id,questionChoice_id):
 	elif (request.method == 'POST'):
 		session.delete(questionChoiceToBeDeleted)
 		session.commit()
-		return redirect("/surveys/" + str(survey_id) + "/questions/" + str(question_id) + "/questionChoices")
+		return redirect("/surveys/" + str(survey_id) + "/questions")
 
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/questionChoices/<int:questionChoice_id>/delete',
 					view_func=deleteQuestionChoice,
