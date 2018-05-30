@@ -12,8 +12,8 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <h2>Delete question</h2>
+  <br>
+  <h2>Delete question?</h2>
 
   <form method=post>
       <dl>
@@ -21,8 +21,7 @@
           <br><br>
           {{ title }}
       </dl>
-      <p>
-      <input type=submit value=Submit>
+    <button type="submit" class="btn btn-primary">Delete</button>
   </form>
 </div>
 {% endblock %}
