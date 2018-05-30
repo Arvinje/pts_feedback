@@ -1,52 +1,50 @@
 <!DOCTYPE html>
 <!-- Done by Peter 5/25 -->
+<!-- Modified by Saija 5/30 -->
+
 <head>
 	<title>Picture</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/smileys.css') }}">
+	<style>
+		label {
+			background-color: #00B0FF;
+			box-sizing: border-box;
+			width: 50%;
+		}
+
+		label:hover {
+			background-color: #99DFFF;
+		}
+	</style>
 </head>
 
-<style>
-    label {
-        border: dotted;
-    }
 
-    label:hover {
-       color:black;
-       background-color: gold;
-}
-
-
-</style>
 
 <!-- Flashed messages -->
-{% with messages = get_flashed_messages() %}
-	{% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-			<li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	{% endif %}
-{% endwith %}
+{% with messages = get_flashed_messages() %} {% if messages %}
+<ul class=flashes>
+	{% for message in messages %}
+	<li>{{ message }}</li>
+	{% endfor %}
+</ul>
+{% endif %} {% endwith %}
 
 <body>
 	<nav class="navbar navbar-expand navbar-dark bg-primary">
 		<a class="navbar-brand" href="#"><b>LLB</b></a>
 	</nav>
 	<br>
-	<h1>The big picture!</h1>
+	<h1>The Big Picture!</h1>
 	<p class="lead">Here you can answer by cell phone picture. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 	<hr class="my-4">
 	<h2>{{ question_title }}</h2>
-	<br>
-
-		{% from "_formhelpers.html" import render_field %}
-		<form action="{{ form_action_url }}" method=post  enctype="multipart/form-data">
+	<br> {% from "_formhelpers.html" import render_field %}
+	<form action="{{ form_action_url }}" method=post enctype="multipart/form-data">
 
 		<label>
-        take a photo!
+		Take a photo!
         <input style='width:0px'
               type=file
               name=userPicture
@@ -55,45 +53,41 @@
               capture="camera">
 	    </label>
 
-			<br><br><br>
+		<br><br><br>
 
-			<img src="" id="image" height=100 width=100>
+		<img src="" id="image" height=100 width=100>
 
-			<input type=hidden name='question_id' value={{ question_id }}>
-			<input type=hidden name='question_type' value={{ question_type }}>
-			<input type=hidden name='prev_url' value={{ prev_url }}>
-			<input type=hidden name='next_url' value={{ next_url }}>
+		<input type=hidden name='question_id' value={{ question_id }}>
+		<input type=hidden name='question_type' value={{ question_type }}>
+		<input type=hidden name='prev_url' value={{ prev_url }}>
+		<input type=hidden name='next_url' value={{ next_url }}>
 
-			<hr>
+		<hr>
 
-			<p class="lead">
-				{% if not is_first %}
-					<input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
-				{% endif %}
-					<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
-			</p>
+		<p class="lead">
+			{% if not is_first %}
+			<input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+			{% endif %}
+			<input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+		</p>
 
 	</form>
-  <h4>Progress: {{ progress }}</h4>
+	<p class="text-muted">Progress: {{ progress }} %</p>
 </body>
 
 <script>
 	function addPhoto() {
 		var preview = document.querySelector('img');
-    var file    = document.querySelector('input[type=file]').files[0];
-    var reader  = new FileReader();
-
-    reader.addEventListener("load", function () {
-        preview.src = reader.result;
-    }, false);
-
+		var file = document.querySelector('input[type=file]').files[0];
+		var reader = new FileReader();
+		reader.addEventListener("load", function() {
+			preview.src = reader.result;
+		}, false);
 		if (file) {
-        reader.readAsDataURL(file);
-    }
+			reader.readAsDataURL(file);
+		}
 		preview.src = "";
-
 	}
-
 	document.getElementById('userPicture').addEventListener('change', addPhoto);
 </script>
 

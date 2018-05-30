@@ -14,7 +14,7 @@
       </ul>
     {% endif %}
   {% endwith %}
-
+  <br>
   <h2>Edit question</h2>
 
   {% from "_formhelpers.html" import render_field %}
@@ -24,8 +24,7 @@
           {{ render_field(form.title_) }}
           {{ render_field(form.optional_) }}
       </dl>
-      <p>
-      <input type=submit value=Submit>
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 
   <a href="/surveys/{{survey_id}}/questions/{{question_id}}/questionChoices/new" method="GET">New questionChoice</a>

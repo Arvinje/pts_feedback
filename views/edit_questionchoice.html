@@ -12,16 +12,15 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <h2>Edit questionChoice</h2>
+  <br>
+  <h2>Edit question choice</h2>
 
   {% from "_formhelpers.html" import render_field %}
   <form method=post>
       <dl>
           {{ render_field(form.title_) }}
       </dl>
-      <p>
-      <input type=submit value=Submit>
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 {% endblock %}

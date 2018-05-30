@@ -1,4 +1,4 @@
-<doctype html>
+<!DOCTYPE html>
 {% extends "header.html" %}
 
 {% block bodyOfPage %}
@@ -12,8 +12,8 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <h2>Results (Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}})</h2>
+  <br>
+  <h2>Results: Survey {{survey.id_}}: {{survey.description_}}, Question {{question.id_}}: {{question.title_}}</h2>
 
   <br>
 
@@ -54,12 +54,6 @@
       </tr>
   		{% endfor %}
   </table>
-
-  <a href="\results\surveys" method="GET">
-    <button type="button" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-chevron-left">  Back to the results</span>
-    </button>
-  </a>
 
   <br><br>
 
