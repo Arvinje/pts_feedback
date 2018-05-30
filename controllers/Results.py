@@ -1,14 +1,14 @@
 import os, inspect, time
 import csv
 import io
-from flask import Flask, render_template, make_response, send_file
+from flask import Flask, render_template, make_response
 from config.setup import session # for SQL-connection
 
 from models.answer import Answer
 from models.survey import Survey
 from models.question import Question
 from models.feedback import Feedback
-from flask import Response
+
 # Backtrack to parent dir to prevent import problems
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)

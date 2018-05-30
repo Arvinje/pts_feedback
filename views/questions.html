@@ -11,17 +11,26 @@
     <div class="container" align="middle">
         <br>
         <h2>Questions of the survey</h2>
+
         <br>
+
         <a href="/surveys" method="GET">
-      <button type="button" class="btn btn-outline-secondary"><span class="glyphicon">&#xe257;</span> Surveys</button>
-  </a>
+          <button type="button" class="btn btn-outline-secondary">
+            <span class="glyphicon">&#xe257;</span> Surveys
+          </button>
+        </a>
+
         <a href="/surveys/{{survey_id}}/questions/new" method="GET">
-      <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> New question</button>
-  </a>
+          <button type="button" class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> New question
+          </button>
+        </a>
+
         <a href="/surveys/{{survey_id}}/edit" method="GET">
-      <button type="button" class="btn btn-info"><span class="glyphicon">&#xe065;</span> Edit survey
-      </button>
-  </a>
+          <button type="button" class="btn btn-info">
+            <span class="glyphicon">&#xe065;</span> Edit survey
+          </button>
+        </a>
 
         <br><br>
 
@@ -40,7 +49,6 @@
             </thead>
             <tbody>
 
-
             {% for question in questions %}
             <tr>
                 <td>{{question.id_}}</td>
@@ -56,6 +64,12 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm">
                             <span class="glyphicon">&#xe081;</span> New choice
                         </button>
+                    </a>
+
+                    <a href="\surveys\{{question.survey_id_}}\questions\{{question.id_}}\questionChoices" method="GET">
+                      <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <span class="glyphicon">&#xe012;</span> Show details
+                      </button>
                     </a>
 
                     <br><br>
