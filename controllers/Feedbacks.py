@@ -83,7 +83,10 @@ def get_progress(feedback, verbose=False):
     missing_q_ids = set([item.id_ for item in questions])
     missing_a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
     missing = missing_q_ids.difference(missing_a_ids)
-    progress = int(len(missing_a_ids) / float(len(missing_q_ids)) * 100)
+    if len(missing_q_ids) == 0:
+        progress = 0.0
+    else:
+        progress = int(len(missing_a_ids) / float(len(missing_q_ids)) * 100)
 
     missing_mandatory = []
     for item in questions:
@@ -401,41 +404,45 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         question = session.query(Question).filter_by(id_=answer.question_id_).first()
 
-        if not 'Previous' in request.form.keys():
-            if question.type_ == 'Picture':
-                # user gave a new file:
-                if request.files.get('userPicture'):
-                    file = request.files['userPicture']
-                    if file:
-                        fileName = 'F' + str(answer.feedback_id_) + 'A' + str(question.id_) + \
-                                    '_' + str(datetime.datetime.now().hour) + \
-                                    '_' + str(datetime.datetime.now().minute) + \
-                                    '_' + str(datetime.datetime.now().second) + '.PNG'
-                        imgPath = '/static/' + fileName
-                        file.save(parentdir + imgPath)
-                        answer.image_source_ = imgPath
-                        answer.value_ = imgPath
-                        session.add(answer)
-                        session.commit()
-            else:
-                if question.type_ == 'Smileys':
-                    if request.form.get('emoji'):
-                        answer.value_ = str(request.form['emoji'])
-                elif question.type_ == 'Stars':
-                    if request.form.get('rating'):
-                        answer.value_ = str(request.form['rating'])
-                    else:
-                        answer.value_ = ''
-                elif question.type_ == 'Choices':
-                    questionchoiceTitles = []
-                    for choice in question.questionchoices:
-                        questionchoiceTitles.append(choice.title_)
-                    answer.value_ = questionchoiceTitles[int(answer.value_)]
-                # Validate: data required
-                if len(answer.value_) > 0:
+    # if not 'Previous' in request.form.keys():
+        if question.type_ == 'Picture':
+            # user gave a new file:
+            if request.files.get('userPicture'):
+                file = request.files['userPicture']
+                if file:
+                    fileName = 'F' + str(answer.feedback_id_) + 'A' + str(question.id_) + \
+                                '_' + str(datetime.datetime.now().hour) + \
+                                '_' + str(datetime.datetime.now().minute) + \
+                                '_' + str(datetime.datetime.now().second) + '.PNG'
+                    imgPath = '/static/' + fileName
+                    file.save(parentdir + imgPath)
+                    answer.image_source_ = imgPath
+                    answer.value_ = imgPath
                     session.add(answer)
                     session.commit()
         else:
+            if question.type_ == 'Smileys':
+                if request.form.get('emoji'):
+                    answer.value_ = str(request.form['emoji'])
+            elif question.type_ == 'Stars':
+                if request.form.get('rating'):
+                    answer.value_ = str(request.form['rating'])
+                else:
+                    answer.value_ = ''
+            elif question.type_ == 'Choices':
+                questionchoiceTitles = []
+                for choice in question.questionchoices:
+                    questionchoiceTitles.append(choice.title_)
+                answer.value_ = questionchoiceTitles[int(answer.value_)]
+            else:
+                pass
+            # Validate: data required
+            if len(answer.value_) > 0:
+                session.add(answer)
+                session.commit()
+
+        # Redirect to previous if 'Prev' was clicked
+        if 'Previous' in request.form.keys():
             print('---EXITING showQuestion [POST], REDIRECTING TO PREV: {}'.format(request.form['prev_url']))
             return redirect(request.form['prev_url'])
 
