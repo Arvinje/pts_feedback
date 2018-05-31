@@ -422,7 +422,10 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     if request.form.get('emoji'):
                         answer.value_ = str(request.form['emoji'])
                 elif question.type_ == 'Stars':
-                    answer.value_ = str(request.form['rating'])
+                    if request.form.get('rating'):
+                        answer.value_ = str(request.form['rating'])
+                    else:
+                        answer.value_ = ''
                 elif question.type_ == 'Choices':
                     questionchoiceTitles = []
                     for choice in question.questionchoices:
