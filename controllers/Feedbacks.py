@@ -341,7 +341,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 prev_url=prev_url,
                                                 next_url=next_url,
                                                 is_first=is_first,
-                                                progress=progress
+                                                progress=progress,
+                                                answer=pre_existing_answer
                                                 # downthumb_status=downthumb_status,
                                                 # upthumb_status=upthumb_status,
                                                 ))
@@ -375,10 +376,14 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             if answer.value_ == parsed_answer:
                 print('Scrolling through, did not change answer')
             else:
-                print('---CHANGING PRE-EXISTING ANSWER')
-                answer.value_ = parsed_answer
-                print('---REPLACED VALUE OF PRE-EXISTING ANSWER WITH:')
-                print(answer.serialize)
+                # Picture can have value_ empty, if user
+                # scrolls through the questions and doesent Take
+                # a new picture
+                if parsed_answer != '':
+                    print('---CHANGING PRE-EXISTING ANSWER')
+                    answer.value_ = parsed_answer
+                    print('---REPLACED VALUE OF PRE-EXISTING ANSWER WITH:')
+                    print(answer.serialize)
         else:
             # Create new answer object
             print('---NO PRE-EXISTING ANSWER FOUND!')
@@ -398,24 +403,31 @@ def showQuestion(question_id, methods=['GET', 'POST']):
 
         if not 'Previous' in request.form.keys():
             if question.type_ == 'Picture':
-                session.add(answer)
-                session.commit()
-                file = request.files['userPicture']
-                if file:
-                    fileName = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_) + '.PNG'
-                    imgPath = '/static/' + fileName
-                    savePath = parentdir + '/static/' + fileName
-                    file.save(savePath)
-                    answer.image_source_ = imgPath
-                    answer.value_ = 'F' + str(answer.feedback_id_) + 'A' + str(answer.id_)
-                    session.add(answer)
-                    session.commit()
+                # user gave a new file:
+                if request.files.get('userPicture'):
+                    file = request.files['userPicture']
+                    if file:
+                        fileName = 'F' + str(answer.feedback_id_) + 'A' + str(question.id_) + \
+                                    '_' + str(datetime.datetime.now().hour) + \
+                                    '_' + str(datetime.datetime.now().minute) + \
+                                    '_' + str(datetime.datetime.now().second) + '.PNG'
+                        imgPath = '/static/' + fileName
+                        file.save(parentdir + imgPath)
+                        answer.image_source_ = imgPath
+                        answer.value_ = imgPath
+                        session.add(answer)
+                        session.commit()
             else:
                 if question.type_ == 'Smileys':
                     if request.form.get('emoji'):
                         answer.value_ = str(request.form['emoji'])
                 elif question.type_ == 'Stars':
                     answer.value_ = str(request.form['rating'])
+                elif question.type_ == 'Choices':
+                    questionchoiceTitles = []
+                    for choice in question.questionchoices:
+                        questionchoiceTitles.append(choice.title_)
+                    answer.value_ = questionchoiceTitles[int(answer.value_)]
                 # Validate: data required
                 if len(answer.value_) > 0:
                     session.add(answer)

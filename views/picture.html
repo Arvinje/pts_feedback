@@ -31,7 +31,7 @@
 </ul>
 {% endif %} {% endwith %}
 
-<body>
+<body onload="reloadLastTakenImageFromDatabase()">
 	<nav class="navbar navbar-expand navbar-dark bg-primary">
 		<a class="navbar-brand" href="#"><b>LLB</b></a>
 	</nav>
@@ -42,6 +42,7 @@
 	<h2>{{ question_title }}</h2>
 	<br> {% from "_formhelpers.html" import render_field %}
 	<form action="{{ form_action_url }}" method=post enctype="multipart/form-data">
+		<br><br>
 
 		<label>
 		Take a photo!
@@ -55,8 +56,9 @@
 
 		<br><br><br>
 
-		<img src="" id="image" height=100 width=100>
+		<figure><img id="image" height=100 width=100></figure>
 
+		<input type=hidden id='value_' value={{ answer.value_ }}>
 		<input type=hidden name='question_id' value={{ question_id }}>
 		<input type=hidden name='question_type' value={{ question_type }}>
 		<input type=hidden name='prev_url' value={{ prev_url }}>
@@ -76,6 +78,13 @@
 </body>
 
 <script>
+	function reloadLastTakenImageFromDatabase() {
+		var preview = document.querySelector('img');
+		var oldImagePath = document.getElementById('value_');
+
+		preview.src = oldImagePath.value;
+	}
+
 	function addPhoto() {
 		var preview = document.querySelector('img');
 		var file = document.querySelector('input[type=file]').files[0];

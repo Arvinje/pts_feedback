@@ -1,5 +1,5 @@
-'''
-This worked locally:
+
+#This worked locally:
 
 import os
 from sqlalchemy import create_engine
@@ -20,10 +20,10 @@ Base.metadata.bind = engine               # base class (+ my classes) bound to e
 DBSession = sessionmaker(bind=engine)     # session class bound to engine
 session = DBSession()                     # instance of session class
 
-
+'''
 ...and this was needed to pythonanywhere.com:
 
-'''
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -42,3 +42,4 @@ engine = create_engine(database_url)      # engine bound to type of database
 Base.metadata.bind = engine               # base class (+ my classes) bound to engine
 DBSession = sessionmaker(bind=engine)     # session class bound to engine
 session = DBSession()                     # instance of session class
+'''
