@@ -77,7 +77,7 @@ button:hover, button:focus, button:active {
 	{% endif %}
 {% endwith %}
 
-<body>
+<body onload="reloadOldValue()">
 	<nav class="navbar navbar-expand navbar-dark bg-primary">
 		<a class="navbar-brand" href="#"><b>LLB</b></a>
 	</nav>
@@ -131,6 +131,7 @@ button:hover, button:focus, button:active {
 	        <label class="emoji-cc happyFace"for="happyFace"></label>
 	    </div>
 
+		<input type=hidden id='oldValue' value={{ answer.value_ }}>
 		<input type=hidden name='question_id' value={{ question_id }}>
 		<input type=hidden name='question_type' value={{ question_type }}>
 		<input type=hidden name='prev_url' value={{ prev_url }}>
@@ -151,5 +152,14 @@ button:hover, button:focus, button:active {
 
 </div>
 </body>
+
+<script>
+	function reloadOldValue() {
+		var oldValue = document.getElementById('oldValue');
+
+		radiobtn = document.getElementById(oldValue.value);
+		radiobtn.checked = true;
+	}
+</script>
 
 </html>
