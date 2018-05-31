@@ -23,7 +23,7 @@
     {% endif %}
 {% endwith %}
 
-<body>
+<body onload="reloadOldValue()">
     <nav class="navbar navbar-expand navbar-dark bg-primary">
         <a class="navbar-brand" href="#"><b>LLB</b></a>
     </nav>
@@ -53,6 +53,7 @@
               <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
           </p>
 
+          <input type=hidden id='oldValue' value={{ answer.value_ }}>
           <input type=hidden name='question_id' value={{ question_id }}>
           <input type=hidden name='question_type' value={{ question_type }}>
           <input type=hidden name='prev_url' value={{ prev_url }}>
@@ -62,4 +63,16 @@
         <p class="text-muted">Progress: {{ progress }} %</p>
     </div>
 </body>
+
+<script>
+	function reloadOldValue() {
+    // if the user has already previously
+    // given value, it is updated to the page:
+		var oldValue = document.getElementById('oldValue');
+
+		radiobtn = document.getElementById(oldValue.value + "-star");
+		radiobtn.checked = true;
+	}
+</script>
+
 </html>
