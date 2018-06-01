@@ -502,3 +502,105 @@ def thankYou():
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
+
+
+# /feedback
+def newFeedbackForSurvey(surveyID):
+    # Creates a feedback record
+    # Stores the id to that record in a cookie
+    # Has respective view that shows the latest active survey
+    print('\n--- ENTERING newFeedback, method: {}'.format(request.method))
+
+    # Form dict
+    qtype_forms = {'Freeform': AnswerFormFree(request.form),
+                    'Thumbs': AnswerFormThumbs(request.form),
+                    'Stars': AnswerFormStars(request.form),
+                    'Smileys': AnswerFormSmileys(request.form),
+                    'Choices': AnswerFormChoices(request.form),
+                    'Picture': AnswerFormFree(request.form)}
+
+    # From active surveys, get one with greatest id
+    survey = session.query(Survey).filter(Survey.id_ == surveyID,Survey.enabled_).first()
+    if survey != None:
+        print('--- FOUND SURVEY ID {}, TITLE {}'.format(survey.id_, survey.description_))
+    else:
+        return 'No active surveys.'
+
+    # Check if valid cookie exists
+    feedback = None
+    try:
+        cookie = request.cookies['feedback_id']
+        if cookie == None or (request.cookies['survey_id'] != surveyID):
+            print('---FOUND COOKIE WITH VALUE None')
+        else:
+            # Fetch feedback with id_ == cookie from db
+            feedback = session.query(Feedback).filter_by(id_=cookie).one()
+            if feedback.survey_id_ == survey.id_:
+                print('---FOUND VALID COOKIE WITH FEEDBACK_ID {} CONNECTED TO SURVEY {}'.format(cookie, survey.id_))
+            else:
+                print('---FOUND INVALID COOKIE FOR THIS SURVEY:')
+    except:
+        pass
+
+    # If no valid cookie exists, create new feedback and new cookie with feedback id_ as value
+    if feedback == None or cookie==None or len(cookie) == 0:
+        print('--- NO COOKIE FOUND. CREATING NEW FEEDBACK RECORD FOR THIS SURVEY...')
+        feedback = Feedback(survey_id_=survey.id_)
+        session.add(feedback)
+        session.commit()  # For some reason, feedback.survey_id_ is not yet entered into db. (((WHY)))
+
+        # Workaround to store feedback.survey_id_ into db: query, change, commit
+        feedback = session.query(Feedback).order_by(Feedback.id_.desc()).first()
+        feedback.survey_id_= survey.id_
+        session.add(feedback)
+        session.commit()
+
+        # Check that feedback.survey_id_ is now stored in db
+        feedback = session.query(Feedback).order_by(Feedback.id_.desc()).first()
+        print('---CREATED FEEDBACK ENTRY {}'.format(feedback.serialize))
+        print('--- COOKIE / SESSION ID WILL BE SET TO: {}'.format(feedback.id_))
+    else:
+        print('---FEEDBACK WAS NOT NONE, IT\'S: {}'.format(feedback.serialize))
+
+    # Get list of survey questions
+    q_list = session.query(Question).filter_by(survey_id_=survey.id_).order_by(Question.id_).all()
+    print('---QUESTIONS FOR SURVEY {}: {}, len {}'.format(survey.id_, q_list, len(q_list)))
+
+    # Get first question
+    q, response = None, None
+    try:
+        q = q_list[0]
+    except:
+        return 'Survey has no questions. Thank you & goodbye.'
+
+    # Show first survey question:
+    if q != None:
+        template = templates.get(q.type_, 'freeform.html')  # Defaults to show_question_freeform for now
+        form = qtype_forms.get(q.type_, AnswerFormFree(request.form))  # Defaults to AnswerFormFree for now
+        prev_url = None
+        next_url = url_for('controllers.thankYou') if len(q_list) <= 1 else url_for('controllers.showQuestion', question_id=q_list[1].id_)
+
+        progress = 0
+
+        # Debug statements
+        print('---QUESTION TYPE: {}'.format(q.type_))
+        print('---TEMPLATE: {}, {}'.format(type(template), template))
+        print('---FORM: {}, {}'.format(type(form), form))
+        print('---FIRST QUESTION_ID: {}, {}'.format(type(q.id_), q.id_))
+        print('---QUESTION_TITLE: {}, {}'.format(type(q.title_), q.title_))
+        print('---NEXT_URL: {}, {}'.format(type(next_url), next_url))
+        print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
+
+        response = make_response(render_template('survey_frontpage.html',
+                                                    survey=survey,
+                                                    question_id=q.id_,
+                                                    feedback=feedback,
+                                                    progress=progress
+                                                    ))
+        # Set cookie to value of feedback.id_
+        response.set_cookie('feedback_id', str(feedback.id_))
+        print('---RESPONSE CREATED. EXITING newFeedback AND RENDERING survey_frontpage.html: {}'.format(response))
+
+    return response
+
+routes.append(dict(rule='/feedback/<int:surveyID>', view_func=newFeedbackForSurvey, options=dict(methods=['GET'])))
