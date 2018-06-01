@@ -37,15 +37,17 @@ class AnswerFormStars(Form):
 class AnswerFormSmileys(Form):
     value_ = RadioField('', choices=[('sad','(sad)'),('neutral','(neutral'), ('happy', '(happy)')])
 
+
 class AnswerFormChoices(Form):
     value_ = SelectField('', choices=[])
 
     def setChoices(self,listOfChoices):
         self.value_.choices.clear()
-        i = 0
-        for choice in listOfChoices:
-            self.value_.choices.append((i,choice.title_))
-            i += 1
+        [self.value_.choices.append((i,choice.title_)) for i, choice in enumerate(listOfChoices)]
+        # i = 0
+        # for choice in listOfChoices:
+        #     self.value_.choices.append((i,choice.title_))
+        #     i += 1
 
 def parse_answer_from_request_form(requestform, existing_ans=None, verbose=False):
     qtype = requestform['question_type']
@@ -80,13 +82,14 @@ def get_progress(feedback, verbose=False):
     survey_id = feedback.survey_id_
     questions = session.query(Question).filter_by(survey_id_=survey_id).all()
     answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
-    missing_q_ids = set([item.id_ for item in questions])
-    missing_a_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
-    missing = missing_q_ids.difference(missing_a_ids)
-    if len(missing_q_ids) == 0:
-        progress = 0.0
-    else:
-        progress = int(len(missing_a_ids) / float(len(missing_q_ids)) * 100)
+    print('---GET_PROGRESS FINDS ANSWERS {}'.format(answers))
+
+    question_ids = set([item.id_ for item in questions])
+    answer_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
+    print('---GET_PROGRESS ACCEPTS ANSWER IDS {}'.format(answer_ids))
+
+    missing = question_ids.difference(answer_ids)
+    progress = int(len(answer_ids) / float(len(question_ids)) * 100) if len(question_ids) > 0 else 0.0
 
     missing_mandatory = []
     for item in questions:
@@ -126,15 +129,13 @@ def newFeedback():
     # Has respective view that shows the latest active survey
     print('\n--- ENTERING newFeedback, method: {}'.format(request.method))
 
-    # Question types dict
+    # Form dict
     qtype_forms = {'Freeform': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
                     'Stars': AnswerFormStars(request.form),
                     'Smileys': AnswerFormSmileys(request.form),
                     'Choices': AnswerFormChoices(request.form),
                     'Picture': AnswerFormFree(request.form)}
-
-    print('---FORM DICT: {}'.format(qtype_forms))
 
     # From active surveys, get one with greatest id
     survey = session.query(Survey).filter(Survey.end_date_ >= datetime.datetime.now(),Survey.enabled_).order_by(Survey.id_.desc()).first()
@@ -208,16 +209,12 @@ def newFeedback():
         print('---NEXT_URL: {}, {}'.format(type(next_url), next_url))
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
-        # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
-        # flash('progress: {}'.format(progress))
-
         response = make_response(render_template('survey_frontpage.html',
                                                     survey=survey,
                                                     question_id=q.id_,
                                                     feedback=feedback,
                                                     progress=progress
                                                     ))
-
         # Set cookie to value of feedback.id_
         response.set_cookie('feedback_id', str(feedback.id_))
         print('---RESPONSE CREATED. EXITING newFeedback AND RENDERING survey_frontpage.html: {}'.format(response))
@@ -239,15 +236,15 @@ def showQuestion(question_id, methods=['GET', 'POST']):
     # The page has links to next and previous question.
     # Renders a different view based on the question type.
 
-    print('\n--- ENTERING showQuestion:')
+    print('\n--- ENTERING showQuestion WITH METHOD {}: {}'.format(request.method, 70 * '*'))
 
+    # Get feedback object
     cookie = request.cookies['feedback_id']
     feedback = session.query(Feedback).filter_by(id_=int(cookie)).one()
-
     print('\n--- COOKIE / SESSION ID: {}'.format(cookie))
     print('---FEEDBACK: {}'.format(feedback.serialize))
 
-    # Template dict
+    # Form dict - can this be factored out of each function?
     qtype_forms = {'Freeform': AnswerFormFree(request.form), # can this be removed?
                     'Text': AnswerFormFree(request.form),
                     'Thumbs': AnswerFormThumbs(request.form),
@@ -255,14 +252,13 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     'Smileys': AnswerFormSmileys(request.form),
                     'Choices': AnswerFormChoices(request.form),
                     'Picture': AnswerFormFree(request.form)}
-    print('---FORM DICT: {}'.format(qtype_forms))
 
     progress = 0
 
-
-    # GET: SHOW QUESTION
+    # GET: Show question with prefilled answer
     if request.method == 'GET':
-        print('\n--- ENTERING showQuestion with question_id: {}, method: {}'.format(question_id, request.method))
+        print('GET')
+        print('request.form: {}'.format(request.form))
 
         # Get list of survey questions
         q = session.query(Question).filter_by(id_= question_id).one()
@@ -272,45 +268,50 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Figure out next_url and prev_url
         prev_q_ix = q_list_ids.index(q.id_) - 1 if q_list_ids.index(q.id_) - 1 >= 0 else None
         next_q_ix = q_list_ids.index(q.id_) + 1 if q_list_ids.index(q.id_) + 1 < len(q_list) else None
-        # flash('prev_q_ix: {}'.format(prev_q_ix))
-        # flash('next_q_ix: {}'.format(next_q_ix))
         prev_url = url_for('controllers.showQuestion', question_id=q_list_ids[prev_q_ix]) if prev_q_ix != None else None # <---
         next_url = url_for('controllers.showQuestion', question_id=q_list_ids[next_q_ix]) if next_q_ix != None else url_for('controllers.thankYou')
         is_first = prev_url == None
 
-        # Set up proper template
+        # Set up proper template and form_action_url
         template = templates.get(q.type_, 'freeform.html')  # Freeform is default fallback
         print('Chose template {} from templates: {}'.format(template, templates))
         form_action_url = '/feedback/questions/' + str(q.id_)
 
         # Set up question form and fetch possible pre-existing answer
         form = qtype_forms.get(q.type_, AnswerFormFree(request.form))
-        print('Chose form from qtype_forms: {}'.format(form))
-
-        # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
-        # flash('form.value_: {}'.format(form.value_))
+        print('Chose form {} from qtype_forms'.format(form))
+        print('---FORM.value_: {}'.format(form.value_))
+        print('---FORM.value_.data: {}'.format(form.value_.data))
+        flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+        flash('form.value_.data: {}'.format(form.value_.data))
 
         # Check for pre-existing answers
         try:
-            print('---CHECK FOR PRE-EXISTING ANSWER:', type(q.id_), q.id_, type(request.cookies['feedback_id']), request.cookies['feedback_id'])
+            print('---CHECK FOR PRE-EXISTING ANSWER:')
             pre_existing_answer = session.query(Answer).filter_by(question_id_=q.id_, feedback_id_=request.cookies['feedback_id']).order_by(Answer.created_at_.desc()).first()
-            print('---FOUND PRE-EXISTING ANSWERS:', pre_existing_answer)
+            print('---FOUND PRE-EXISTING ANSWER:', pre_existing_answer)
         except:
             pre_existing_answer = None
 
         if pre_existing_answer != None:
-            print('form.value_.data == {}'.format(form.value_.data))
             print('---PRE-EXISTING ANSWER FOUND WITH VALUE {}'.format(pre_existing_answer.value_))
 
             # Parse answer in db to response parameters for displaying it
-            form = db_answer_to_response(pre_existing_answer, q.type_, form)
-            print('form.value_.data == {} {}'.format(type(form.value_.data), form.value_.data))
+            print('--- CREATING RESPONSE PARAMS FROM PRE-EXISTING ANSWER:')
+            print('--- PRE-EXISTING ANSWER: {}, QTYPE: {}, FORM.VALUE_.DATA: {}'.format(pre_existing_answer.value_, q.type_, form.value_.data))
+            form.value_.data = pre_existing_answer.value_
+            print('form.value_.data is now {} "{}"'.format(type(form.value_.data), form.value_.data))
         else:
             print('---NO PRE-EXISTING ANSWER FOUND.')
+
+        if q.type_ == 'Choices':
+            form.setChoices(q.questionchoices)
+
 
         # Debug statements
         print('---TEMPLATE: {}, {}'.format(type(template), template))
         print('---FORM: {}, {}'.format(type(form), form))
+        print('---FORM.VALUE_: {}'.format(form.value_))
         print('---FORM.VALUE_.DATA: {}'.format(form.value_.data))
         print('---FORM_ACTION_URL: {}, {}'.format(type(form_action_url), form_action_url))
         print('---LIST OF QUESTION IDS: {}'.format(q_list_ids))
@@ -325,15 +326,25 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Get progress
         progress, missing, missing_mandatory = get_progress(feedback)
 
-        # print('---PROGRESS! {}'.format(progress))
-        # print('---MISSING! {}'.format(missing))
-        # print('---MISSING MANDATORY! {}'.format(missing_mandatory))
-        # flash('progress: {}'.format(progress))
-        # flash('missing: {}'.format(missing))
-        # flash('missing_mandatory: {}'.format(missing_mandatory))
+        # print('---PROGRESS {}'.format(progress))
+        # print('---MISSING {}'.format(missing))
+        # print('---MISSING MANDATORY {}'.format(missing_mandatory))
+        flash('progress: {}'.format(progress))
+        flash('missing: {}'.format(missing))
+        flash('missing_mandatory: {}'.format(missing_mandatory))
 
-        if q.type_ == 'Choices':
-            form.setChoices(q.questionchoices)
+
+        #
+        #--------- DEBUG HERE Thumbs form!!!
+        # form = qtype_forms.get('Thumb', AnswerFormFree(request.form))
+        print('form.value_: "{}"'.format(form.value_))
+        print('form.value_.data: "{}"'.format(form.value_.data))
+        if q.type_ not in ['Freeform', 'Text', 'Picture', 'Thankyou']:
+            print('form.value_.choices: "{}"'.format(form.value_.choices))
+
+
+        print('---FORM: {}'.format(form))
+        print('---FORM.VALUE_.DATA: {}'.format(form.value_.data))
 
         response = make_response(render_template(template,
                                                 form=form,
@@ -346,8 +357,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                                                 is_first=is_first,
                                                 progress=progress,
                                                 answer=pre_existing_answer
-                                                # downthumb_status=downthumb_status,
-                                                # upthumb_status=upthumb_status,
                                                 ))
 
         print('---RESPONSE CREATED. EXITING showQuestion AND RENDERING {}'.format(template))
@@ -355,90 +364,79 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         return response
 
 
-    # POST QUESTION:
+    # POST: Write answer to database
     elif request.method == 'POST':
-        print('\n---ENTERING WITH POST')
+        print('POST')
         print('request.form: {}'.format(request.form))
         print('request.cookies: {}'.format(request.cookies))
 
-        # Get possible pre-existing answer
-        print('---COMPARING POSTED ANSWER TO POSSIBLY PRE-EXISTING ANSWER')
-        answer = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
-        print('len(answer): {}'.format(len(answer)))
+        # Get question type
+        question = session.query(Question).filter_by(id_=request.form['question_id']).first()
 
-        if len(answer) > 0:
-            print('---FOUND PRE-EXISTING ANSWER:')
-            answer = answer[0]
-            print(answer)
-            print('---PRE-EXISTING answer.value_: {}'.format(answer.value_))
+        # Parse new answer from form if it exists
+        if request.form.get('value_'):
+            new_answer_val = str(request.form['value_'])
+        # Replace with placeholder otherwise (this will be denied entry to db later)
+        else:
+            new_answer_val = ''
+        print('---GOT new_answer_val FROM FORM: {}'.format(new_answer_val))
 
-            # Parse
-            parsed_answer = parse_answer_from_request_form(request.form, answer.value_)
-            print('---PARSED_ANSWER: {}'.format(parsed_answer))
+        # Only proceed with non-picture answers if value_ is not empty
+        if len(new_answer_val) > 0 or question.type_ == 'Picture':
 
-            if answer.value_ == parsed_answer:
-                print('Scrolling through, did not change answer')
+            # Get possible pre-existing answer
+            print('---GET POSSIBLE PRE-EXISTING ANSWER')
+            answers = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
+            print('len(answer_object): {}'.format(len(answers)))
+
+            # If pre-existing answer found, take the answer object for updating
+            if len(answers) > 0:
+                answer_object = answers[0]
+                print('---FOUND PRE-EXISTING ANSWER: {}'.format(answer_object))
+                print('---PRE-EXISTING answer.value_: {}'.format(answer_object.value_))
+            # If no pre-existing answer found
             else:
-                # Picture can have value_ empty, if user
-                # scrolls through the questions and doesent Take
-                # a new picture
-                if parsed_answer != '':
-                    print('---CHANGING PRE-EXISTING ANSWER')
-                    answer.value_ = parsed_answer
-                    print('---REPLACED VALUE OF PRE-EXISTING ANSWER WITH:')
-                    print(answer.serialize)
-        else:
-            # Create new answer object
-            print('---NO PRE-EXISTING ANSWER FOUND!')
+                print('---NO PRE-EXISTING ANSWER FOUND!')
+                # Add placeholder '' to value_
+                answer_object = Answer('', int(request.cookies['feedback_id']), int(request.form['question_id']))
+                print('---CREATED NEW ANSWER OBJECT:')
 
-            parsed_answer = parse_answer_from_request_form(request.form, None)
-            print('---PARSED_ANSWER: {}'.format(parsed_answer))
+            if question.type_ == 'Picture':
+                # user gave a new file:
+                if request.files.get('userPicture'):
+                    file = request.files['userPicture']
+                    if file:
+                        fileName = 'F' + str(answer_object.feedback_id_) + 'A' + str(question.id_) + \
+                                    '_' + str(datetime.datetime.now().hour) + \
+                                    '_' + str(datetime.datetime.now().minute) + \
+                                    '_' + str(datetime.datetime.now().second) + '.PNG'
+                        imgPath = '/static/' + fileName
+                        file.save(parentdir + imgPath)
+                        answer_object.image_source_ = imgPath
+                        answer_object.value_ = imgPath
+                        session.add(answer_object)
+                        session.commit()
 
-            answer = Answer(parsed_answer, int(request.cookies['feedback_id']), int(request.form['question_id']))
-            print('---CREATED NEW ANSWER OBJECT:')
-            print('answer.serialize {}'.format(answer.serialize))
-            print('---ANSWER.value_: {} {} len {}'.format(type(answer.value_), answer.value_, len(answer.value_)))
-            if request.form['question_type'] == 'Thumbs':
-                session.add(answer)
-                session.commit()
-
-        question = session.query(Question).filter_by(id_=answer.question_id_).first()
-
-    # if not 'Previous' in request.form.keys():
-        if question.type_ == 'Picture':
-            # user gave a new file:
-            if request.files.get('userPicture'):
-                file = request.files['userPicture']
-                if file:
-                    fileName = 'F' + str(answer.feedback_id_) + 'A' + str(question.id_) + \
-                                '_' + str(datetime.datetime.now().hour) + \
-                                '_' + str(datetime.datetime.now().minute) + \
-                                '_' + str(datetime.datetime.now().second) + '.PNG'
-                    imgPath = '/static/' + fileName
-                    file.save(parentdir + imgPath)
-                    answer.image_source_ = imgPath
-                    answer.value_ = imgPath
-                    session.add(answer)
-                    session.commit()
-        else:
-            if question.type_ == 'Smileys':
-                if request.form.get('emoji'):
-                    answer.value_ = str(request.form['emoji'])
-            elif question.type_ == 'Stars':
-                if request.form.get('rating'):
-                    answer.value_ = str(request.form['rating'])
-                else:
-                    answer.value_ = ''
             elif question.type_ == 'Choices':
                 questionchoiceTitles = []
                 for choice in question.questionchoices:
                     questionchoiceTitles.append(choice.title_)
-                answer.value_ = questionchoiceTitles[int(answer.value_)]
+                answer_object.value_ = questionchoiceTitles[int(new_answer_val)]
+
+            # All other choices:
             else:
-                pass
-            # Validate: data required
-            if len(answer.value_) > 0:
-                session.add(answer)
+                answer_object.value_ = new_answer_val
+
+            print('answer.serialize {}'.format(answer_object.serialize))
+            print('---ANSWER_OBJECT.value_ type: {}, len {} value_ {}'.format(type(answer_object.value_), len(answer_object.value_), answer_object.value_, ))
+
+            # # Validate: answer_object added/updated to db only if lenght > 0
+            # if len(answer_object.value_) > 0:
+            # Validate: answer_object added/updated to db only if the answer value has been edited
+            # NOTE: Allow for zero length answer if user wants to remove answer.
+            # NOTE: This only removes path to pic, not pic data
+            if len(answer_object.value_) > 0:
+                session.add(answer_object)
                 session.commit()
 
         # Redirect to previous if 'Prev' was clicked
@@ -474,6 +472,7 @@ def thankYou():
     feedback = session.query(Feedback).filter_by(id_=feedback_id).one()
 
     # Check that answer entries have been created for each survey question
+    print('-----in thank you------')
     progress, missing, missing_mandatory = get_progress(feedback)
     print('---PROGRESS! {}'.format(progress))
     print('---MISSING! {}'.format(missing))
