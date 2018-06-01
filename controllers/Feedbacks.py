@@ -491,14 +491,32 @@ def thankYou():
         response.set_cookie('feedback_id', '', expires=0)  # Delete cookie
         print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
         return response
+    #--------------------------------------------------------------------------
+    # PREVIOUSLY:
+    # # If answers missing
+    # elif len(missing_mandatory) == 1:
+    #     print('len(missing) == 1')
+    #     return '<h3>Please fill in the following question:</h3><h4>{}</h4>'.format(list(missing_mandatory)[0])
+    # else:
+    #     print('len(missing) > 1')
+    #     return '<h3>Please fill in the following questions:</h3><h4>{}</h4>'.format('<br>'.join(list(missing_mandatory)))
+    #--------------------------------------------------------------------------
 
-    # If answers missing
-    elif len(missing_mandatory) == 1:
-        print('len(missing) == 1')
-        return '<h3>Please fill in the following question:</h3><h4>{}</h4>'.format(list(missing_mandatory)[0])
+
+    #--------------------------------------------------------------------------
+    # WIP:
     else:
-        print('len(missing) > 1')
-        return '<h3>Please fill in the following questions:</h3><h4>{}</h4>'.format('<br>'.join(list(missing_mandatory)))
+        # Before: Set nag_msg = 'Please fill in this question in order to complete the survey'
+        # Before: Add parameter force_mandatory to all responses.
+        # Before: If force_mandatory == True, flash nagging_msg to user and redirect via POST to next missing question_id if it exists, else to thankyou
+
+        # Redirect user to first question_id in missing list
+        # (In renderpage nag is flashed)
+        # Answer written to db via POST, and in POST force_mandatory is recognized and redirect is to next missing question_id, not next question if it exists, else to thankyou
+
+
+    # END WIP
+    #--------------------------------------------------------------------------
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
