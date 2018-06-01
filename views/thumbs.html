@@ -20,7 +20,7 @@
     {% endif %}
 {% endwith %}
 
-<body>
+<body onload="reloadOldValue()">
     <nav class="navbar navbar-expand navbar-dark bg-primary">
         <a class="navbar-brand" href="#"><b>LLB</b></a>
     </nav>
@@ -106,6 +106,7 @@
             <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button">
         </p>
 
+        <input type=hidden id='oldValue' value={{ answer.value_ }}>
         <input type=hidden name='question_id' value={{ question_id }}>
         <input type=hidden name='question_type' value={{ question_type }}>
         <input type=hidden name='prev_url' value={{ prev_url }}>
@@ -117,5 +118,11 @@
 
 
 </body>
+
+<script>
+  function reloadOldValue() {
+    document.getElementById(document.getElementById('oldValue').value).checked = true;
+  }
+</script>
 
 </html>
