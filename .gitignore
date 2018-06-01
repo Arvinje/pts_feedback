@@ -114,3 +114,7 @@ llb_run.bat
 
 # Other
 other/*.*
+
+# Uploaded image files
+static/*.png
+static/*.PNG
