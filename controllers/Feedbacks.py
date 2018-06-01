@@ -106,7 +106,7 @@ def get_progress(feedback, verbose=False):
 
 routes = []
 
-templates = {'Freeform': 'freeform.html',   # can this be removed?
+templates = {'Freeform': 'freeform.html',
             'Text': 'freeform.html',
             'Thumbs': 'thumbs.html',
             'Stars': 'stars.html',
@@ -114,9 +114,6 @@ templates = {'Freeform': 'freeform.html',   # can this be removed?
             'Thankyou': 'survey_lastpage.html',
             'Choices': 'choices.html',
             'Picture': 'picture.html'}
-
-print('---TEMPLATE DICT: {}'.format(templates))
-
 
 #---------------------------------------------------------------------------------------------------
 # ROUTE: NEW FEEDBACK
@@ -329,9 +326,9 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # print('---PROGRESS {}'.format(progress))
         # print('---MISSING {}'.format(missing))
         # print('---MISSING MANDATORY {}'.format(missing_mandatory))
-        flash('progress: {}'.format(progress))
-        flash('missing: {}'.format(missing))
-        flash('missing_mandatory: {}'.format(missing_mandatory))
+        # flash('progress: {}'.format(progress))
+        # flash('missing: {}'.format(missing))
+        # flash('missing_mandatory: {}'.format(missing_mandatory))
 
 
         #
