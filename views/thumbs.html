@@ -37,7 +37,7 @@
 <!--     {% from "_formhelpers.html" import render_field %}
     <form action="{{ form_action_url }}" method=post>
         <div class="cc-selector">
-            <input id="thumbdown" type="radio" name="thumb" value="thumbdown" />
+            <input id="thumbdown" type="radio" name="value_" value="thumbdown" />
             <label class="emoji-cc sadFace"for="sadFace"></label>
         </div>
 
@@ -63,13 +63,14 @@
     <form action="{{ form_action_url }}" method=post>
 
         <div class="thumbs-selector">
-        <!-- {{ render_field(form.value_) }} -->
-        <!-- form.value_.data == {{ form.value_.data }} -->
-
+<!--         {{ render_field(form.value_) }}
+        form.value_.data == {{ form.value_.data }}
+ -->
         <input id="thumbdown" type="radio" name="value_" value="thumbdown" />
         <label class="thumbs-cc thumbdown" for="thumbdown"></label>
         <input id="thumbsup" type="radio" name="value_" value="thumbsup" />
         <label class="thumbs-cc thumbsup" for="thumbsup"></label>
+
 
 <!--        IF-ELSE CLAUSES, IF WE WANT RENDERING OF PRE-EXISTING ANSWER (but they look horrible)
 
