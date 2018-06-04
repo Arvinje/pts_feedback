@@ -21,6 +21,17 @@ parentdir = os.path.dirname(currentdir)
 os.sys.path.insert(0,parentdir)
 
 
+routes = []
+
+templates = {'Freeform': 'freeform.html',
+            'Text': 'freeform.html',
+            'Thumbs': 'thumbs.html',
+            'Stars': 'stars.html',
+            'Smileys': 'smileys.html',
+            'Thankyou': 'survey_lastpage.html',
+            'Choices': 'choices.html',
+            'Picture': 'picture.html'}
+
 
 class AnswerFormFree(Form):
     value_ = TextAreaField('', [validators.DataRequired()])
@@ -82,38 +93,25 @@ def get_progress(feedback, verbose=False):
     survey_id = feedback.survey_id_
     questions = session.query(Question).filter_by(survey_id_=survey_id).all()
     answers = session.query(Answer).filter_by(feedback_id_=feedback.id_).all()
-    print('---GET_PROGRESS FINDS ANSWERS {}'.format(answers))
-
     question_ids = set([item.id_ for item in questions])
-    answer_ids = set([item.question_id_ for item in answers if len(item.value_) > 0])
-    print('---GET_PROGRESS ACCEPTS ANSWER IDS {}'.format(answer_ids))
+    optional_question_ids = set([item.id_ for item in questions if bool(item.optional_) == True])
+    answered_ids = set([item.question_id_ for item in answers])
 
-    missing = question_ids.difference(answer_ids)
-    progress = int(len(answer_ids) / float(len(question_ids)) * 100) if len(question_ids) > 0 else 0.0
+    # Proportion of valid answer ids vs questions
+    progress = int(len(answered_ids) / float(len(question_ids)) * 100) if len(question_ids) > 0 else 0.0
 
-    missing_mandatory = []
-    for item in questions:
-        if verbose:
-            print(item.id_, item.title_)
-            print('OPTIONAL: {}'.format(item.optional_))
-            print('IN MISSING: {}'.format(item.id_ in missing))
-        if not bool(item.optional_) and item.id_ in missing:
-            print('---MISSING MANDATORY QUESTION WITH ID {}: {}'.format(item.id_, item.title_))
-            missing_mandatory.append(item.title_)
+    # Ids of missing mandatory questions
+    missing = list(question_ids.difference(answered_ids))
 
-    return progress, missing, missing_mandatory
+    # Debug statements
+    print('---LIST OF ALL QUESTIONS: {}'.format(question_ids))
+    print('---LIST OF OPTIONAL QUESTIONS: {}'.format(optional_question_ids))
+    print('---GET PROGRESS: ANSWERED IDS ARE: {}'.format(answered_ids))
+    print('---PROGRESS IS {}'.format(progress))
+    print('---MISSING MANDATORY QUESTIONS IN TOTAL: {}'.format(missing))
 
+    return progress, missing
 
-routes = []
-
-templates = {'Freeform': 'freeform.html',
-            'Text': 'freeform.html',
-            'Thumbs': 'thumbs.html',
-            'Stars': 'stars.html',
-            'Smileys': 'smileys.html',
-            'Thankyou': 'survey_lastpage.html',
-            'Choices': 'choices.html',
-            'Picture': 'picture.html'}
 
 #---------------------------------------------------------------------------------------------------
 # ROUTE: NEW FEEDBACK
@@ -279,8 +277,8 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('Chose form {} from qtype_forms'.format(form))
         print('---FORM.value_: {}'.format(form.value_))
         print('---FORM.value_.data: {}'.format(form.value_.data))
-        flash('Feedback_id == Cookie == {}'.format(feedback.id_))
-        flash('form.value_.data: {}'.format(form.value_.data))
+        # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
+        # flash('form.value_.data: {}'.format(form.value_.data))
 
         # Check for pre-existing answers
         try:
@@ -321,14 +319,14 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         print('---PREV_URL: {}, {}'.format(type(prev_url), prev_url))
 
         # Get progress
-        progress, missing, missing_mandatory = get_progress(feedback)
+        progress, missing = get_progress(feedback)
 
         # print('---PROGRESS {}'.format(progress))
         # print('---MISSING {}'.format(missing))
-        # print('---MISSING MANDATORY {}'.format(missing_mandatory))
+        # print('---MISSING MANDATORY {}'.format(missing))
         # flash('progress: {}'.format(progress))
         # flash('missing: {}'.format(missing))
-        # flash('missing_mandatory: {}'.format(missing_mandatory))
+        # flash('missing: {}'.format(missing))
 
 
         #
@@ -373,68 +371,73 @@ def showQuestion(question_id, methods=['GET', 'POST']):
         # Parse new answer from form if it exists
         if request.form.get('value_'):
             new_answer_val = str(request.form['value_'])
-        # Replace with placeholder otherwise (this will be denied entry to db later)
+
+        # If mandatory question is missing answer
+        elif bool(question.optional_) == False:
+            print('---THIS QUESTION ({}) IS MANDATORY!'.format(question.id_))
+            flash('Please answer this question.')
+            this_url = url_for('controllers.showQuestion', question_id=question.id_)
+            return redirect(this_url)
+
+        # If optional question is missing answer, create empty answer value
         else:
             new_answer_val = ''
         print('---GOT new_answer_val FROM FORM: {}'.format(new_answer_val))
 
-        # Only proceed with non-picture answers if value_ is not empty
-        if len(new_answer_val) > 0 or question.type_ == 'Picture':
+        # Get possible pre-existing answer
+        print('---GET POSSIBLE PRE-EXISTING ANSWER')
+        answers = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
+        print('len(answer_object): {}'.format(len(answers)))
 
-            # Get possible pre-existing answer
-            print('---GET POSSIBLE PRE-EXISTING ANSWER')
-            answers = session.query(Answer).filter_by(feedback_id_=int(request.cookies['feedback_id']), question_id_=int(request.form['question_id'])).all()
-            print('len(answer_object): {}'.format(len(answers)))
+        # If pre-existing answer found, take the answer object for updating
+        if len(answers) > 0:
+            answer_object = answers[0]
+            print('---FOUND PRE-EXISTING ANSWER: {}'.format(answer_object))
+            print('---PRE-EXISTING answer.value_: {}'.format(answer_object.value_))
+        # If no pre-existing answer found
+        else:
+            print('---NO PRE-EXISTING ANSWER FOUND!')
+            # Add placeholder '' to value_
+            answer_object = Answer('', int(request.cookies['feedback_id']), int(request.form['question_id']))
+            print('---CREATED NEW ANSWER OBJECT:')
 
-            # If pre-existing answer found, take the answer object for updating
-            if len(answers) > 0:
-                answer_object = answers[0]
-                print('---FOUND PRE-EXISTING ANSWER: {}'.format(answer_object))
-                print('---PRE-EXISTING answer.value_: {}'.format(answer_object.value_))
-            # If no pre-existing answer found
-            else:
-                print('---NO PRE-EXISTING ANSWER FOUND!')
-                # Add placeholder '' to value_
-                answer_object = Answer('', int(request.cookies['feedback_id']), int(request.form['question_id']))
-                print('---CREATED NEW ANSWER OBJECT:')
+        # Special question types (Picture & Choices)
+        if question.type_ == 'Picture':
+            # user gave a new file:
+            if request.files.get('userPicture'):
+                file = request.files['userPicture']
+                if file:
+                    fileName = 'F' + str(answer_object.feedback_id_) + 'A' + str(question.id_) + \
+                                '_' + str(datetime.datetime.now().hour) + \
+                                '_' + str(datetime.datetime.now().minute) + \
+                                '_' + str(datetime.datetime.now().second) + '.PNG'
+                    imgPath = '/static/' + fileName
+                    file.save(parentdir + imgPath)
+                    answer_object.image_source_ = imgPath
+                    answer_object.value_ = imgPath
+                    session.add(answer_object)
+                    session.commit()
 
-            if question.type_ == 'Picture':
-                # user gave a new file:
-                if request.files.get('userPicture'):
-                    file = request.files['userPicture']
-                    if file:
-                        fileName = 'F' + str(answer_object.feedback_id_) + 'A' + str(question.id_) + \
-                                    '_' + str(datetime.datetime.now().hour) + \
-                                    '_' + str(datetime.datetime.now().minute) + \
-                                    '_' + str(datetime.datetime.now().second) + '.PNG'
-                        imgPath = '/static/' + fileName
-                        file.save(parentdir + imgPath)
-                        answer_object.image_source_ = imgPath
-                        answer_object.value_ = imgPath
-                        session.add(answer_object)
-                        session.commit()
+        elif question.type_ == 'Choices':
+            questionchoiceTitles = []
+            for choice in question.questionchoices:
+                questionchoiceTitles.append(choice.title_)
+            answer_object.value_ = questionchoiceTitles[int(new_answer_val)]
 
-            elif question.type_ == 'Choices':
-                questionchoiceTitles = []
-                for choice in question.questionchoices:
-                    questionchoiceTitles.append(choice.title_)
-                answer_object.value_ = questionchoiceTitles[int(new_answer_val)]
+        # All other question types:
+        else:
+            answer_object.value_ = new_answer_val
 
-            # All other choices:
-            else:
-                answer_object.value_ = new_answer_val
+        print('answer.serialize {}'.format(answer_object.serialize))
+        print('---ANSWER_OBJECT.value_ type: {}, len {} value_ {}'.format(type(answer_object.value_), len(answer_object.value_), answer_object.value_, ))
 
-            print('answer.serialize {}'.format(answer_object.serialize))
-            print('---ANSWER_OBJECT.value_ type: {}, len {} value_ {}'.format(type(answer_object.value_), len(answer_object.value_), answer_object.value_, ))
+        session.add(answer_object)
+        session.commit()
 
-            # # Validate: answer_object added/updated to db only if lenght > 0
-            # if len(answer_object.value_) > 0:
-            # Validate: answer_object added/updated to db only if the answer value has been edited
-            # NOTE: Allow for zero length answer if user wants to remove answer.
-            # NOTE: This only removes path to pic, not pic data
-            if len(answer_object.value_) > 0:
-                session.add(answer_object)
-                session.commit()
+        #----------------------------------------------------------------------
+        # TODO: Maybe allow for zero length answer if user wants to remove answer?
+        # NOTE: Replacing value_ with '' will only removes path to img, img data has to be removed separately
+        #----------------------------------------------------------------------
 
         # Redirect to previous if 'Prev' was clicked
         if 'Previous' in request.form.keys():
@@ -469,46 +472,27 @@ def thankYou():
     feedback = session.query(Feedback).filter_by(id_=feedback_id).one()
 
     # Check that answer entries have been created for each survey question
-    print('-----in thank you------')
-    progress, missing, missing_mandatory = get_progress(feedback)
-    print('---PROGRESS! {}'.format(progress))
-    print('---MISSING! {}'.format(missing))
-    print('---MISSING MANDATORY! {}'.format(missing_mandatory))
+    progress, missing = get_progress(feedback)
+    print('---PROGRESS {}'.format(progress))
+    print('---MISSING MANDATORY {}'.format(missing))
     # flash('progress: {}'.format(progress))
     # flash('missing: {}'.format(missing))
-    # flash('missing_mandatory: {}'.format(missing_mandatory))
+    # flash('missing: {}'.format(missing))
     # flash('Feedback_id == Cookie == {}'.format(feedback.id_))
 
-
-
-
-
-    # WIP: this check should be unnecessary!
-    # Add forcing on mandatory questions as e.g. flash message per mandatory question
-    # If no mandatory answers missing
-
-
-
-
-    # if len(missing_mandatory) == 0:
-
-    #     # This is a placeholder for actual gift
-    #     gifts = {0: 'gift_1.png', 1: 'gift_2.png', 2: 'gift_3.png'}
-    #     gift_ix = int(request.cookies['feedback_id']) % len(gifts)
-    #     gift_file = '/static/imgs/{}'.format(gifts[gift_ix])
-
-    #     response = make_response(render_template('survey_lastpage.html', gift_file=gift_file))
-    #     response.set_cookie('feedback_id', '', expires=0)  # Delete cookie
-    #     print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
-    #     return response
+    response = make_response(render_template('survey_lastpage.html'))
+    # response = make_response(render_template('survey_lastpage.html', gift_file=gift_file))
+    response.set_cookie('feedback_id', '', expires=0)  # Delete cookie
+    print('---RESPONSE CREATED. EXITING thankYou AND RENDERING survey_lastpage.html: {}'.format(response))
+    return response
 
     # # If answers missing
-    # elif len(missing_mandatory) == 1:
+    # elif len(missing) == 1:
     #     print('len(missing) == 1')
-    #     return '<h3>Please fill in the following question:</h3><h4>{}</h4>'.format(list(missing_mandatory)[0])
+    #     return '<h3>Please fill in the following question:</h3><h4>{}</h4>'.format(list(missing)[0])
     # else:
     #     print('len(missing) > 1')
-    #     return '<h3>Please fill in the following questions:</h3><h4>{}</h4>'.format('<br>'.join(list(missing_mandatory)))
+    #     return '<h3>Please fill in the following questions:</h3><h4>{}</h4>'.format('<br>'.join(list(missing)))
 
 
 routes.append(dict(rule='/feedback/thankyou', view_func=thankYou, options=dict(methods=['GET'])))
