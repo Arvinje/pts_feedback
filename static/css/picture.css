@@ -1,0 +1,63 @@
+/*!
+ *
+ * Based on
+ * https://gist.github.com/rcotrina94/7828886
+ *
+ * CSS-file to make emoticon radio-buttons work.
+ * Needed in smileys.html
+ * Created by Saija 18.4.18
+ */
+ label {
+   background-color: #00B0FF;
+   box-sizing: border-box;
+   width: 50%;
+ }
+
+ label:hover {
+   background-color: #99DFFF;
+ }
+
+ div#loadingAnimation {
+    position: fixed; top: 0%; left: 0%; right: 0%; bottom: 0%;
+    background-color: navy;
+    visibility: hidden;
+    box-shadow:
+        0 0 60px 30px aqua,
+        0 0 100px 60px darkred,
+        0 0 140px 90px firebrick;
+}
+
+.blink {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 2.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
