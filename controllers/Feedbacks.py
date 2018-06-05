@@ -401,7 +401,7 @@ def showQuestion(question_id, methods=['GET', 'POST']):
             answer_object = Answer('', int(request.cookies['feedback_id']), int(request.form['question_id']))
             print('---CREATED NEW ANSWER OBJECT:')
 
-        # Special question types (Picture & Choices)
+        # Special question type (Picture)
         if question.type_ == 'Picture':
             # user gave a new file:
             if request.files.get('userPicture'):
@@ -417,13 +417,6 @@ def showQuestion(question_id, methods=['GET', 'POST']):
                     answer_object.value_ = imgPath
                     session.add(answer_object)
                     session.commit()
-
-        elif question.type_ == 'Choices':
-            questionchoiceTitles = []
-            for choice in question.questionchoices:
-                questionchoiceTitles.append(choice.title_)
-            answer_object.value_ = questionchoiceTitles[int(new_answer_val)]
-
         # All other question types:
         else:
             answer_object.value_ = new_answer_val
