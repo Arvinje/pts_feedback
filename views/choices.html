@@ -21,7 +21,7 @@
       {% endif %}
   {% endwith %}
 
-  <body>
+  <body onload="setInitValueOnPageLoad()">
       <nav class="navbar navbar-expand navbar-dark bg-primary">
           <a class="navbar-brand" href="#"><b>LLB</b></a>
       </nav>
@@ -34,8 +34,19 @@
 
           {% from "_formhelpers.html" import render_field %}
           <form action="{{ form_action_url }}" method=post>
-              {{ render_field(form.value_) }}
+              {% for choice in form.value_.choices %}
+                <input type="radio" id="usersChoice" name="usersChoice" value="{{ choice[1] }}"
+                      onclick="setAnswerValue({{ choice[0] }})">{{ choice[1] }}
+              <br>
+              {% endfor %}
+
+              <br><br>
+
+              <!---Your choice: <input id="value_" name="value_" readonly></input>--->
+              <input id='value_' name='value_' value={{ answer.value_ }}>
+
               <hr>
+
 
               <p class="lead">
                   {% if not is_first %}
@@ -53,4 +64,35 @@
 
       <p class="text-muted">Progress: {{ progress }} %</p>
   </body>
+
+  <script>
+    // QuestionChoices are always stored as strings. Radio
+    // buttons use integers. That is why we need these functions
+
+    // If user has previously given a value for the question,
+    // this function retrieves it:
+    function setInitValueOnPageLoad()
+    {
+      var radioButtonChoices = document.getElementsByName('usersChoice');
+      var oldValue = document.getElementById('value_').value;
+
+      // Values are stored to database as text. We need to search
+      // for the radio button with same name
+      for (var i = 0, length = radioButtonChoices.length; i < length; i++)
+        if (radioButtonChoices[i].value == oldValue)
+        {
+          radioButtonChoices[i].checked = 1;
+
+          oldValue = i;
+          break;
+        }
+    }
+
+    function setAnswerValue(userSelectedRadioButtonIndex)
+    {
+      var radioButtonChoices = document.getElementsByName('usersChoice');
+      document.getElementById('value_').value = radioButtonChoices[userSelectedRadioButtonIndex].value;
+    }
+  </script>
+
 </html>
