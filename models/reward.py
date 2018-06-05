@@ -17,7 +17,7 @@ class Reward(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True, autoincrement=True)
-    value_ = Column(String, nullable=False)
+    value_ = Column(String(250), nullable=False)
 
     # Reward is child of survey
     survey_id_ = Column(Integer, ForeignKey('surveys.id_'))

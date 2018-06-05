@@ -19,7 +19,7 @@ class QuestionChoice(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True)
-    title_ = Column(String)
+    title_ = Column(String(120))
 
     # Question choice is child of question
     question_id_ = Column(Integer, ForeignKey('questions.id_'))
