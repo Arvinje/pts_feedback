@@ -18,7 +18,7 @@ class Answer(Base):
 
     # Mappers
     id_ = Column(Integer, primary_key=True, autoincrement=True)
-    value_ = Column(String)
+    value_ = Column(String(420))
     created_at_ = Column(DateTime, nullable=False)
 
     # Answer is child of feedback
@@ -29,7 +29,7 @@ class Answer(Base):
     question_id_ = Column(Integer, ForeignKey('questions.id_'))
     questions = relationship("Question", back_populates='answers')
 
-    image_source_ = Column(String)
+    image_source_ = Column(String(420))
 
     def __init__(self, value_, feedback_id_, question_id_):
         self.value_ =  value_
