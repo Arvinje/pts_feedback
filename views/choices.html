@@ -7,6 +7,8 @@
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
       <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star-rating.css') }}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/choices.css') }}">
+
       <script src="static/js/star-rating.min.js" type="text/javascript"></script>
   </head>
 
@@ -22,47 +24,45 @@
   {% endwith %}
 
   <body onload="setInitValueOnPageLoad()">
-      <nav class="navbar navbar-expand navbar-dark bg-primary">
-          <a class="navbar-brand" href="#"><b>LLB</b></a>
-      </nav>
-      <br>
-      <h1>Pick your choice!</h1>
-      <p class="lead">Here is the multiple-choice question. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      <hr class="my-4">
-      <div class="container">
-          <h2>{{ question_title }}</h2>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"><b>LLB</b></a>
+    </nav>
+    <br>
+    <h1>Pick your choice!</h1>
+    <p class="lead">Here is the multiple-choice question. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <hr class="my-4">
+    <div class="container">
+      <h2>{{ question_title }}</h2>
 
-          {% from "_formhelpers.html" import render_field %}
-          <form action="{{ form_action_url }}" method=post>
-              {% for choice in form.value_.choices %}
-                <input type="radio" id="usersChoice" name="usersChoice" value="{{ choice[1] }}"
-                      onclick="setAnswerValue({{ choice[0] }})">{{ choice[1] }}
-              <br>
-              {% endfor %}
+      {% from "_formhelpers.html" import render_field %}
 
-              <br><br>
+      <form action="{{ form_action_url }}" method=post>
+          {% for choice in form.value_.choices %}
+            <div class="cc-selector">
+              <input id="myRadioButton{{ choice[0] }}" type="radio" name="usersChoice" value="{{ choice[1] }}" onclick="setAnswerValue({{ choice[0] }})" />
+    	        <label class="radioButton-cc myRadioButton"for="myRadioButton{{ choice[0] }}">{{ choice[1] }}</label>
+            </div>
+          {% endfor %}
 
-              <!---Your choice: <input id="value_" name="value_" readonly></input>--->
-              <input id='value_' name='value_' value={{ answer.value_ }}>
+          <input type=hidden id='value_' name='value_' value={{ answer.value_ }}>
 
-              <hr>
+          <hr>
 
+          <p class="lead">
+              {% if not is_first %}
+                  <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
+              {% endif %}
+                  <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
+          </p>
 
-              <p class="lead">
-                  {% if not is_first %}
-                      <input type="submit" class="btn btn-info btn-lg" name="Previous" value="Prev" role="button"></a>
-                  {% endif %}
-                      <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button"></a>
-              </p>
+          <input type=hidden name='question_id' value={{ question_id }}>
+          <input type=hidden name='question_type' value={{ question_type }}>
+          <input type=hidden name='prev_url' value={{ prev_url }}>
+          <input type=hidden name='next_url' value={{ next_url }}>
+      </form>
+    </div>
 
-              <input type=hidden name='question_id' value={{ question_id }}>
-              <input type=hidden name='question_type' value={{ question_type }}>
-              <input type=hidden name='prev_url' value={{ prev_url }}>
-              <input type=hidden name='next_url' value={{ next_url }}>
-          </form>
-      </div>
-
-      <p class="text-muted">Progress: {{ progress }} %</p>
+    <p class="text-muted">Progress: {{ progress }} %</p>
   </body>
 
   <script>

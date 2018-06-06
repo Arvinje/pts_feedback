@@ -31,7 +31,7 @@ routes.append(dict(
 
 # Function for printing a single questionChoice:
 def questionChoice(survey_id,question_id,questionChoice_id):
-	return render_template('questionChoice.html',survey_id=survey_id,\
+	return render_template('questionchoice.html',survey_id=survey_id,\
 		questionChoices=session.query(QuestionChoice).order_by(QuestionChoice.id_).\
 		filter(QuestionChoice.survey_id_ == survey_id, QuestionChoice.question_id_ == question_id,\
 				QuestionChoice.id_ == questionChoice_id).\
@@ -55,7 +55,7 @@ def questionChoices(survey_id,question_id):
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return render_template('new_questionChoice.html', form=form,survey_id=survey_id,question_id=question_id)
+		return render_template('new_questionchoice.html', form=form,survey_id=survey_id,question_id=question_id)
 
 routes.append(dict(
 	rule='/surveys/<int:survey_id>/questions/<int:question_id>/questionChoices',
@@ -71,7 +71,7 @@ def editQuestionChoice(survey_id,question_id,questionChoice_id):
 		# pre-filling the form:
 		form.title_.data = questionChoiceToBeEdited.title_
 
-		return render_template('edit_questionChoice.html', form=form)
+		return render_template('edit_questionchoice.html', form=form)
 	elif (request.method == 'POST') and (form.validate()):
 		# editing the question:
 		questionChoiceToBeEdited.title_ = form.title_.data
@@ -80,7 +80,7 @@ def editQuestionChoice(survey_id,question_id,questionChoice_id):
 		session.commit()
 		return redirect("/surveys/" + str(survey_id) + "/questions")
 	else:
-		return render_template('edit_questionChoice.html', form=form)
+		return render_template('edit_questionchoice.html', form=form)
 routes.append(dict(rule='/surveys/<int:survey_id>/questions/<int:question_id>/questionChoices/<int:questionChoice_id>/edit',
 					view_func=editQuestionChoice,
 					options=dict(methods=['GET','POST'])))
@@ -91,7 +91,7 @@ def deleteQuestionChoice(survey_id,question_id,questionChoice_id):
 				QuestionChoice.question_id_==question_id).one()
 
 	if request.method == 'GET':
-		return render_template('delete_questionChoice.html', title=questionChoiceToBeDeleted.title_,\
+		return render_template('delete_questionchoice.html', title=questionChoiceToBeDeleted.title_,\
 			survey_id=survey_id,question_id=question_id)
 	elif (request.method == 'POST'):
 		session.delete(questionChoiceToBeDeleted)
