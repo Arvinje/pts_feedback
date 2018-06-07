@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+  <!-- Done by Saija 4/18 -->
+  <!-- Mangled further by Inka 4/28 -->
+
+  <head>
+    <title>Questionnaire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+  </head>
+
+  <!-- Flashed messages -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <body>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+      <a class="navbar-brand" href="#">LLB</a>
+    </nav>
+
+    <br>
+
+    <h1>{{ survey.description_}}</h1>
+
+    <p class="lead">Here is a longer description of the survey if we create an attribute in surveys.py for it. <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+    <hr class="my-4">
+
+    <p>Let's begin!</p>
+
+    <p class="lead">
+        <a class="btn btn-success btn-lg" href="{{ url_for('controllers.showQuestion', question_id=question_id) }}" role="button">Start survey</a>
+    </p>
+
+    <hr>
+
+    <img alt="Logo" src="{{ url_for('static', filename='img/logoLLB.png') }}" align="middle">
+  </body>
+</html>
