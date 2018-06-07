@@ -1,31 +1,35 @@
 <doctype html>
-{% extends "header.html" %}
+  {% extends "header.html" %}
+  <body>
+    {% block bodyOfPage %}
 
-{% block bodyOfPage %}
+    <div align="middle" >
 
-<div align="middle" >
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
 
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  <br>
-  <h2>Edit question</h2>
+      <br>
 
-  {% from "_formhelpers.html" import render_field %}
-  <form method=post>
-      <dl>
-          {{ render_field(form.type_) }}
-          {{ render_field(form.title_) }}
-          {{ render_field(form.optional_) }}
-      </dl>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
+      <h2>Edit question</h2>
 
-{% endblock %}
+      {% from "_formhelpers.html" import render_field %}
+      <form method=post>
+          <dl>
+              {{ render_field(form.type_) }}
+              {{ render_field(form.title_) }}
+              {{ render_field(form.optional_) }}
+          </dl>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

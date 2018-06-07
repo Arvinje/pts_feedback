@@ -1,27 +1,32 @@
 <doctype html>
-{% extends "header.html" %}
+  {% extends "header.html" %}
+  <body>
+    {% block bodyOfPage %}
+    <div align="middle">
 
-{% block bodyOfPage %}
-<div align="middle">
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  <br>
-  <h2>Delete question?</h2>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
 
-  <form method=post>
-      <dl>
-          {{ type_ }}
-          <br><br>
-          {{ title }}
-      </dl>
-    <button type="submit" class="btn btn-primary">Delete</button>
-  </form>
-</div>
-{% endblock %}
+      <br>
+
+      <h2>Delete question?</h2>
+
+      <form method=post>
+          <dl>
+              {{ type_ }}
+              <br><br>
+              {{ title }}
+          </dl>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </form>
+    </div>
+    {% endblock %}
+  </body>
+</html>

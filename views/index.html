@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 
-{% extends "header.html" %}
-{% block html_attribs %} lang="en"{% endblock %}
+  {% extends "header.html" %}
+  {% block html_attribs %} lang="en"{% endblock %}
 
-{% block styles %}
-{{super()}}
-<link rel="stylesheet"
-      href="{{url_for('.static', filename='css/cosmo.css')}}">
-{% endblock %}
+  {% block styles %}
+  {{super()}}
+  <link rel="stylesheet"
+        href="{{url_for('.static', filename='css/cosmo.css')}}">
+  {% endblock %}
 
-{% block bodyOfPage %}
-<div align="middle">
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  <br>
-  <h1>Hello Admin!</h1>
-  <p class="lead">You can add, edit and delete surveys.</p>
-  <hr class="my-4">
-  <img alt="llb" src="static/img/logoLLB.png">
-</div>
-{% endblock %}
+  <body>
+    {% block bodyOfPage %}
+    <div align="middle">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      <br>
+      <h1>Hello Admin!</h1>
+      <p class="lead">You can add, edit and delete surveys.</p>
+      <hr class="my-4">
+      <img alt="llb" src="static/img/logoLLB.png">
+    </div>
+    {% endblock %}
+  </body>
+</html>
