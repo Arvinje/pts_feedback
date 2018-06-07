@@ -64,3 +64,59 @@
  a:visited{color:#888}
  a{color:#444;text-decoration:none;}
  p{margin-bottom:.3em;}
+
+ button {
+   background-image: url(/static/happy_face_selected.svg);
+   padding: 10px 30px;
+   border-radius: 3px;
+   cursor: pointer;
+ }
+
+ button:hover, button:focus, button:active {
+   background: #e5e5e5;
+   -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+      -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+           box-shadow: inset 0px 0px 5px #c1c1c1;
+    outline: none;
+ }
+
+ .container {
+   position: relative;
+   width: 50%;
+ }
+
+ .image {
+   display: block;
+   width: 100%;
+   height: auto;
+ }
+
+ .overlay {
+   opacity: 0;
+   transition: .5s ease;
+   background-color: #008CBA;
+ }
+
+ .container:hover .overlay {
+   opacity: 1;
+ }
+
+ .container:focus .overlay {
+   opacity: 1;
+ }
+
+ .container:active .overlay {
+   opacity: 1;
+ }
+
+
+ .text {
+   color: white;
+   font-size: 20px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   -ms-transform: translate(-50%, -50%);
+   text-align: center;
+ }

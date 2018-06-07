@@ -1,39 +1,45 @@
 <!DOCTYPE html>
-<!-- Done by Saija 4/18 -->
-<!-- Mangled further by Inka 4/28 -->
+  <!-- Done by Saija 4/18 -->
+  <!-- Mangled further by Inka 4/28 -->
 
-<head>
+  <head>
     <title>Questionnaire</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
-</head>
+  </head>
 
-<!-- Flashed messages -->
-{% with messages = get_flashed_messages() %}
+  <!-- Flashed messages -->
+  {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
     {% endif %}
-{% endwith %}
+  {% endwith %}
 
-<body>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="#"><b>LLB</b></a>
+      <a class="navbar-brand" href="#"><b>LLB</b></a>
     </nav>
+
     <br>
+
     <h1>Thank you for answering our survey!</h1>
+
     <hr class="my-4">
+
     <img src="{{url_for('static', filename='img/coffee.jpg')}}" class="rounded mx-auto d-block" alt="eee">
+
     <br>
+
     <p>Here is your reward. Thank you for your participation!</p>
 
     <p class="lead">
-        <a class="btn btn-success btn-lg" href="http://livinglabbus.fi/" role="button">Back to LLB</a>
+      <a class="btn btn-success btn-lg" href="http://livinglabbus.fi/" role="button">Back to LLB</a>
     </p>
-    <hr>
-</body>
 
+    <hr>
+  </body>
 </html>

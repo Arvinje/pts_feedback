@@ -1,57 +1,63 @@
 <!DOCTYPE html>
-{% extends "header.html" %}
+  {% extends "header.html" %}
 
-{% block bodyOfPage %}
-<div align="middle">
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  <br>
-  <h2>Past survey result list</h2>
-  <br>
-<table class="table table-hover">
-    <thead>
-        <tr>
+  <body>
+    {% block bodyOfPage %}
+    <div align="middle">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <br>
+
+      <h2>Past survey result list</h2>
+
+      <br>
+      <table class="table table-hover">
+        <thead>
+          <tr>
             <th scope="col">ID</th>
             <th scope="col">Description</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Feedback</th>
             <th scope="col">Export</th>
-        </tr>
-    </thead>
-    <tbody>
+          </tr>
+        </thead>
 
-  	{% for survey in surveys %}
-  	  <tr>
-  		  <td>{{survey.id_}}</td>
-  		  <td>{{survey.description_}}</td>
-  		  <td>{{survey.start_date_}}</td>
-  		  <td>{{survey.end_date_}}</td>
+        <tbody>
+        	{% for survey in surveys %}
+        	  <tr>
+        		  <td>{{survey.id_}}</td>
+        		  <td>{{survey.description_}}</td>
+        		  <td>{{survey.start_date_}}</td>
+        		  <td>{{survey.end_date_}}</td>
 
-        <td>
-          <a href="\results\surveys\{{survey.id_}}" method="GET">
-            <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-list">  show feedback</span>
-            </button>
-          </a>
-        </td>
-        <td>
-          <a href="\results\surveys\{{survey.id_}}\export">
-            <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
-            </button>
-          </a>
-        </td>
-  	  </tr>
-  	{% endfor %}
-   </tbody>
-  </table>
-</div>
-{% endblock %}
+              <td>
+                <a href="\results\surveys\{{survey.id_}}" method="GET">
+                  <button type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-list">  show feedback</span>
+                  </button>
+                </a>
+              </td>
+              <td>
+                <a href="\results\surveys\{{survey.id_}}\export">
+                  <button type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-export">  Export answers to CSV-file</span>
+                  </button>
+                </a>
+              </td>
+        	  </tr>
+        	{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endblock %}
+  </body>
+</html>

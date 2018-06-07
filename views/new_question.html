@@ -1,22 +1,24 @@
 <doctype html>
-{% extends "header.html" %}
+  {% extends "header.html" %}
+  <body>
 
-{% block bodyOfPage %}
-<div align="middle">
-  <br>
-  <h2>New question</h2>
+    {% block bodyOfPage %}
+    <div align="middle">
+      <h2>New question</h2>
 
-  {% from "_formhelpers.html" import render_field %}
-  <form action="/surveys/{{survey_id}}/questions" method=post>
-      <fieldset>
-      <dl>
-          Survey ID: {{ survey_id }}
-          {{ render_field(form.type_) }}
-          {{ render_field(form.title_) }}
-          {{ render_field(form.optional_) }}
-      </dl>
-      <button type="submit" class="btn btn-primary">Submit</button>
-      </fieldset>
-  </form>
-</div>
-{% endblock %}
+      {% from "_formhelpers.html" import render_field %}
+      <form action="/surveys/{{survey_id}}/questions" method=post>
+          <fieldset>
+            <dl>
+                Survey ID: {{ survey_id }}
+                {{ render_field(form.type_) }}
+                {{ render_field(form.title_) }}
+                {{ render_field(form.optional_) }}
+            </dl>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </fieldset>
+      </form>
+    </div>
+    {% endblock %}
+  </body>
+</html>

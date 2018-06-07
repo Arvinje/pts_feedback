@@ -1,66 +1,56 @@
 <!DOCTYPE html>
 <!-- Done by Saija 4/18 -->
 <!-- Mangled further by Inka 4/29 -->
+  <head>
+      <title>Free form</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
+  </head>
 
-<head>
-    <title>Free form</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/questionnaire.css') }}">
-</head>
+  <!-- Flashed messages -->
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+              <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+      {% endif %}
+  {% endwith %}
 
-<!-- Flashed messages -->
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
+  <body>
+      <nav class="navbar navbar-expand navbar-dark bg-primary">
+          <a class="navbar-brand" href="#"><b>LLB</b></a>
+      </nav>
+      <br>
+      <h1>Give us feedback!</h1>
+      <p class="lead">Here is the question in which you can answer with your own words. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <hr class="my-4">
+      <h2>{{ question_title }}</h2>
 
-<body>
-    <nav class="navbar navbar-expand navbar-dark bg-primary">
-        <a class="navbar-brand" href="#"><b>LLB</b></a>
-    </nav>
-    <br>
-    <h1>Give us feedback!</h1>
-    <p class="lead">Here is the question in which you can answer with your own words. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    <hr class="my-4">
-    <h2>{{ question_title }}</h2>
+      {% from "_formhelpers.html" import render_field %}
+      <form action="{{ form_action_url }}" method="post" role="form">
+          <div class="form-group">
+              {{ form.value_(cols="100", rows="3") }}
+          </div>
 
-    {% from "_formhelpers.html" import render_field %}
-    <form action="{{ form_action_url }}" method="post" role="form">
+          <hr>
 
-        <div class="form-group">
+          <p class="lead">
+              {% if not is_first %}
+                  <input type="submit" class="btn btn-info btn-lg"  name="Previous" value="Prev" role="button">
+              {% endif %}
+              <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button">
+          </p>
 
-            {{ form.value_(cols="100", rows="3") }}
+          <input type=hidden name='question_id' value={{ question_id }}>
+          <input type=hidden name='question_type' value={{ question_type }}>
+          <input type=hidden name='prev_url' value={{ prev_url }}>
+          <input type=hidden name='next_url' value={{ next_url }}>
 
-        </div>
+      </form>
 
-        <!--
-        <div align="left">
-            <button type="button" class="btn btn-outline-secondary btn-sm">Clear all</button>
-        </div>
-         -->
+      <p class="text-muted">Progress: {{ progress }} %</p>
 
-        <hr>
-
-        <p class="lead">
-            {% if not is_first %}
-                <input type="submit" class="btn btn-info btn-lg"  name="Previous" value="Prev" role="button">
-            {% endif %}
-            <input type="submit" class="btn btn-success btn-lg" name="Next" value="Next" role="button">
-        </p>
-
-        <input type=hidden name='question_id' value={{ question_id }}>
-        <input type=hidden name='question_type' value={{ question_type }}>
-        <input type=hidden name='prev_url' value={{ prev_url }}>
-        <input type=hidden name='next_url' value={{ next_url }}>
-
-    </form>
-
-    <p class="text-muted">Progress: {{ progress }} %</p>
-
-</body>
+  </body>
 </html>
