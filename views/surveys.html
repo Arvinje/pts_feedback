@@ -41,7 +41,7 @@
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Description</th>
+              <th scope="col">Name</th>
               <th scope="col">Start date</th>
               <th scope="col">End date</th>
               <th scope="col">Enabled</th>
@@ -56,7 +56,7 @@
             {% for survey in surveys %}
             	<tr>
           		  <td>{{survey.id_}}</td>
-          		  <td>{{survey.description_}}</td>
+                <td>{{survey.name_}}</td>
           		  <td>{{survey.start_date_}}</td>
           		  <td>{{survey.end_date_}}</td>
                 <td>{{survey.enabled_}}</td>

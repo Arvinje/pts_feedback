@@ -15,12 +15,12 @@
         {% endif %}
       {% endwith %}
       <br>
-      <h2>Results {{survey.id_}}: {{survey.description_}}</h2>
+      <h2>Results {{survey.id_}}: {{survey.name_}}</h2>
 
       <br>
-      <a href="\results\surveys" method="GET">
+      <a href="\surveys" method="GET">
         <button type="button" class="btn btn-outline-secondary">
-          <span class="glyphicon glyphicon-chevron-left"></span> Back to the results
+          <span class="glyphicon glyphicon-chevron-left"></span> Back to the surveys
         </button>
       </a>
       <a href="\results\surveys\{{survey.id_}}\export">

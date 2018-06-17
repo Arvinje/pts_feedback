@@ -12,6 +12,7 @@ def startDateIsBeforeToday(date):
     return True
   if ((monthToday == date.month) & (dayToday < date.day)):
     return True
+
   return False
 
 # Checks, if the field only consists of spaces, tabs etc empty characters
