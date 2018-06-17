@@ -1,7 +1,8 @@
 import os, inspect
 from flask import Flask, render_template, request, redirect, flash
 from config.setup import session # for SQL-connection
-from wtforms import Form, BooleanField, StringField, DateField, validators
+from wtforms import Form, TextAreaField, BooleanField, StringField, DateField, validators
+from wtforms.fields.html5 import DateField
 
 from models.survey import Survey
 from models.question import Question
@@ -17,7 +18,9 @@ os.sys.path.insert(0,parentdir)
 # Form-class helps data processing
 # with html-files and it has useful validation-methods:
 class SurveyForm(Form):
-    description = StringField('Description', [validators.Length(min=4, max=25),
+    name = StringField('Name', [validators.Length(min=4, max=50),
+                                            checkThatFieldIsNotOnlyWhiteSpace])
+    description = TextAreaField('Description', [validators.Length(min=4),
                                             checkThatFieldIsNotOnlyWhiteSpace])
     start_date = DateField('Start date (YYYY-MM-DD)', [validators.DataRequired()])
     end_date = DateField('End date (YYYY-MM-DD)', [validators.DataRequired()])
@@ -39,8 +42,8 @@ def surveys():
       # the query returns list of all surveys and sends the list to the view:
       return render_template('surveys.html', surveys=session.query(Survey).order_by(Survey.id_).all())
     if (request.method == 'POST') and (form.validate()):
-      if form.start_date.data < form.end_date.data:
-        surveyToBeAdded = Survey(form.description.data,form.start_date.data, form.end_date.data, form.enabled.data)
+      if ((form.start_date.data < form.end_date.data) | (form.start_date.data == form.end_date.data)):
+        surveyToBeAdded = Survey(form.name.data,form.description.data,form.start_date.data, form.end_date.data, form.enabled.data)
         session.add(surveyToBeAdded) #adding record to database
         session.commit() #commiting addition
 
@@ -61,6 +64,7 @@ def editSurvey(id):
     if request.method == 'GET':
       # the query returns the survey:
 
+      form.name.data = surveyToBeEdited.name_
       form.description.data = surveyToBeEdited.description_
       form.start_date.data = surveyToBeEdited.start_date_
       form.end_date.data = surveyToBeEdited.end_date_
@@ -69,7 +73,8 @@ def editSurvey(id):
       return render_template('edit_survey.html', form=form)
     if (request.method == 'POST'):
       if (form.validate()):
-        if form.start_date.data < form.end_date.data:
+        if form.start_date.data <= form.end_date.data:
+          surveyToBeEdited.name_ = form.name.data
           surveyToBeEdited.description_ = form.description.data
           surveyToBeEdited.start_date_ = form.start_date.data
           surveyToBeEdited.end_date_ = form.end_date.data
@@ -91,7 +96,7 @@ def deleteSurvey(id):
     surveyToBeDeleted = session.query(Survey).filter_by(id_=id).one()
 
     if request.method == 'GET':
-      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, name=surveyToBeDeleted.name_)
     elif (request.method == 'POST'):
       if (startDateIsBeforeToday(surveyToBeDeleted.start_date_)):
         # deleting all the questions of survey:
@@ -104,8 +109,8 @@ def deleteSurvey(id):
         return redirect('/surveys')
       else:
         flash("Survey deletion error: start_date is not in the future.")
-        return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
+        return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, name=surveyToBeDeleted.name_)
     else:
-      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, description=surveyToBeDeleted.description_)
+      return render_template('delete_survey.html', id_=surveyToBeDeleted.id_, name=surveyToBeDeleted.name_)
 routes.append(dict(rule='/surveys/<int:id>/delete',view_func=deleteSurvey,
                    options=dict(methods=['GET','POST'])))

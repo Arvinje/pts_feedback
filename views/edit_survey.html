@@ -21,6 +21,7 @@
       <form method=post>
           <fieldset>
               <dl>
+                {{ render_field(form.name) }}
                 {{ render_field(form.description) }}
                 {{ render_field(form.start_date) }}
                 {{ render_field(form.end_date) }}
